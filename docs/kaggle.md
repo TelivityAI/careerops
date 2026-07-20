@@ -15,13 +15,13 @@ Metadata: `kernel/kernel-metadata.json` (private, GPU + internet enabled).
 
 - 2 GPUs × batch 2 × accum 2, LR `1e-4`, cosine, warmup 30, `max_grad_norm` 0.3
 - `bnb_4bit_compute_dtype=torch.float32`, **`fp16=False`** (fp16 AMP + GradScaler was a bf16 unscale failure mode)
-- `max_length=384` (raise to **512** if board prompts truncate)
+- `max_length=2048` — required: all 180 `match_grading` rows are ~5.8k chars / ~1800 tokens; 384/768 truncates the assistant JSON at the end (stamp-loop failure). Do **not** trim match_grading JDs.
 - `packing=False`, gradient checkpointing with `use_reentrant=False`
 - HF push target comment: clean name **`telivity/CareerOps-4B`** (contaminated `careerops-4b` deleted)
 
 ### Rough sizing
 
-~2,380 clean rows → ~298 optimizer steps → ~1h40 on T4×2 at the shorter `max_length`.
+~2,380 clean rows; wall time rises vs a 384 window because long `match_grading` rows pad under `packing=False`. Force T4×2 and watch step time.
 
 ## Eval kernel
 

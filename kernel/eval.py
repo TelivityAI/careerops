@@ -77,8 +77,8 @@ def build(ex):
     msgs = [{'role': 'system', 'content': SYSTEM}] + ex['messages']
     full = tok.apply_chat_template(msgs, tokenize=False)
     prompt = tok.apply_chat_template(msgs[:-1], tokenize=False, add_generation_prompt=True)
-    f = tok(full, return_tensors='pt', truncation=True, max_length=768)
-    n_prompt = len(tok(prompt, truncation=True, max_length=768)['input_ids'])
+    f = tok(full, return_tensors='pt', truncation=True, max_length=2048)
+    n_prompt = len(tok(prompt, truncation=True, max_length=2048)['input_ids'])
     labels = f['input_ids'].clone()
     labels[0, :n_prompt] = -100          # loss only on the answer
     return f['input_ids'], f['attention_mask'], labels

@@ -156,7 +156,7 @@ cfg = SFTConfig(
     fp16=False,          # locked clean path with bnb float32 compute (AMP/fp16 was a failure mode)
     bf16=False,
     max_grad_norm=0.3,
-    max_length=384,      # raise to 512 if board prompts truncate
+    max_length=2048,  # match_grading rows ~1800 tokens; packing=False so only long rows cost pad
     gradient_checkpointing=True,
     gradient_checkpointing_kwargs={'use_reentrant': False},   # required for DDP
     optim='adamw_torch_fused',
