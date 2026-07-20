@@ -1,11 +1,8 @@
 #!/usr/bin/env python3
-"""Prep-only: merge LoRA adapter into base and document GGUF export.
+"""Merge LoRA adapter into base weights; document GGUF export separately.
 
-Do NOT run until quality gates pass (val loss, side-by-side, privacy probe).
-Does not flip any HF/GitHub visibility.
-
-Usage (after gates):
-    export HF_TOKEN=$(cat ~/.hf_token)   # never commit
+Usage:
+    export HF_TOKEN=…   # never commit tokens
     python scripts/merge_lora_gguf.py --dry-run
     python scripts/merge_lora_gguf.py --out /tmp/CareerOps-4B-merged
 
@@ -46,7 +43,7 @@ def main() -> int:
     print(f"out={args.out}")
     if args.dry_run:
         print("dry-run OK — would merge_and_unload then save_pretrained")
-        print("GGUF: convert merged dir with llama.cpp after gates pass")
+        print("GGUF: convert merged dir with llama.cpp after merge")
         return 0
 
     # Heavy imports only when actually merging

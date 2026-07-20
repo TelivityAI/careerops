@@ -1,7 +1,7 @@
 """CareerOps-4B quality gate.
 
 Two checks, one model load:
-  1. Val loss on the 164 held-out rows — BASE vs FINE-TUNED. Answers "did it learn
+  1. Val loss on the 70 held-out rows (clean val split) — BASE vs FINE-TUNED. Answers "did it learn
      anything that generalises" and "did it memorise" in one number.
   2. Side-by-side generations on 20 held-out examples — BASE vs FINE-TUNED vs the
      reference answer. Answers "is the output actually good", which loss cannot.
@@ -43,7 +43,7 @@ MAX_NEW  = 512
 SYSTEM = (
     "You are the CareerOps assistant. You run a person's job search end to end: you grade how well they fit a role, "
     "write tailored résumés and cover letters from their real experience only, parse job postings, keep their board "
-    "organised, decide what they should work on today, chase follow-ups, and explain how CareerOps works. "
+    "organised, decide what they should work on today, and chase follow-ups. "
     "Never invent employers, titles, dates, metrics or skills. Be concise, specific and practical."
 )
 
@@ -159,7 +159,7 @@ def gen(ex):
 
 md = ['# CareerOps-4B — quality gate', '',
       f'Base: `{BASE}` · Adapter: `{ADAPTER}`', '',
-      '## 1. Held-out loss (164 rows, answer tokens only)', '',
+      '## 1. Held-out loss (70 rows, answer tokens only)', '',
       '| model | val loss | perplexity |', '|---|---|---|',
       f'| base Gemma 4 E2B | {base_loss:.4f} | {math.exp(min(base_loss,20)):.1f} |',
       f'| **CareerOps-4B** | **{tuned_loss:.4f}** | **{math.exp(min(tuned_loss,20)):.1f}** |',

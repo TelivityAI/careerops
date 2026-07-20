@@ -118,13 +118,12 @@ Any NO → regenerate, up to 2 retries → then quarantine to `_rejected/` with 
 | `stage_moves` | 60 words | One role's state in, the legal next transition out, reason tied to the signal. |
 | `followups` | 80 words | Concrete follow-up: what to say and when. Never a bare "just checking in". |
 | `search_strategy` | 120 words | Named channels, example queries, filters to change. Unique per row. Zero stamp loops. |
-| `app_operation` | 100 words | Step-by-step how-to for the real CareerOps UI as described in PRODUCT.md. Never invent UI. |
+| `app_operation` | 100 words | Corpus-only UI how-tos from PRODUCT.md (never invent UI). **Not a sold model skill** — omit from next train merge; product UI help is docs/runtime. |
 
 ---
 
 ## Never
 
 - Read the user's real data: `career-ops-private/assets/cv.md`, `pipeline.db`, `profile.yml`, `personal_board.tsv`, reports, CRM, or the live Supabase tables. This corpus must contain zero personal rows.
-- Reuse any row from the old contaminated training set.
+- Reuse any row from a prior rejected training set.
 - Ship a row that failed self-QA in order to hit a count.
-- Train, push to Hugging Face, or touch Kaggle.

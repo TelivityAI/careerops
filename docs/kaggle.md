@@ -2,7 +2,7 @@
 
 ## Training kernel
 
-Metadata: `kernel/kernel-metadata.json` (private, GPU + internet enabled).
+Metadata: `kernel/kernel-metadata.json` (GPU + internet enabled).
 Live kernel id: `dusanmilicevic/careerops-4b-training`.
 
 ### Must-dos
@@ -12,19 +12,19 @@ Live kernel id: `dusanmilicevic/careerops-4b-training`.
 3. **`kaggle kernels push` wipes secret attachments.** Prefer the private auth dataset so re-push does not brick auth. Optional UI secret label remains `HF_TOKEN` if used.
 4. **Launch with `torchrun`, not `notebook_launcher`.** CUDA must not be initialized in the parent notebook process. The train script is designed to run under `torchrun` in a separate process (see comments at top of `kernel/train_ddp.py`).
 
-### Clean train config (locked)
+### Train config
 
 - 2 GPUs × batch 2 × accum 2, LR `1e-4`, cosine, warmup 30, `max_grad_norm` 0.3
 - `bnb_4bit_compute_dtype=torch.float32`, **`fp16=False`**, **`bf16=False`** (fp16 AMP + GradScaler was a bf16 unscale failure mode; do **not** register dtype-changing grad hooks)
-- `max_length=768` — E2B + T4×2 locked. `match_grading` must be regenerated to ≤~700 tokens (`docs/MATCH_GRADING_REGEN.md`). Do **not** raise to 2048; do **not** naive-trim JDs.
+- `max_length=768` — E2B + T4×2. `match_grading` must be regenerated to ≤~700 tokens (`docs/MATCH_GRADING_REGEN.md`). Do **not** raise to 2048; do **not** naive-trim JDs.
 - `packing=False`, gradient checkpointing with `use_reentrant=False`
-- HF push target: **`telivity/CareerOps-4B`** (private). Contaminated `telivity/careerops-4b` was deleted — do not continue from it.
+- HF push target: **`telivity/CareerOps-4B`**
 - Progress milestones: `progress.json` on the HF repo during train.
 
 ### Dataset sources (kernel-metadata)
 
 - `dusanmilicevic/careerops-clean-train` — train/val JSONL + `train_ddp.py`
-- `dusanmilicevic/careerops-runtime-auth` — private `hf_token` file only
+- `dusanmilicevic/careerops-runtime-auth` — `hf_token` file only (do not commit)
 
 ### Rough sizing
 
@@ -32,9 +32,9 @@ Live kernel id: `dusanmilicevic/careerops-4b-training`.
 
 ## Eval kernel
 
-Metadata: `evalkernel/kernel-metadata.json` (also private, GPU + internet).
+Metadata: `evalkernel/kernel-metadata.json` (GPU + internet).
 
-Same auth pattern as train: attach **`careerops-runtime-auth`** + clean val JSONL dataset. Single GPU T4 is enough for inference. Adapter/OUT repo: **`telivity/CareerOps-4B`**. Do not ship personal or rejected JSONL.
+Same auth pattern as train: attach **`careerops-runtime-auth`** + clean val JSONL dataset. Single GPU T4 is enough for inference. Adapter/OUT repo: **`telivity/CareerOps-4B`**. Keep personal or rejected JSONL out of the train merge.
 
 ## Launcher notebook
 

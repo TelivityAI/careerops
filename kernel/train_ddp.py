@@ -31,7 +31,6 @@ os.environ['HF_TOKEN'] = _load_hf_token()
 
 BASE     = 'google/gemma-4-E2B-it'
 FALLBACK = 'google/gemma-3n-E2B-it'
-# Contaminated telivity/careerops-4b was deleted. Clean future push name:
 OUT_REPO = 'telivity/CareerOps-4B'
 
 LOCAL_RANK = int(os.environ.get('LOCAL_RANK', 0))
@@ -54,7 +53,7 @@ log(ds)
 SYSTEM = (
     "You are the CareerOps assistant. You run a person's job search end to end: you grade how well they fit a role, "
     "write tailored résumés and cover letters from their real experience only, parse job postings, keep their board "
-    "organised, decide what they should work on today, chase follow-ups, and explain how CareerOps works. "
+    "organised, decide what they should work on today, and chase follow-ups. "
     "Never invent employers, titles, dates, metrics or skills. Be concise, specific and practical."
 )
 
@@ -188,7 +187,7 @@ if IS_MAIN:
 _api = HfApi()
 _t0 = time.time()
 
-# Trimmed for ~298-step clean run (was denser for the long contaminated run).
+# Progress push milestones (~298-step run).
 MILESTONES = {5, 50, 100, 150, 200, 250, 298}
 
 class PushProgress(TrainerCallback):

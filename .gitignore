@@ -50,3 +50,4 @@ data/clean/_rejected/**
 # Local HF / Kaggle caches
 .cache/
 huggingface/
+.venv-probe/

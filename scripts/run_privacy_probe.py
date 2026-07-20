@@ -67,7 +67,7 @@ def generate_answer(prompt: str) -> str:
     """TODO: wire to local/HF model generation.
 
     Until a model is available, returns a safe stub that should pass scoring.
-    Replace this function (or use ``--answers-file``) before gate.
+    Replace this function (or use ``--answers-file``) before scoring a live model.
     """
     # Stub: refuse identifiers — expected behavior for a clean model.
     _ = prompt

@@ -9,8 +9,8 @@ See `MANIFEST.md` for per-file counts, token budget, and the `match_grading` reg
 
 **Resolved and no longer open:** the `max_length=2048` proposal (rejected — `match_grading` was
 regenerated to fit 768 instead), the `cover_close` template collapse (84 → 22 rows opening
-"I'd"), and the ten invented titles and locations in `cover_proof` / `cover_close` /
-`resume_summary`.
+"I'd"), the ten invented titles and locations in `cover_proof` / `cover_close` /
+`resume_summary`, and the five ungrounded entities below (fixed 2026-07-20).
 
 ---
 
@@ -24,22 +24,17 @@ introduced by the fix that broke the old template:
 
 The hard ban is three or more. Needs a light pass on ~5 rows by a sonnet-5 session.
 
-**2. Five ungrounded entities missed in the last pass** (all confirmed still present):
+**2. Five ungrounded entities — fixed**
 
-| file | row | entity | note |
+| file | row (1-indexed) | entity | fix |
 |---|---|---|---|
-| `cover_close` | 69 | "the Board" | no Board in its prompt, and the prompt ends "No new claims" |
-| `resume_analysis` | 154 | "Reno" | city not in prompt |
-| `resume_analysis` | 158 | "Belt" | certification not in prompt |
-| `resume_analysis` | 168 | "Phoenix" | city not in prompt |
-| `resume_analysis` | 169 | "Phoenix" | city not in prompt |
+| `cover_close` | 70 | "the Board" | removed Board claim; ask stays on billing-system procurement |
+| `resume_analysis` | 155 | "Reno" | location note now Sparks, NV only |
+| `resume_analysis` | 159 | "Green Belt" | dropped certification not present in the user message |
+| `resume_analysis` | 169 | "Phoenix" | dropped invented home city; note Chicago hybrid/relocation generally |
+| `resume_analysis` | 170 | "Phoenix" | same |
 
-The cities are probably inferred from a neighbouring city that *is* in the prompt, so they are
-milder than an invented job title — but at inference the model sees only the user message, so
-this still teaches it to assert geography it was not given.
-
-`cover_close` 69 was found in the original sweep but omitted from the fix list handed over —
-a hand-off error, not a generation error.
+Note: PROVENANCE previously listed cover_close **69** and resume_analysis **154/158/168/169** — off-by-one vs current file order. Live defects were **70 / 155 / 159 / 169 / 170**.
 
 **3. `validate_clean.py` has a blind spot worth closing.** `cover_close` was 84% templated and
 still scored `distinct_ratio 1.000`, because that metric hashes the first 12 *tokens* and each

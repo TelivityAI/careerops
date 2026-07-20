@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Run after Claude hands off a complete data/clean/ corpus.
-# Exit non-zero on any failure. Does NOT train or upload.
+# Preflight checks for a complete data/clean/ corpus.
+# Exit non-zero on any failure. Does not train or upload.
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
