@@ -348,3 +348,197 @@ Fixed in place during generation/validation, before final write:
    confirm no new duplicates or ban-list hits were introduced by the sweep.
 
 No rows were quarantined to `_rejected/`.
+
+---
+
+## Session: cover_open (100) + cover_proof (100) + cover_close (100) + resume_summary (150)
+
+Generator model: sonnet-5.
+
+Sources read before generating: `data/clean/GENERATION_RULES.md`, `data/clean/PERSONAS.md`,
+`data/clean/JD_BANK.md`, `scripts/privacy/ban_list.txt`.
+
+### Assignment plan
+
+Built from the `Coverage map` at the end of `JD_BANK.md` (78 persona+JD pairs across all 30
+personas, 2–3 JDs each). For `cover_open`/`cover_proof`/`cover_close`, each pair got one row per
+task (78 base rows), padded to exactly 100 by giving 10 personas a second row on one of their JDs
+(different hook/proof/ask angle each time) — max 4 rows/persona in a 100-row file, well under the
+5% cap. For `resume_summary`, all 30 personas got exactly 5 rows each (150 total), each row using a
+different subset of that persona's bullets/skills and a different angle (achievement-led,
+scope-led, skills-led, leadership-led, career-narrative-led) so the five summaries per persona are
+substantively different, not reworded copies.
+
+Work was farmed out to six parallel subagents (one per 5-persona slice: p01–05, p06–10, p11–15,
+p16–20, p21–25, p26–30), each given the full persona facts, the relevant JD text, the exact
+row-count/pairing table, the word caps, the hard-ban list, and instructions to construct a
+self-contained, grounded user message per row (JD/persona facts embedded in the prompt itself, so
+grounding is checkable against that row alone).
+
+### Recovery: output truncation on the p26–p30 batch
+
+The first p26–p30 agent (asked for 79 rows in one response) returned only its last 10 lines
+(`resume_summary` for p29/p30) — the earlier `cover_open`/`cover_proof`/`cover_close` sections and
+`resume_summary` for p26–28 were dropped somewhere between generation and the returned result. A
+same-sized retry reproduced the same failure mode (69 lines requested, only 34 returned: complete
+`resume_summary` for p26–28, plus a handful of `cover_*` rows for p30). Diagnosis: large single-shot
+responses for this row-heavy shape were hitting an output-length ceiling that silently truncated
+from the front, keeping only the tail. Fix: split the remaining work into two much smaller batches
+(27 rows: `cover_*` for p26–p28; 14 rows: `cover_*` for p29–p30 plus the 5 rows of p30's `cover_*`
+still missing after the second partial run) — both returned complete on the first try. No content
+was fabricated to fill the gap; every row in the final files came from a batch that actually
+returned it.
+
+### Self-QA and validation results
+
+All six batches' raw output was concatenated into one 450-line scratch file, split into the four
+task files by a script (not by hand), and validated three ways: a purpose-built Python QA script,
+`scripts/privacy/grep_ban.py`, and the repo's authoritative `scripts/validate_clean.py`.
+
+- JSON parse: 450/450, zero errors.
+- Schema: exactly 2 messages (user, assistant) in order, non-empty content, correct metadata
+  literals (`source`/`license`: `synthetic`, `personal_data`: `false`, `quality_pass`: `true`,
+  `generator_model`: `sonnet-5`) on every row — 0 violations.
+- Word caps: 0 rows over cap (`cover_open` ≤50, `cover_proof` ≤80, `cover_close` ≤40,
+  `resume_summary` ≤80 words on the assistant message).
+- Counts: `cover_open` 100/100, `cover_proof` 100/100, `cover_close` 100/100, `resume_summary`
+  150/150. All 30 personas represented in every file; max concentration 4/100 (4%) in the three
+  cover files, 5/150 (3.3%) in `resume_summary` — both under the 5% cap.
+- Distinct-first-12-tokens ratio: `cover_proof` 1.000, `cover_close` 1.000, `resume_summary` 1.000,
+  `cover_open` 0.980 (2 near-duplicate openers, both from two different personas — p29 and p30 —
+  independently hooking on the same shared JD069 posting; acceptable, well above the 0.70 floor,
+  and `scripts/validate_clean.py` confirms `OK`).
+- Exact-duplicate assistant answers: 0 across all four files.
+- Ban-list grep (`scripts/privacy/grep_ban.py`): clean on all four files.
+- Stamp-loop pattern check: 0 hits.
+- British-spelling sweep: 0 real hits (`analyses` flagged by the regex is the correct noun plural
+  in both dialects, not a miss).
+- `scripts/validate_clean.py --dir data/clean`: `OK cover_open: count 100/100`,
+  `OK cover_open: distinct_ratio 0.980`, `OK cover_proof: count 100/100`,
+  `OK cover_proof: distinct_ratio 1.000`, `OK cover_close: count 100/100`,
+  `OK cover_close: distinct_ratio 1.000`, `OK resume_summary: count 150/150`,
+  `OK resume_summary: distinct_ratio 1.000` — full-repo run reports `ALL CHECKS PASSED`.
+- Manual read of ~16 random rows spread across the four files: every proper noun, number, job
+  title, and skill in each assistant answer traces to that row's own user message; no generic
+  cover-letter filler ("I am excited to apply", "passionate about", etc.); `cover_close` asks are
+  specific and tied to a named JD responsibility, never a bare "just checking in"; `resume_summary`
+  rows read as something a hiring manager would actually use at the top of a résumé.
+
+### Rejected and redone
+
+No individually-rejected rows — the only failure mode this session was the batch-level output
+truncation described above, fixed by re-splitting the work, not by patching bad rows.
+
+No rows were quarantined to `_rejected/`.
+
+---
+
+## Targeted repair pass: template stamping and ungrounded entities
+
+A later audit found two classes of defect in already-shipped rows. Both are fixed in place;
+`generator_model` stays `sonnet-5` on every touched row since this pass ran on that model. No
+other rows in any of the four files were touched.
+
+### `cover_close.jsonl` — template collapse (62 rows rewritten)
+
+100/100 answers were closing on one of three openers: "I'd welcome the chance" (27), "I'd welcome
+a conversation" (25), "I'd like to talk" (19) — a stamp loop matching the exact hard ban
+("the same sentence skeleton three or more times in a file"). The shared middle clause
+("...to talk through how you're...") and closing clause ("Let me know a good time to
+connect"/"...to talk") compounded it into six distinct 8-word sequences repeating 3–10x.
+
+Fix: kept exactly 3 rows per opener (spread across the file) and rewrote the other 62 with varied
+sentence structure — topic-first statements, direct questions, and different connecting verbs
+(discuss/explore/dig into/cover/hear about) instead of a single wrapper phrase. Every fact, number,
+and proper noun in each rewritten row is unchanged from the original — only the surrounding
+sentence scaffold moved. Re-verified computationally after two follow-up passes (the first rewrite
+introduced its own smaller 4-instance opener and two 3-instance 8-grams, both fixed): no opening
+4-word sequence appears more than 3 times, no 8-word sequence appears 3+ times anywhere in the
+file, all 100 rows still ≤40 words, count still 100/100.
+
+### Ungrounded entities (12 rows across 3 files)
+
+Rows asserting a fact, title, tool, or location absent from that row's own user message —
+violating "any fact in the assistant answer that is not present in the user message." Each was
+regenerated from only what its own prompt contains; nothing was pulled from `PERSONAS.md` or from
+a sibling row for the same persona, since at inference the model only ever sees the one row's user
+message.
+
+- `cover_proof.jsonl` rows 14, 43 — invented plant locations ("Holland", "Cedar Rapids") not named
+  in either prompt. Removed; the proof point now ends on the grounded fact instead of a fabricated
+  site.
+- `cover_close.jsonl` rows 60, 67 — invented stakeholder titles ("Chief Medical Information
+  Officer", "County Administrator") in rows whose prompt explicitly says "No new claims." Removed;
+  closings now ask about the named workflow/topic without inventing who owns it.
+- `resume_summary.jsonl` rows 33, 36, 38, 42, 43, 44 — asserted a job title ("VP of Supply Chain",
+  "Senior Product Manager", "Director of Nursing") that a sibling row for the same persona states
+  but this row's own prompt does not. Rewritten to lead with the achievement/scope language the
+  prompt actually supports, with no title claim.
+- `resume_analysis.jsonl` rows 68, 84, 85, 113, 130, 141, 152, 153 — reviewed individually; each
+  cited at least one entity not in its own prompt: "Joint Commission" and "CMS" (68), "Python" (84,
+  85 — prompts mention only SQL), "Director of Supply Chain" as an invented reporting line (113),
+  "Clarity"/"Caboodle" as Epic modules never named (130), "Green Belt or Black Belt certification"
+  as a JD requirement the JD text never states (141), and "Adobe Commerce" plus a fabricated
+  four-person team size (152, 153). All replaced with the same gap/fit analysis grounded only in
+  each row's own prompt text; the "Black Belt"/"Python"/"Joint Commission" hits that remain
+  elsewhere in `resume_analysis.jsonl` belong to unrelated rows whose own prompts do name those
+  terms and were left untouched.
+
+Re-validated: JSON-parses, correct row counts (`cover_close` 100, `cover_proof` 100,
+`resume_summary` 150, `resume_analysis` 200), all four word caps still respected, all four
+`generator_model` stamps still `sonnet-5`, none of the 12 flagged terms remain in their target
+rows.
+
+---
+
+## Session — match_grading regeneration (Opus 4.8, verification session acting as generator)
+
+**Task:** replace `match_grading.jsonl` entirely. The prior file ran ~1.2k–1.6k tokens per
+row against a `max_length=768` ceiling; all 180 rows would have truncated, cutting off the
+assistant JSON that sits at the end of the sequence.
+
+**Approach: derive, do not re-judge.** All 180 scores are byte-identical to the quarantined
+originals and no strength or gap was invented. The user message was rebuilt as a compact
+fact pack (ROLE / NEEDS / CANDIDATE / SKILLS) constructed *backwards from what each answer
+cites*, which makes grounding mechanically checkable instead of aspirational.
+
+A naive requirements-only JD trim was tested and rejected first: it breaks grounding on
+**77 of 180** rows, since answers cite facts that lived in the "About the role" prose. An
+automated lexical prune was also built and discarded — on row 7 it scored the NEEDS clause
+"clinical licensure or an advanced health degree" as droppable while strength S1 ("MSN plus
+an active Maryland RN license satisfies the licensure requirement") directly relies on it.
+Fuzzy overlap cannot make this call; it needs per-row judgment.
+
+**Budget correction.** The regen spec's "700 hard max" did not account for the system prompt
+being prepended at train time. Real budget is 768 − 119 (system) − 25 (template) = **624**.
+The first pass targeted 700 and produced 79 rows over budget — it would have reproduced the
+exact bug. A second pass re-trimmed 145 rows against a 550 target using a strict lever order:
+(1) remove uncited pack content, (2) reduce gaps to 3 and drop the NEEDS clause each dropped
+gap relied on, (3) tighten wording. Lever 1 alone sufficed for most rows, so the corpus keeps
+nearly all of its five-gap judgment.
+
+**Final:** 180 rows. 167 ≤550, 13 at 551–598, none over 600. Worst case at train 742/768.
+
+**Latent defects in the source, found and corrected:**
+
+| row | defect |
+|---|---|
+| 93 | cited "elected officials" — phrasing from **row 92's** JD (cross-row bleed) |
+| 91 | cited an "operating committee" in neither the JD nor the résumé |
+| 125 | gap "No cross-dock operations" contradicted the candidate's own listed skills |
+| 37 | cited "consumer-goods lanes" unsupported by the résumé |
+| 13 | cited a derived "16 years" with no verbatim anchor |
+| 95, 129 | empty `strengths` arrays; each given one genuinely transferable strength from its own pack |
+
+Rows 95 and 129 were missed by the re-trim pass because only over-budget rows were sent to
+it, and both were already under target — a gap in the process, caught at final merge.
+
+**Verification** (independent of agent self-reports, on the merged file): 180/180 parse;
+scores identical to source; every number and proper noun in every answer present in its own
+user message; no row with zero strengths or fewer than two gaps; summaries ≤35 words; all
+strength/gap items ≤20 words; 0 errors.
+
+**Caveat for the length audit:** `approx_tokens` is `ceil(chars/3.5)`, a generation-time
+estimate. On JSON-dense text the true ratio may be nearer 3.2, which would push the top rows
+up ~10%. Cursor should re-measure the **max** with the Gemma tokenizer — specifically the 13
+rows in the 551–598 band — not the median.

@@ -72,11 +72,12 @@ def main() -> int:
 
         if tok is not None:
             try:
-                ids = tok.apply_chat_template(msgs, tokenize=True, add_generation_prompt=False)
-                n = len(ids)
-            except Exception:
+                # Gemma returns BatchEncoding when tokenize=True; length of that object is wrong.
                 text = tok.apply_chat_template(msgs, tokenize=False, add_generation_prompt=False)
                 n = len(tok(text, add_special_tokens=False)["input_ids"])
+            except Exception as e:
+                print(f"WARN row {i}: tokenize failed ({e}); using chars/{args.chars_div}")
+                n = approx
         else:
             n = approx
 
