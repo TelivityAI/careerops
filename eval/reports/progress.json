@@ -1,0 +1,9 @@
+{
+ "step": 289,
+ "total_steps": 289,
+ "pct": 100.0,
+ "loss": 0.9598792195320129,
+ "elapsed_sec": 2841,
+ "sec_per_step": 9.83,
+ "gpus": 2
+}

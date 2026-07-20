@@ -1,0 +1,8 @@
+{
+ "base_val_loss": 4.488579017507651,
+ "tuned_val_loss": 1.677287284029502,
+ "answer_tokens": 6106,
+ "n_side_by_side": 20,
+ "adapter": "telivity/CareerOps-4B",
+ "base": "google/gemma-4-E2B-it"
+}
