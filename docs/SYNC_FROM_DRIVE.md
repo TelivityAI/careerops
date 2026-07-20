@@ -1,25 +1,11 @@
-# Sync Claude’s Drive corpus → this git clone
+# Sync note — Drive is NOT source of truth
 
-Claude writes under Google Drive:
-`…/My Drive/CareerOps/data/clean/`
+**Do not sync FROM Google Drive into `careerops-work`.**
 
-This clone is:
-`~/careerops-work`
+Source of truth: `/Users/dusanmac/careerops-work` (`TelivityAI/careerops` / `origin/main`).
 
-Drive was often permission-locked from Cursor. When Claude finishes MG regen:
+The Drive tree at  
+`~/Library/CloudStorage/GoogleDrive-dusanmilicevic33@gmail.com/My Drive/CareerOps`  
+is a **stale live trap** (see `WARNING_STALE_DO_NOT_USE.md` there and `docs/NEXT_TRAIN.md`). Do not upload Kaggle datasets from Drive. Do not pull Drive corpora over scrubbed files.
 
-```bash
-SRC="$HOME/Library/CloudStorage/GoogleDrive-dusanmilicevic33@gmail.com/My Drive/CareerOps/data/clean"
-DST="$HOME/careerops-work/data/clean"
-rsync -av --progress "$SRC/" "$DST/"
-cd "$HOME/careerops-work"
-bash scripts/preflight_corpus.sh data/clean
-```
-
-Do not commit JSONL until preflight passes. Then:
-
-```bash
-git add data/clean/*.jsonl data/clean/MANIFEST.md data/clean/QUALITY_REPORT.md data/clean/_rejected
-git commit -m "Add clean SFT corpus (MG compact regen)."
-# push when ready
-```
+If you ever need to push a one-off artifact *to* Drive for human browsing only, copy **from** `careerops-work` — never the reverse — and still train only from `careerops-work`.
