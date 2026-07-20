@@ -35,9 +35,9 @@ Base: Gemma 4 E2B-it. QLoRA on T4×2. ~2.4k clean synthetic/public rows. Long wr
 LocalLLaMA first, then HN Show HN / short X thread. LinkedIn optional.
 
 ## Checklist before post
-- [ ] Contaminated adapter gone (done)
-- [ ] Corpus privacy + length audit green
-- [ ] Val loss + side-by-sides saved in repo
-- [ ] Privacy probe empty
+- [x] Contaminated adapter gone / overwritten by clean CareerOps-4B
+- [x] Corpus privacy + length audit green
+- [x] Val loss + side-by-sides saved in repo
+- [x] Privacy probe empty (10/10)
 - [ ] HF public + GitHub public
 - [ ] README matches claims
