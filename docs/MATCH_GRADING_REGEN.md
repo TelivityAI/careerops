@@ -84,7 +84,7 @@ Set `approx_tokens` to your estimate for Cursor audit.
 
 1. 180 rows, all ≤700 tok estimate
 2. Spot-check 20: grounding holds
-3. Update `QUALITY_REPORT.md` + `MANIFEST.md` noting MG regen
+3. Update `QUALITY_REPORT.md` + `MANIFEST.md` noting MG regen (covers + `resume_summary` already delivered — do not touch)
 4. Tell Cursor: ready for `validate_clean.py` + length gate
 
 ## Forbidden

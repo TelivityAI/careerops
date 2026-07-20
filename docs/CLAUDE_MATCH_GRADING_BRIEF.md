@@ -2,9 +2,11 @@
 
 ## Immediate: regenerate match_grading (blocking for Kaggle)
 
-Train is back to **max_length=768** (E2B + T4×2). Current long `match_grading.jsonl` (~1.2k–1.6k tok) must be **fully replaced**.
+Train is **`max_length=768`** (E2B + T4×2). Current long `match_grading.jsonl` (~1.2k–1.6k tok) must be **fully replaced**.
 
-Read and follow: `docs/MATCH_GRADING_REGEN.md` in the CareerOps repo.
+Covers + `resume_summary` are **done** (Session 4, 450 rows — do not regenerate those).
+
+Follow: `docs/MATCH_GRADING_REGEN.md` in TelivityAI/careerops.
 
 ### Hard rules
 1. **180 rows**, Opus 4.8, overwrite `data/clean/match_grading.jsonl`
@@ -16,8 +18,8 @@ Read and follow: `docs/MATCH_GRADING_REGEN.md` in the CareerOps repo.
 7. Grounding: every assistant claim verbatim in the user pack
 8. Stamp `generator_model: opus-4.8`, `personal_data: false`, `quality_pass: true`, `approx_tokens: <n>`
 
-### Still also missing (finish these)
-- `cover_open` 100, `cover_proof` 100, `cover_close` 100, `resume_summary` 150 (Sonnet 5)
-- `MANIFEST.md`
+### Also
+- Ensure `MANIFEST.md` reflects final counts including regenerated MG
+- Update `QUALITY_REPORT.md` with MG regen note + length gate results
 
-Then hand off to Cursor for validate + length audit before any Kaggle run.
+Then hand off to Cursor for `validate_clean.py` + length audit before any Kaggle run.
