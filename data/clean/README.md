@@ -1,9 +1,9 @@
 # data/clean
 
-Claude/AWS generators write task JSONL here per the locked mix (2,380 rows).
+Task JSONL for the CareerOps-4B SFT corpus (~2,380 rows).
 
-Required before Cursor audit:
-- 16 task `*.jsonl` files at exact counts
+Expected contents:
+- 16 task `*.jsonl` files at the locked mix counts
 - `MANIFEST.md`, `PERSONAS.md`, `QUALITY_REPORT.md`
 - `_rejected/` for quarantined fails (not merged into train)
 

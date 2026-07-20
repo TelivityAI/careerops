@@ -13,7 +13,7 @@ dusan.milicevic
 # --- Contact / profiles (extend if more known) ---
 # Add real email, phone, LinkedIn slug when known; keep out of train forever.
 
-# --- Contaminated corpus markers ---
+# --- Prior rejected-corpus markers ---
 personal_board.tsv
 career-ops-private
 

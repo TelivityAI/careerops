@@ -1,27 +1,25 @@
-# Merge + GGUF (private)
+# Merge + GGUF
 
 ## Merge
 
-Private Kaggle kernel: `dusanmilicevic/careerops-4b-private-merge`  
-Uploads merged full weights to private HF **`telivity/CareerOps-4B-merged`** (assert `private=True` before upload).
+Kaggle kernel: `dusanmilicevic/careerops-4b-private-merge`  
+Uploads merged full weights to **`telivity/CareerOps-4B-merged`**.
 
 Local merge also available:
 
 ```bash
-export HF_TOKEN=$(cat ~/.hf_token)
+export HF_TOKEN=…   # from env; never commit tokens
 python scripts/merge_lora_gguf.py --out /tmp/CareerOps-4B-merged
 ```
 
-Local disk was ~27 GiB free at last check — prefer Kaggle for the merge.
+Prefer Kaggle when local disk is tight (merged weights are large).
 
 ## GGUF
 
-Not automated yet: no `llama.cpp` / `convert_hf_to_gguf.py` on this machine, and Gemma 4 E2B needs a build that supports that architecture.
+Not automated yet: needs a `llama.cpp` build that supports Gemma 4 E2B.
 
 After merge lands on `telivity/CareerOps-4B-merged`:
 
 1. Use a Gemma4-capable llama.cpp
 2. Convert HF → GGUF (Q4_K_M preferred for LocalLLaMA size)
-3. Upload GGUF to a **private** HF repo until public approval
-
-Do **not** flip any repo public without explicit user approval.
+3. Upload GGUF as **`GGUF-CareerOps-Q4_K_M.gguf`** to **`telivity/CareerOps-4B-GGUF`**

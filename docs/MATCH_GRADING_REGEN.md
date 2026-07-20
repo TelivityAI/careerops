@@ -80,18 +80,18 @@ Same as other clean rows:
 }
 ```
 
-Set `approx_tokens` to your estimate for Cursor audit.
+Set `approx_tokens` to your estimate for the token-length preflight.
 
 ## Done when
 
 1. 180 rows, all ≤700 tok estimate (`chars/3.5` during gen is fine)
 2. Spot-check 20: grounding holds (assistant ⊆ user pack)
 3. Update `QUALITY_REPORT.md` + `MANIFEST.md` noting MG regen (covers + `resume_summary` already delivered — do not touch)
-4. Tell Cursor: ready for independent validate + **Gemma tokenizer length audit**
+4. Run independent validate + **Gemma tokenizer length audit** (`scripts/preflight_corpus.sh`)
 
-## Cursor audit (mandatory — gen estimate is not enough)
+## Token-length audit (mandatory — gen estimate is not enough)
 
-`approx_tokens` from `chars/3.5` can undercount JSON-heavy text (~3.2). Cursor must re-measure every MG row with the **actual Gemma tokenizer** (chat template + system if used at train). Fail any row whose true tokenized length would truncate under `max_length=768`. Do not accept median-only; check **max**.
+`approx_tokens` from `chars/3.5` can undercount JSON-heavy text (~3.2). Re-measure every MG row with the **actual Gemma tokenizer** (chat template + system if used at train). Fail any row whose true tokenized length would truncate under `max_length=768`. Do not accept median-only; check **max**.
 
 ## Forbidden
 

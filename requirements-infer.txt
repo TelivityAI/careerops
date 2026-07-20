@@ -1,0 +1,10 @@
+# Local inference / demo for CareerOps-4B (transformers + PEFT).
+# Pin loosely; Gemma 4 needs a recent transformers.
+torch>=2.2
+transformers>=4.51
+peft>=0.14
+accelerate>=1.2
+bitsandbytes>=0.45
+sentencepiece
+protobuf
+huggingface_hub>=0.24

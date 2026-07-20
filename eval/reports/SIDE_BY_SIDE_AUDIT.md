@@ -38,20 +38,20 @@ Rubric: **PASS** = learned the task (format + substance near gold); **PARTIAL** 
 
 ## What “learned the task” vs “sounds like the task”
 
-**Learned (ship these demos):**
+**Strong (demo-ready):**
 - Structured outputs: `jd_parsing`, `match_grading` JSON, `bullet_select` list shape, `skills_filter` JSON
 - Grounded short writing: bullet rewrite / cover proof — **metrics preserved**
 - Board ops voice: prioritisation, followups, board triage #18 — decisive, anti-waffle vs base
 
-**Sounds like / still broken:**
-- **Product UI (`app_operation`)** — 0/2. Will embarrass in a product-FAQ demo.
+**Weak / incomplete:**
+- **Product UI (`app_operation`)** — 0/2. Product-FAQ demos will look wrong.
 - **Hallucinated personal proof** in cover open/close (fake survey count / advisory sessions)
 - **Select ranking** not calibrated (format yes, order no)
 - **search_strategy** wrong problem framing
 
-## Publish recommendation (unchanged hard lock)
+## Claim scope
 
-Safe claim: *clean QLoRA board/ops + short grounded writing specialist; val loss honest; structured JSON tasks work.*  
-Unsafe claim: *knows CareerOps product UI* or *bullet ranking is calibrated*.
+Accurate: *QLoRA board/ops + short grounded writing specialist; val loss reported; structured JSON tasks work.*  
+Not supported: *knows CareerOps product UI* or *bullet ranking is calibrated*.
 
-Do **not** lead a launch with app_operation or search_strategy samples.
+Prefer demos from board/ops and grounded writing; avoid leading with `app_operation` or `search_strategy`.

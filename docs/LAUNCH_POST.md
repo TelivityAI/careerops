@@ -1,6 +1,6 @@
-# Launch post draft (do NOT publish until gates pass)
+# Launch post draft
 
-Status: **DRAFT ONLY** — wait for privacy probe + quality gate + public HF + public GitHub.
+Status: **DRAFT** — edit before publishing.
 
 ## Working title
 CareerOps-4B: a small open model that runs a job search board (not another résumé dump)
@@ -10,7 +10,7 @@ Most “career” models write long essays and invent experience. CareerOps-4B i
 
 ## Demo
 - Live app: https://careerops.telivity.app
-- Weights (when public): `telivity/CareerOps-4B` on Hugging Face
+- Weights: `telivity/CareerOps-4B` on Hugging Face
 - Repo: https://github.com/TelivityAI/careerops
 
 ## What it is good at
@@ -19,7 +19,7 @@ Most “career” models write long essays and invent experience. CareerOps-4B i
 - Decomposed writing: select → rewrite one → summary → skills → assemble
 
 ## What it is not
-- Not a one-shot full résumé/cover generator (that fails on ~2B)
+- Not a one-shot full résumé/cover generator
 - Not trained on a private person’s real job history for the public weights
 - Not a magic interview coach
 
@@ -35,9 +35,8 @@ Base: Gemma 4 E2B-it. QLoRA on T4×2. ~2.4k clean synthetic/public rows. Long wr
 LocalLLaMA first, then HN Show HN / short X thread. LinkedIn optional.
 
 ## Checklist before post
-- [ ] Contaminated adapter gone (done)
-- [ ] Corpus privacy + length audit green
+- [ ] Corpus privacy + length audit complete
 - [ ] Val loss + side-by-sides saved in repo
 - [ ] Privacy probe empty
-- [ ] HF public + GitHub public
+- [ ] HF + GitHub visibility set as intended
 - [ ] README matches claims

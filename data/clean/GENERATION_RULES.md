@@ -125,6 +125,5 @@ Any NO → regenerate, up to 2 retries → then quarantine to `_rejected/` with 
 ## Never
 
 - Read the user's real data: `career-ops-private/assets/cv.md`, `pipeline.db`, `profile.yml`, `personal_board.tsv`, reports, CRM, or the live Supabase tables. This corpus must contain zero personal rows.
-- Reuse any row from the old contaminated training set.
+- Reuse any row from a prior rejected training set.
 - Ship a row that failed self-QA in order to hit a count.
-- Train, push to Hugging Face, or touch Kaggle.
