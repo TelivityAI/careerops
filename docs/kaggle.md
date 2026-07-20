@@ -28,3 +28,15 @@ Metadata: `kernel/kernel-metadata.json` (private, GPU + internet enabled).
 Metadata: `evalkernel/kernel-metadata.json` (also private, GPU + internet).
 
 Same rules apply: **T4×2**, secret **`HF_TOKEN`** attached after push, no secrets in git. Point dataset sources at the clean training-set dataset once uploaded; do not ship personal or rejected JSONL.
+
+## Launcher notebook
+
+Use [`kernel/train_launch.ipynb`](../kernel/train_launch.ipynb) — installs deps, asserts ≥2 GPUs, checks `HF_TOKEN`, then runs `torchrun --nproc_per_node=2 train_ddp.py`. Do not call `notebook_launcher` after CUDA init in the parent.
+
+## Local preflight (before Kaggle upload)
+
+```bash
+bash scripts/preflight_corpus.sh data/clean
+```
+
+Runs validate + ban grep + Gemma token length audit on `match_grading` + merge dry-run.
