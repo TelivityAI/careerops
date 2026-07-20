@@ -11,7 +11,8 @@ os.environ['HF_TOKEN'] = UserSecretsClient().get_secret('HF_TOKEN')
 
 BASE     = 'google/gemma-4-E2B-it'
 FALLBACK = 'google/gemma-3n-E2B-it'
-OUT_REPO = 'telivity/careerops-4b'
+# Contaminated telivity/careerops-4b was deleted. Clean future push name:
+OUT_REPO = 'telivity/CareerOps-4B'
 
 LOCAL_RANK = int(os.environ.get('LOCAL_RANK', 0))
 IS_MAIN    = LOCAL_RANK == 0
@@ -45,8 +46,9 @@ ds = ds.map(to_chat, remove_columns=[c for c in ds['train'].column_names if c !=
 # ---- 4-bit base model, one GPU per process ----
 from transformers import AutoTokenizer, AutoModelForCausalLM, AutoConfig, BitsAndBytesConfig
 
+# Proven clean numerics: float32 compute + fp16=False (fp16 compute/AMP was a failure mode).
 bnb = BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_quant_type='nf4',
-                         bnb_4bit_compute_dtype=torch.float16, bnb_4bit_use_double_quant=True)
+                         bnb_4bit_compute_dtype=torch.float32, bnb_4bit_use_double_quant=True)
 
 def load(model_id):
     tok = AutoTokenizer.from_pretrained(model_id, token=os.environ['HF_TOKEN'])
@@ -151,10 +153,10 @@ cfg = SFTConfig(
     logging_steps=1,      # heartbeat: one line per optimizer step
     eval_strategy='no',
     save_strategy='no',
-    fp16=True,           # AMP + GradScaler (needed: fp16 backward overflows without loss scaling)
+    fp16=False,          # locked clean path with bnb float32 compute (AMP/fp16 was a failure mode)
     bf16=False,
     max_grad_norm=0.3,
-    max_length=768,
+    max_length=384,      # raise to 512 if board prompts truncate
     gradient_checkpointing=True,
     gradient_checkpointing_kwargs={'use_reentrant': False},   # required for DDP
     optim='adamw_torch_fused',
@@ -174,7 +176,8 @@ if IS_MAIN:
 _api = HfApi()
 _t0 = time.time()
 
-MILESTONES = {5, 50, 100, 150, 200, 300, 400, 500, 600}
+# Trimmed for ~298-step clean run (was denser for the long contaminated run).
+MILESTONES = {5, 50, 100, 150, 200, 250, 298}
 
 class PushProgress(TrainerCallback):
     def __init__(self):

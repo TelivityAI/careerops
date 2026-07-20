@@ -19,16 +19,16 @@ EXPECTED = {
     "cover_proof": (100, "sonnet-5"),
     "cover_close": (100, "sonnet-5"),
     "resume_analysis": (200, "sonnet-5"),
-    "board_triage": (200, "fable-5"),
-    "prioritisation": (200, "fable-5"),
-    "match_grading": (180, "fable-5"),
+    "board_triage": (200, "opus-4.8"),
+    "prioritisation": (200, "opus-4.8"),
+    "match_grading": (180, "opus-4.8"),
     "resume_summary": (150, "sonnet-5"),
     "jd_parsing": (130, "sonnet-5"),
     "bullet_select": (120, "sonnet-5"),
-    "search_strategy": (110, "fable-5"),
+    "search_strategy": (110, "opus-4.8"),
     "app_operation": (110, "sonnet-5"),
-    "stage_moves": (100, "fable-5"),
-    "followups": (100, "fable-5"),
+    "stage_moves": (100, "opus-4.8"),
+    "followups": (100, "opus-4.8"),
     "skills_filter": (80, "sonnet-5"),
 }
 
@@ -47,10 +47,14 @@ JSON_TASKS = {"bullet_select", "skills_filter", "jd_parsing"}
 def load_ban_list(path: Path) -> list[str]:
     pats: list[str] = []
     for line in path.read_text(encoding="utf-8").splitlines():
-        s = line.strip()
+        # Keep trailing spaces: patterns like "variant " are deliberately
+        # space-terminated so they match the template artifact "variant 3"
+        # without matching ordinary words such as "variants".
+        raw = line.rstrip("\r\n")
+        s = raw.strip()
         if not s or s.startswith("#"):
             continue
-        pats.append(s)
+        pats.append(raw)
     return pats
 
 

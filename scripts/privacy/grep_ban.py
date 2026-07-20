@@ -15,9 +15,13 @@ def main() -> int:
 
     bans = []
     for line in args.ban_list.read_text(encoding="utf-8").splitlines():
-        s = line.strip()
+        # Keep trailing spaces: patterns like "variant " are deliberately
+        # space-terminated so they match the template artifact "variant 3"
+        # without matching ordinary words such as "variants".
+        raw = line.rstrip("\r\n")
+        s = raw.strip()
         if s and not s.startswith("#"):
-            bans.append(s)
+            bans.append(raw)
 
     hits = 0
     for path in sorted(args.dir.glob("*.jsonl")):
