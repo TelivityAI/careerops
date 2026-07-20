@@ -1,5 +1,7 @@
 # Secrets — never commit
 .hf_token
+hf_token
+**/hf_token
 *.key
 .anthropic_key
 .gemini_key

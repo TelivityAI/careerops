@@ -12,14 +12,31 @@ without a second 10.2 GB load, so the comparison is apples-to-apples.
 import os, glob, json, math, time, torch
 
 os.environ['PYTORCH_ALLOC_CONF'] = 'expandable_segments:True'
-# Token comes from Kaggle Secrets (Add-ons -> Secrets -> HF_TOKEN).
-# Never hardcode it: notebook JSON is easy to leak and the string cannot be un-shared.
-from kaggle_secrets import UserSecretsClient
-os.environ['HF_TOKEN'] = UserSecretsClient().get_secret('HF_TOKEN')
+# Same resolution as train_ddp: env → Kaggle secret → private /kaggle/input/**/hf_token
+def _load_hf_token():
+    env = os.environ.get('HF_TOKEN') or os.environ.get('HUGGING_FACE_HUB_TOKEN')
+    if env and len(env) > 10:
+        return env.strip()
+    try:
+        from kaggle_secrets import UserSecretsClient
+        t = UserSecretsClient().get_secret('HF_TOKEN')
+        if t and len(t) > 10:
+            return t.strip()
+    except Exception:
+        pass
+    for p in sorted(glob.glob('/kaggle/input/**/hf_token', recursive=True)):
+        if os.path.isfile(p) and os.path.getsize(p) > 10:
+            with open(p, 'r', encoding='utf-8') as f:
+                t = f.read().strip()
+            if t and len(t) > 10:
+                return t
+    raise RuntimeError('HF_TOKEN missing (env / Kaggle secret / private hf_token file)')
+
+os.environ['HF_TOKEN'] = _load_hf_token()
 
 BASE     = 'google/gemma-4-E2B-it'
-ADAPTER  = 'telivity/careerops-4b'
-OUT_REPO = 'telivity/careerops-4b'
+ADAPTER  = 'telivity/CareerOps-4B'
+OUT_REPO = 'telivity/CareerOps-4B'
 N_SIDE   = 20          # side-by-side examples
 MAX_NEW  = 512
 
@@ -149,7 +166,7 @@ md = ['# CareerOps-4B — quality gate', '',
       '',
       f'Change: {((base_loss-tuned_loss)/base_loss*100):+.1f}% loss vs base.',
       '',
-      'Train loss over the run was 1.205. Val close to that = generalisation; val far above = memorisation.',
+      'Compare val loss to final train loss in progress.json — close = generalisation; far above = memorisation.',
       '', '## 2. Side-by-side generations', '']
 
 for i, ex in enumerate(picks):
@@ -170,7 +187,8 @@ for i, ex in enumerate(picks):
 report = '\n'.join(md)
 open('/kaggle/working/eval_report.md', 'w').write(report)
 json.dump({'base_val_loss': base_loss, 'tuned_val_loss': tuned_loss,
-           'train_loss': 1.205, 'answer_tokens': ntok, 'n_side_by_side': len(picks)},
+           'answer_tokens': ntok, 'n_side_by_side': len(picks),
+           'adapter': ADAPTER, 'base': BASE},
           open('/kaggle/working/eval_summary.json', 'w'), indent=1)
 print('\n' + '=' * 60)
 print(f'BASE  {base_loss:.4f}   TUNED {tuned_loss:.4f}   ({((base_loss-tuned_loss)/base_loss*100):+.1f}%)')

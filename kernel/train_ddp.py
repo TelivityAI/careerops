@@ -4,10 +4,30 @@ import os, glob, json as _json, time, torch
 from collections import Counter
 
 os.environ['PYTORCH_ALLOC_CONF'] = 'expandable_segments:True'
-# Token comes from Kaggle Secrets (Add-ons -> Secrets -> HF_TOKEN).
-# Never hardcode it: notebook JSON is easy to leak and the string cannot be un-shared.
-from kaggle_secrets import UserSecretsClient
-os.environ['HF_TOKEN'] = UserSecretsClient().get_secret('HF_TOKEN')
+# HF token resolution (never hardcode; never commit):
+# 1) env already set
+# 2) Kaggle Secrets label HF_TOKEN (UI attach; wiped by kernels push)
+# 3) private dataset file /kaggle/input/**/hf_token
+def _load_hf_token():
+    env = os.environ.get('HF_TOKEN') or os.environ.get('HUGGING_FACE_HUB_TOKEN')
+    if env and len(env) > 10:
+        return env.strip()
+    try:
+        from kaggle_secrets import UserSecretsClient
+        t = UserSecretsClient().get_secret('HF_TOKEN')
+        if t and len(t) > 10:
+            return t.strip()
+    except Exception:
+        pass
+    for p in sorted(glob.glob('/kaggle/input/**/hf_token', recursive=True)):
+        if os.path.isfile(p) and os.path.getsize(p) > 10:
+            with open(p, 'r', encoding='utf-8') as f:
+                t = f.read().strip()
+            if t and len(t) > 10:
+                return t
+    raise RuntimeError('HF_TOKEN missing (env / Kaggle secret / private hf_token file)')
+
+os.environ['HF_TOKEN'] = _load_hf_token()
 
 BASE     = 'google/gemma-4-E2B-it'
 FALLBACK = 'google/gemma-3n-E2B-it'
@@ -128,17 +148,9 @@ if IS_MAIN:
     model.print_trainable_parameters()
 
 
-# Gemma 4 hardcodes bf16 casts in forward; grads arrive bf16 even when weights are fp16/fp32.
-# fp16 GradScaler cannot unscale bf16 — cast at hook time (before clip_grad_norm / unscale).
-def _cast_bf16_grad(grad):
-    return grad.float() if grad is not None and grad.dtype == torch.bfloat16 else grad
-
-_n_hooks = 0
-for _p in model.parameters():
-    if _p.requires_grad:
-        _p.register_hook(_cast_bf16_grad)
-        _n_hooks += 1
-log(f'bf16-grad cast hooks on {_n_hooks} trainable params')
+# No bf16→fp32 grad hooks: with fp16=False there is no GradScaler, and modern PyTorch
+# rejects hooks that change grad dtype ("was CUDABFloat16Type got FloatTensor").
+# Proven clean path is bnb float32 compute + fp16=False + LoRA weights in fp32.
 
 
 cfg = SFTConfig(
