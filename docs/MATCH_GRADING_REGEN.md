@@ -8,19 +8,21 @@ Train ceiling is **`max_length=768`** again. Every `match_grading` row must fit 
 
 Naive trim of JD to “requirements only” **failed**: broke grounding on **77/180** (assistant cites About-the-role facts). Do **not** do that.
 
-## Locked approach: compact grounded pack (not chunk-split)
+## Locked approach: derive compact packs from existing 180 (not re-judge)
 
-**Do not** split one long chat into 768-token slices with the same JSON label.
+**Do not** split one long chat into 768-token slices with the same JSON label.  
+**Do not** naive-trim JD to requirements-only (broke grounding on 77/180).  
+**Do not** throw away validated scores and regenerate judgment from scratch unless a row fails grounding after compress.
 
-**Do** rewrite each row so the **user** message contains only:
+**Approved method (Claude Session):** derive each new row from the existing long row:
 
-1. Short instruction
-2. Compact candidate profile (skills / titles / years — not a novel résumé dump)
-3. **JD fact pack** — only facts needed to justify the grade (must include every fact the assistant will cite)
-
-Assistant stays the same shape: score JSON + short why / strengths / gaps — **every claim grounded in the user fact pack**.
+1. Keep **score + judgment identical** (score↔gap calibration already verified).
+2. Rebuild the **user** message as a compact fact pack (role + needs + candidate facts), stripped of narrative prose.
+3. Build the pack **backwards from facts the assistant already cites** so every cited token appears verbatim in the pack — grounding becomes mechanically checkable.
+4. Length gate before write: prefer ≤550, hard ≤700 (`chars/3.5` estimate OK during gen).
 
 Optional later (not required now): separate `jd_compress` task. For this regen, bake the compressed JD into the `match_grading` user message.
+
 
 ## Counts / model
 
@@ -82,10 +84,14 @@ Set `approx_tokens` to your estimate for Cursor audit.
 
 ## Done when
 
-1. 180 rows, all ≤700 tok estimate
-2. Spot-check 20: grounding holds
+1. 180 rows, all ≤700 tok estimate (`chars/3.5` during gen is fine)
+2. Spot-check 20: grounding holds (assistant ⊆ user pack)
 3. Update `QUALITY_REPORT.md` + `MANIFEST.md` noting MG regen (covers + `resume_summary` already delivered — do not touch)
-4. Tell Cursor: ready for `validate_clean.py` + length gate
+4. Tell Cursor: ready for independent validate + **Gemma tokenizer length audit**
+
+## Cursor audit (mandatory — gen estimate is not enough)
+
+`approx_tokens` from `chars/3.5` can undercount JSON-heavy text (~3.2). Cursor must re-measure every MG row with the **actual Gemma tokenizer** (chat template + system if used at train). Fail any row whose true tokenized length would truncate under `max_length=768`. Do not accept median-only; check **max**.
 
 ## Forbidden
 
