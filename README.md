@@ -38,7 +38,7 @@ Private home for the CareerOps clean SFT corpus, train kernels, eval, and launch
 ## Training notes (Kaggle)
 
 - Force **T4×2**, not P100. Use **`torchrun`**, not `notebook_launcher`.
-- Clean numerics: `bnb_4bit_compute_dtype=float32`, `fp16=False`, `max_length=2048` (`match_grading` rows ~1800 tokens; do not use 384/768 — truncates assistant JSON).
+- Clean numerics: `bnb_4bit_compute_dtype=float32`, `fp16=False`, `max_length=768` (E2B + T4×2). Long `match_grading` must be regenerated per `docs/MATCH_GRADING_REGEN.md` — do **not** raise to 2048 to paper over length.
 - Contaminated `telivity/careerops-4b` was deleted; clean publish name is **`telivity/CareerOps-4B`**.
 
 ## LocalLLaMA-safe claims
