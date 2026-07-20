@@ -2,7 +2,7 @@
 
 Base: `google/gemma-4-E2B-it` · Adapter: `telivity/CareerOps-4B`
 
-## 1. Held-out loss (164 rows, answer tokens only)
+## 1. Held-out loss (70 clean val rows, answer tokens only)
 
 | model | val loss | perplexity |
 |---|---|---|
