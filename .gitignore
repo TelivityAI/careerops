@@ -1,0 +1,50 @@
+# Secrets — never commit
+.hf_token
+*.key
+.anthropic_key
+.gemini_key
+.kimi_key
+.env
+.env.*
+!.env.example
+**/secrets/**
+kaggle.json
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# OS / editors
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# Training artifacts (large / local only)
+*.bin
+*.safetensors
+*.gguf
+*.pt
+*.pth
+*.ckpt
+wandb/
+runs/
+outputs/
+checkpoints/
+adapter_*/
+merged/
+
+# Rejected gen rows — keep out of train merges; optional to track empty dir
+# data/clean/_rejected/ contents may be large; ignore generated rejects
+data/clean/_rejected/**
+!data/clean/_rejected/.gitkeep
+
+# Local HF / Kaggle caches
+.cache/
+huggingface/

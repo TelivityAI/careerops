@@ -1,0 +1,16 @@
+{
+ "id": "dusanmilicevic/careerops-4b-eval",
+ "title": "CareerOps-4B eval",
+ "code_file": "careerops-eval.ipynb",
+ "language": "python",
+ "kernel_type": "notebook",
+ "is_private": true,
+ "enable_gpu": true,
+ "enable_internet": true,
+ "dataset_sources": [
+  "dusanmilicevic/careerops-training-set"
+ ],
+ "competition_sources": [],
+ "kernel_sources": [],
+ "model_sources": []
+}
