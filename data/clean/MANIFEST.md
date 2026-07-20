@@ -47,7 +47,7 @@ answer are structural (`{"company": ...`), so a low score here is a metric artif
 duplication. `validate_clean.py` excludes JSON tasks from the distinct gate for this reason.
 All 130 `jd_parsing` answers and all 80 `skills_filter` answers are fully distinct.
 
-`app_operation` and `jd_parsing` carry `persona_id: null` by design — UI how-tos (corpus retained; not a claimed model capability — see `docs/NEXT_TRAIN.md`) and posting
+`app_operation` and `jd_parsing` carry `persona_id: null` by design — UI how-tos (corpus retained; not a claimed model capability — see local operator notes (untracked)) and posting
 parsing are not persona-scoped.
 
 **Tightest row in the corpus:** `match_grading` at 742/768, 26 tokens of headroom.

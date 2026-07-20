@@ -172,7 +172,7 @@ Requires a **Gemma 4–capable** llama.cpp build:
 ./llama-cli -m GGUF-CareerOps-Q4_K_M.gguf -p "…" -n 256
 ```
 
-Details: [`docs/MERGE_GGUF.md`](docs/MERGE_GGUF.md).
+Use [`scripts/merge_lora_gguf.py`](scripts/merge_lora_gguf.py) for merge/GGUF steps.
 
 ### Assembler only (no GPU)
 
@@ -240,7 +240,7 @@ Training targets **Kaggle GPU T4 × 2** with `torchrun` (not `notebook_launcher`
 | Grad checkpoint | `use_reentrant=False` |
 | Output | adapter → `telivity/CareerOps-4B` |
 
-Operator notes: [`docs/kaggle.md`](docs/kaggle.md).
+Train entrypoints: [`kernel/`](kernel/) (see root README train section above).
 
 ---
 
@@ -295,7 +295,7 @@ Demo board/ops, `jd_parsing` / `match_grading` JSON, and grounded `bullet_rewrit
 | `scripts/merge_lora_gguf.py` | Merge adapter → full weights |
 | `scripts/preflight_corpus.sh` | Validate + privacy + token-length audit |
 | `eval/reports/` | Val loss, side-by-sides, privacy results, audit |
-| `docs/` | Kaggle notes, merge/GGUF, regen specs |
+| `docs/` | Public stub only; operator notes are local/untracked |
 
 ---
 

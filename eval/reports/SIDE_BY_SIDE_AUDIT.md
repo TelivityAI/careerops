@@ -48,7 +48,7 @@ Rubric: **PASS** = learned the task (format + substance near gold); **PARTIAL** 
 - **Hallucinated personal proof** in cover open/close *at inference* (fake survey count / advisory sessions) — eval behavior; not the same as the five entity defects logged in `PROVENANCE_EDITS.md`
 - **Select ranking** not calibrated (format yes, order no)
 - **search_strategy** wrong problem framing
-- **`stage_moves`** soft on Closed (~10% Closed in corpus; target ~20–25% next train — see `docs/NEXT_TRAIN.md`)
+- **`stage_moves`** soft on Closed (~10% Closed in corpus; target ~20–25% next train — see local operator notes (untracked))
 
 ## Claim scope
 

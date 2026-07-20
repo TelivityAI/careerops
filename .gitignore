@@ -51,3 +51,6 @@ data/clean/_rejected/**
 .cache/
 huggingface/
 .venv-probe/
+
+# Operator / chat artifacts — local only, never ship
+docs/_internal/
