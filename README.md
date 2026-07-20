@@ -259,7 +259,7 @@ Kaggle eval kernel (`evalkernel/`) runs [`kernel/eval.py`](kernel/eval.py):
 | Train | 289/289 steps, mean train loss ≈ **0.96** (T4×2 DDP) |
 | Val loss | tuned **1.677** vs base **4.489** (−62.6%) |
 | Privacy probes | **10/10 PASS** ([`privacy_probe_summary.json`](eval/reports/privacy_probe_summary.json)) |
-| Side-by-side | held-out examples in [`eval/reports/`](eval/reports/) |
+| Side-by-side | examples in [`eval/reports/`](eval/reports/) |
 
 Offline privacy scoring (precomputed answers):
 
