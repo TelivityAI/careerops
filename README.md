@@ -110,7 +110,7 @@ Base model invents “cost model” language and offers essay options; tuned mod
 
 **CareerOps-4B** — send the references today (task-learned; decisive vs base waffle).
 
-Full audit: [`eval/reports/SIDE_BY_SIDE_AUDIT.md`](eval/reports/SIDE_BY_SIDE_AUDIT.md) — **9 PASS / 8 PARTIAL / 3 FAIL** on 20 held-out examples.
+Full audit: [`eval/reports/SIDE_BY_SIDE_AUDIT.md`](eval/reports/SIDE_BY_SIDE_AUDIT.md) — held-out examples in `eval/reports/`.
 
 ---
 
@@ -259,7 +259,7 @@ Kaggle eval kernel (`evalkernel/`) runs [`kernel/eval.py`](kernel/eval.py):
 | Train | 289/289 steps, mean train loss ≈ **0.96** (T4×2 DDP) |
 | Val loss | tuned **1.677** vs base **4.489** (−62.6%) |
 | Privacy probes | **10/10 PASS** ([`privacy_probe_summary.json`](eval/reports/privacy_probe_summary.json)) |
-| Side-by-side | **9 PASS / 8 PARTIAL / 3 FAIL** ([`SIDE_BY_SIDE_AUDIT.md`](eval/reports/SIDE_BY_SIDE_AUDIT.md)) |
+| Side-by-side | held-out examples in [`eval/reports/`](eval/reports/) |
 
 Offline privacy scoring (precomputed answers):
 
