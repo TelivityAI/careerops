@@ -118,7 +118,7 @@ Any NO → regenerate, up to 2 retries → then quarantine to `_rejected/` with 
 | `stage_moves` | 60 words | One role's state in, the legal next transition out, reason tied to the signal. |
 | `followups` | 80 words | Concrete follow-up: what to say and when. Never a bare "just checking in". |
 | `search_strategy` | 120 words | Named channels, example queries, filters to change. Unique per row. Zero stamp loops. |
-| `app_operation` | 100 words | Step-by-step how-to for the real CareerOps UI as described in PRODUCT.md. Never invent UI. |
+| `app_operation` | 100 words | Corpus-only UI how-tos from PRODUCT.md (never invent UI). **Not a sold model skill** — omit from next train merge; product UI help is docs/runtime. |
 
 ---
 

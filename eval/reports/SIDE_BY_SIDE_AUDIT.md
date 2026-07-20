@@ -44,14 +44,15 @@ Rubric: **PASS** = learned the task (format + substance near gold); **PARTIAL** 
 - Board ops voice: prioritisation, followups, board triage #18 — decisive, anti-waffle vs base
 
 **Weak / incomplete:**
-- **Product UI (`app_operation`)** — 0/2. Product-FAQ demos will look wrong.
-- **Hallucinated personal proof** in cover open/close (fake survey count / advisory sessions)
+- **`app_operation`** — 0/2. UI facts live in PRODUCT.md / the app, not in the prompt; model confabulates. Out of claimed model scope (UI help = docs/runtime).
+- **Hallucinated personal proof** in cover open/close *at inference* (fake survey count / advisory sessions) — eval behavior; not the same as the five entity defects logged in `PROVENANCE_EDITS.md`
 - **Select ranking** not calibrated (format yes, order no)
 - **search_strategy** wrong problem framing
+- **`stage_moves`** soft on Closed (~10% Closed in corpus; target ~20–25% next train — see `docs/NEXT_TRAIN.md`)
 
 ## Claim scope
 
-Accurate: *QLoRA board/ops + short grounded writing specialist; val loss reported; structured JSON tasks work.*  
-Not supported: *knows CareerOps product UI* or *bullet ranking is calibrated*.
+Accurate: *QLoRA board/ops + short grounded writing specialist; val loss reported; structured JSON tasks work; match_grading 40 ≈ ref 38.*  
+Out of scope for model claims: *product UI FAQ* (docs/runtime). Not calibrated: *bullet ranking*.
 
-Prefer demos from board/ops and grounded writing; avoid leading with `app_operation` or `search_strategy`.
+Demo extraction/JSON/grounded writing and board/ops. Do not demo `app_operation`.

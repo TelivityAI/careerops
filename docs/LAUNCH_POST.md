@@ -22,6 +22,7 @@ Most “career” models write long essays and invent experience. CareerOps-4B i
 - Not a one-shot full résumé/cover generator
 - Not trained on a private person’s real job history for the public weights
 - Not a magic interview coach
+- Product UI help is served from the app docs/runtime, not the weights
 
 ## Local path (3 steps)
 1. Pull GGUF / adapter from HF

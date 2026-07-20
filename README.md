@@ -35,7 +35,7 @@ This repository is the **training and evaluation home**: clean SFT corpus, Kaggl
 
 - A one-shot “write my whole tailored résumé / cover letter” generator — that is a **product pipeline** (model pieces + `scripts/assembler.py`), not a single gold completion
 - A memorizer of any real person’s private job history (training data is synthetic / public-safe)
-- A reliable product-UI FAQ model (`app_operation`) — use the live app for that
+- Product UI help — served from the app docs/runtime, not from the weights
 
 ---
 
@@ -272,8 +272,7 @@ python scripts/run_privacy_probe.py \
 
 ### Honest demo scope
 
-**Strong:** board/ops voice, `jd_parsing` / `match_grading` JSON, grounded `bullet_rewrite` / `cover_proof`, follow-ups / prioritisation.  
-**Weak:** `app_operation` (product UI), some `search_strategy` framing, cover open/close personal-proof hallucination, `bullet_select` ranking (format OK, order uneven).
+Demo board/ops, `jd_parsing` / `match_grading` JSON, and grounded `bullet_rewrite` / `cover_proof`. Prefer those over `search_strategy` framing or `bullet_select` ranking (format OK, order uneven).
 
 ---
 
@@ -309,7 +308,7 @@ python scripts/run_privacy_probe.py \
 | Board / ops | `board_triage`, `prioritisation`, `stage_moves`, `followups` |
 | Structured | `jd_parsing`, `match_grading`, `skills_filter`, `bullet_select` |
 | Writing | `bullet_rewrite`, `resume_summary`, `cover_{open,proof,close}` |
-| Other | `resume_analysis`, `search_strategy`, `app_operation` |
+| Analysis | `resume_analysis`, `search_strategy` |
 
 Details: [`data/clean/MANIFEST.md`](data/clean/MANIFEST.md), [`data/clean/PRODUCT.md`](data/clean/PRODUCT.md).
 
