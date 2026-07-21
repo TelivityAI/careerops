@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """Merge accepted task JSONL into train/val splits for CareerOps SFT.
 
-Reads all ``*.jsonl`` under ``data/clean/`` (skips ``_rejected/``), strips each
-row to ``task`` + ``messages``, excludes rows that fail quality gates when
-metadata is present, then writes a stratified ~3% validation split by task.
+Reads all accepted ``*.jsonl`` under ``data/clean/`` (skips ``_rejected/``),
+strips each row to ``task`` + ``messages``, excludes rows that fail quality
+gates when metadata is present, then writes a stratified ~3% validation split
+by task.
 
 Do **not** run this until the corpus is complete (all 16 task files + MANIFEST).
 Use ``--dry-run`` to count only.
@@ -22,7 +23,8 @@ import sys
 from collections import defaultdict
 from pathlib import Path
 
-# Must match validate_clean.EXPECTED keys (16 tasks).
+# Training merge task list. `app_operation` stays on disk for operator reference
+# but is intentionally excluded from the next train.
 REQUIRED_TASKS = frozenset(
     {
         "bullet_rewrite",
@@ -37,7 +39,6 @@ REQUIRED_TASKS = frozenset(
         "jd_parsing",
         "bullet_select",
         "search_strategy",
-        "app_operation",
         "stage_moves",
         "followups",
         "skills_filter",
@@ -46,7 +47,7 @@ REQUIRED_TASKS = frozenset(
 
 
 def corpus_complete(clean_dir: Path) -> tuple[bool, list[str]]:
-    """Return (ok, missing) for the 16 task JSONL files (+ optional MANIFEST hint)."""
+    """Return (ok, missing) for the train-eligible task JSONL files."""
     missing = [t for t in sorted(REQUIRED_TASKS) if not (clean_dir / f"{t}.jsonl").exists()]
     return (not missing, missing)
 
@@ -160,7 +161,7 @@ def main() -> int:
     ap.add_argument(
         "--allow-incomplete",
         action="store_true",
-        help="Merge even if some of the 16 task files are missing (not recommended)",
+        help="Merge even if some required task files are missing (not recommended)",
     )
     args = ap.parse_args()
 

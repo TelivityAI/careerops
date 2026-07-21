@@ -2,25 +2,32 @@
 
 Base: `google/gemma-4-E2B-it` · Adapter: `telivity/CareerOps-4B`
 
-## 1. Held-out loss (70 clean val rows, answer tokens only)
+## 1. Held-out loss (70 rows, answer tokens only)
 
 | model | val loss | perplexity |
 |---|---|---|
-| base Gemma 4 E2B | 4.4886 | 89.0 |
-| **CareerOps-4B** | **1.6773** | **5.4** |
+| base Gemma 4 E2B | 4.3297 | 75.9 |
+| **CareerOps-4B** | **1.5827** | **4.9** |
 
-Change: +62.6% loss vs base.
+Change: +63.4% loss vs base.
 
 Compare val loss to final train loss in progress.json — close = generalisation; far above = memorisation.
 
 ## 2. Side-by-side generations
 
-### 1. `app_operation`
+### 1. `board_triage`
 
 <details><summary>prompt</summary>
 
 ```
-Does editing the job description text save automatically, or do I need to click something?
+Board:
+Northmarch Consumer Brands — Category Manager, Marketplace — interview — A- — 85% — 6 days — low — yes
+Halvard & Pike — Senior Manager, Digital Merchandising — conversation — A — 89% — 4 days — low — no
+Wickham Row — Director of E-commerce Operations — applied — B+ — 78% — 21 days — medium — yes
+Bramble and Rye Hospitality Group — Operations Analytics Analyst — sourced — C — 51% — 28 days — high — no
+Bellrose Outfitters — Retail Operations Analyst — sourced — C — 47% — 35 days — high — no
+
+Which three today?
 ```
 
 </details>
@@ -28,55 +35,54 @@ Does editing the job description text save automatically, or do I need to click 
 **CareerOps-4B:**
 
 ```
-It runs automatically. The text box at the top of the job posting card is the one you edit, and the "Save text" button appears when you've made a change. It saves the text to the posting without changing the job itself.
+Northmarch Consumer Brands — interview, A-, 85%, six days, low risk.
+Halvard & Pike — conversation, A, 89%, four days, low risk.
+Wickham Row — applied, B+, 78%, 21 days, medium risk.
+Bramble and Rye Hospitality Group — C, 51%, 28 days, high risk.
+Bellrose Outfitters — C, 47%, 35 days, high risk.
 ```
 
 **Base Gemma 4 E2B:**
 
 ```
-As the CareerOps assistant, I don't have a direct interface to perform actions within a job board or application system.
+Based on your board, here are the three roles I recommend focusing on today, prioritized by potential fit and actionability:
 
-**To clarify what you mean, could you tell me:**
+1. **Northmarch Consumer Brands — Category Manager, Marketplace:**
+    * **Why:** This is your highest-rated interview (A- at 85%). The high fit score (85%) suggests a strong alignment.
+    * **Action:** Focus on preparing for the interview.
 
-1. **What specific action are you referring to?** (e.g., editing a draft cover letter, updating a profile, modifying a job description you are reviewing?)
-2. **Where are you performing this action?** (e.g., in a document, on a specific platform?)
+2. **Wickham Row — Director of E-commerce Operations:**
+    * **Why:** This role is at a "medium" fit level, but you have a clear path forward ("yes"). The time commitment (21 days) suggests it's a solid, long-term target.
+    * **Action:** Determine the next concrete step you need to take to move this forward.
 
-**Generally, in our process:**
+3. **Bramble and Rye Hospitality Group — Operations Analytics Analyst:**
+    * **Why:** This role has a "high" fit score (51%) and is the most time-intensive (28 days). This suggests a good potential match, but the lower score means it requires more targeted preparation.
+    * **Action:** Dedicate time to researching the specific operational analytics skills required for this role and tailor your experience to highlight those areas.
 
-* **I provide the content (drafts, analysis, strategy).**
-* **You are responsible for the final action (copying, pasting, submitting) based on my recommendations.**
+**Summary of Today's Focus:**
 
-If you are referring to a document I have generated for you, you will need to **copy the text** and paste it into your application system.
-
-Let me know what you are working on, and I can tell you exactly what step you need to take!
+* **Priority 1 (Immediate Action):** Prepare for the Northmarch interview.
+* **Priority 2 (Strategic Development):** Define the next step for the Wickham Row application.
+* **Priority 3 (Skill Building):** Research and map your experience to the requirements of the Bramble and Rye role.
 ```
 
 **Reference (what the training data says):**
 
 ```
-It autosaves — there's no save button for the JD box. Stop typing for about 800 milliseconds and CareerOps writes the text to the card; the hint then reads "· saved to the card ✓." That applies whether the JD arrived by auto-load, was pasted with no link, or is being edited afterward.
+Halvard & Pike, first thing. It's your best fit at A/89%, only four days into the conversation, and there are no tailored docs — a merchandising lead will ask for something in writing and you have nothing.
+Northmarch next: six days after the interview, A-/85%. A specific follow-up, referencing what they pushed on.
+Wickham Row third — 21 days applied, medium ghost risk, docs already sent. One direct note, then leave it.
+The two C-grade analyst roles have gone a month untouched at high risk. They're not coming back.
 ```
 
 ---
 
-### 2. `board_triage`
+### 2. `bullet_rewrite`
 
 <details><summary>prompt</summary>
 
 ```
-Nothing has moved in three weeks and I've stopped looking at it.
-
-role: Director, Ambulatory Operations - Marrow Ridge Health
-stage: applied / fit A- / match 85% / 29 days / ghost high / docs yes
-
-role: Operations Manager, Home Infusion - Wexley Care Partners
-stage: conversation / fit B+ / match 76% / 23 days / ghost medium / docs yes
-
-role: Clinical Informatics Analyst - Verity Ridge Health Network
-stage: researched / fit B / match 67% / 34 days / ghost low / docs no
-
-role: Associate Medical Writer - Osterby Clinical Communications
-stage: sourced / fit C / match 40% / 41 days / ghost medium / docs no
+I'm tailoring my resume for the VP of Operations opening at Ironbark Fulfillment. The posting wants experience with a peak season that more than doubles volume. Here's my bullet: "Kept every DC operating through a 6-week port disruption by pre-positioning inventory on a 90-day forward view." Sharpen it for this JD.
 ```
 
 </details>
@@ -84,70 +90,64 @@ stage: sourced / fit C / match 40% / 41 days / ghost medium / docs no
 **CareerOps-4B:**
 
 ```
-Three weeks at applied with a high ghost risk is the signal, not the silence.
-Marrow Ridge Health is the only role here that has gone quiet, so stop waiting for it to reply and stop waiting for anything.
-Wexley Care Partners is the only live thread: 23 days into a conversation with medium risk. Send a note this week, not a follow-up.
-Verity Ridge Health Network is 34 days researched at B/67% with no docs — that's a real decision point, not a ghost risk.
-Osterby Clinical Communications at 41 days at C/40% is a dead thread. Close it.
-Nothing is moving because nothing is being done. Pick one, write the note, and then decide what to do with the rest.
+Kept every DC operating through a 6-week port disruption by pre-positioning inventory on a 90-day forward view — peak-season readiness this VP role is hiring to scale.
 ```
 
 **Base Gemma 4 E2B:**
 
 ```
-Here is your CareerOps overview and action plan.
+Here are a few options for sharpening your bullet point, tailored to emphasize experience with handling peak volume and operational resilience, as requested by the VP of Operations role at Ironbark Fulfillment.
 
-## CareerOps Overview
+**Option 1 (Focus on Scalability & Volume):**
 
-**Current Status Summary:**
+> "Successfully managed operational capacity during peak demand, successfully scaling fulfillment operations to handle volumes exceeding 100% capacity through proactive, 90-day inventory pre-positioning strategies."
 
-You have four active roles, with varying levels of engagement and fit.
+**Option 2 (Focus on Risk Mitigation & Resilience):**
 
-*   **Director, Ambulatory Operations - Marrow Ridge Health:** High potential fit (85% match), but stalled (29 days) and currently "ghosting." This is your strongest potential target.
-*   **Operations Manager, Home Infusion - Wexley Care Partners:** Strong fit (76% match), currently in the "conversation" stage (23 days), which suggests active engagement is needed to move it forward.
-*   **Clinical Informatics Analyst - Verity Ridge Health Network:** Moderate fit (67% match), stalled (34 days), and "ghosting low."
-*   **Associate Medical Writer - Osterby Clinical Communications:** Lower fit (40% match), stalled (41 days), and "ghosting medium."
+> "Mitigated operational risk during high-volume periods by developing and executing forward-looking inventory strategies, ensuring continuous fulfillment capability even when volume doubled."
 
-**Key Takeaway:** You have a strong profile for operational/clinical leadership roles. The stagnation is likely due to a lack of targeted, high-impact follow-up or a mismatch in the application materials.
+**Option 3 (More Direct & Metric-Oriented - *If you can add a number*):**
 
-## How CareerOps Works
+> "Maintained 100% operational uptime during peak seasons, successfully managing inventory flow that doubled volume through strategic, 90-day forward-looking stocking."
 
-CareerOps functions as your dedicated, end-to-end job search partner. I manage the entire process for you:
+**Which one should you choose?**
 
-1.  **Role Grading & Strategy:** I assess your profile against job requirements to determine the *actual* fit, not just the stated match percentage.
-2.  **Material Tailoring:** I write highly specific, tailored résumés and cover letters using **only your real experience** to maximize relevance for each specific job.
-3.  **Board Management:** I keep all job applications, notes, feedback, and materials organized in a central board.
-4.  **Action Planning:** I decide precisely what you should work on *today* (e.g., "Revise the cover letter for Marrow Ridge Health focusing on X achievement").
-5.  **Chasing & Follow-up:** I manage all necessary follow-up communications to keep momentum going.
+*   **If the JD heavily emphasizes *scaling* and *capacity planning*, choose Option 1.**
+*   **If the JD emphasizes *handling disruption* and *ensuring continuity*, choose Option 2.**
+*   **If you want the strongest, most assertive statement, use Option 3 (and try to quantify the "doubling" if possible).**
 
-**My Goal:** To move you from "applied" to "interviewing" by ensuring every application is perfectly targeted and that you are consistently engaging with the right opportunities.
-
----
-
-## Today's Action Plan (What to Work On)
-
-Based on the data, we need to prioritize the highest-potential role to break the current stagnation.
-
-**🎯 Priority Focus: Director, Ambulatory Operations - Marrow
+**Next Step:** Please provide the full Job Description for the VP of Operations role so I can ensure the language aligns perfectly with their specific priorities.
 ```
 
 **Reference (what the training data says):**
 
 ```
-Wexley is the recoverable one. Twenty-three days in conversation, but only medium ghost risk and the docs are ready. Write to your contact today and apply rather than waiting for them to restart it.
-Marrow Ridge at 29 days applied and high ghost risk gets one closing note. If A- and 85% produced no reply in a month, it needs a person, not another portal check.
-Verity Ridge has sat in researched 34 days with no docs. Write them or drop it, because 67% doesn't survive half-effort.
-Osterby, C at 40% after 41 days: gone.
+Kept every distribution center operating through a 6-week port disruption by pre-positioning inventory on a 90-day forward view — the kind of resilience this role's more-than-double peak season also demands.
 ```
 
 ---
 
-### 3. `bullet_rewrite`
+### 3. `bullet_select`
 
 <details><summary>prompt</summary>
 
 ```
-Applying to Vermilion Trail Journeys for Operations Manager, Guided Travel. JD wants a per-passenger land cost built and defended line by line. My current bullet: "Cut per-passenger land cost 12% by renegotiating 31 supplier contracts and consolidating three ground handlers into one." Make it land better for this one.
+Here is my full bullet list, followed by a role I'm targeting. Return only a JSON array of the bullet IDs I should keep for this JD. Do not rank them.
+
+1. Modeled and recommended exit from 4 underperforming routes; the reallocated capacity returned 6 points of margin.
+2. Automated the monthly competitive capacity report, saving about 20 analyst hours a month.
+3. Plans schedules for 62 aircraft across 148 city pairs at a mid-size domestic carrier.
+4. Owns the slot filings for two constrained airports, with 100% on-time submission over 9 seasons.
+5. Improved aircraft utilization from 9.4 to 10.6 block hours a day.
+6. Cut schedule-change churn 27% by introducing a 90-day freeze window agreed with crew planning and maintenance.
+7. Produced the fleet-gauge study that supported a 12-aircraft order decision presented to the board.
+8. Rebuilt the summer schedule to add 3 daily rotations without additional aircraft, worth $11M in incremental annual revenue.
+9. Built the connection-bank optimizer in Python that cut average connect time at the primary hub by 14 minutes.
+10. Works the daily irregular-operations recovery desk during winter events, coordinating with crew scheduling and dispatch.
+
+Needs: 6-10 years in revenue management, network planning, or pricing. Role: own the demand forecast used for commercial planning.
+
+Which bullets should I highlight for this application, ranked from most to least relevant?
 ```
 
 </details>
@@ -155,63 +155,42 @@ Applying to Vermilion Trail Journeys for Operations Manager, Guided Travel. JD w
 **CareerOps-4B:**
 
 ```
-Cut per-passenger land cost 12% by renegotiating 31 supplier contracts and consolidating three ground handlers into one — the per-passenger cost-defense work this operations manager role is hiring to own.
+[1, 2, 4, 5, 6, 7, 8, 9]
 ```
 
 **Base Gemma 4 E2B:**
 
 ```
-Here is a revised bullet point tailored for the Operations Manager, Guided Travel role at Vermilion Trail Journeys, focusing on building and defending a per-passenger land cost line-by-line:
-
-**Option 1 (Focus on Cost Structure & Defense):**
-
-> "Developed and defended a detailed, line-by-line per-passenger land cost model, resulting in a 12% reduction in cost by renegotiating 31 supplier contracts and consolidating three ground handlers into one, ensuring cost predictability for future operations."
-
-**Option 2 (More Action-Oriented):**
-
-> "Established a transparent, line-by-line cost structure for per-passenger land services, achieving a 12% reduction through strategic renegotiation of 31 supplier contracts and streamlining ground handler operations to build a defensible, optimized cost baseline."
-
-**Why these work:**
-
-*   **Addresses the JD directly:** They use language like "line-by-line," "cost model," and "defend," which mirrors the requirement.
-*   **Shows Ownership:** It shifts the focus from just *doing* the cut to *building and defending* the structure.
-*   **Quantifies Impact:** It keeps the strong metric (12% reduction) while framing it within the required deliverable (the cost line).
-
-**Which one should you use?**
-
-*   Use **Option 1** if you want to emphasize the *process* of building the model.
-*   Use **Option 2** if you want to emphasize the *strategic outcome* and the *defensibility* of the cost.
-
-Let me know what you think, or if you'd like me to draft a few more variations!
+```json
+[
+  1,
+  2,
+  3,
+  5,
+  9,
+  8,
+  6,
+  7,
+  4,
+  10
+]
+```
 ```
 
 **Reference (what the training data says):**
 
 ```
-Cut per-passenger land cost 12% by renegotiating 31 supplier contracts and consolidating three ground handlers into one — land cost built and defended line by line, exactly what this operations manager role wants.
+[1, 2, 5, 7, 8, 9]
 ```
 
 ---
 
-### 4. `bullet_select`
+### 4. `cover_close`
 
 <details><summary>prompt</summary>
 
 ```
-Here are all of Yolanda Prieto's resume bullets, numbered:
-
-1. Built the department's first grants calendar and reporting tracker; on-time federal report submission went from 76% to 100%.
-2. Administers 46 active federal and state grants totaling $88M for a county health and human services department.
-3. Wrote or edited 19 grant applications last cycle with a 63% award rate, above the department's 41% historical rate.
-4. Serves as the department's point of contact for two federal project officers.
-5. Monitors 23 subrecipients including annual risk assessments and 9 on-site reviews a year.
-6. Trained 40 program staff on Uniform Guidance allowability rules.
-7. Closed out 14 expired awards with full drawdown and no returned funds.
-8. Cut average subrecipient invoice turnaround from 34 days to 12.
-9. Recovered $2.3M in previously unbilled reimbursable costs by rebuilding the indirect-cost allocation schedule.
-10. Reduced the single-audit finding count from 7 to 0 across two consecutive audit years.
-
-They're applying to a Contracts and Procurement Manager opening at Kingsford County, Washington. The job leads a newly centralized procurement division covering about $180M a year in spend, manages complex solicitations, supervises four buyers and a contracts specialist, and prepares contract award items for the Board of Commissioners. Which bullets carry the most weight for this specific opening, in priority order?
+Write a different closing for Anneke Ruzicka's cover letter to Brightloom Foods, this time asking to discuss which shifts still need tier boards and daily management set up. No new claims, 1-2 sentences.
 ```
 
 </details>
@@ -219,55 +198,29 @@ They're applying to a Contracts and Procurement Manager opening at Kingsford Cou
 **CareerOps-4B:**
 
 ```
-[1, 2, 3, 10, 8]
+Which shifts still need tier boards and daily management set up is the question I'd like to discuss.
 ```
 
 **Base Gemma 4 E2B:**
 
 ```
-Here is the prioritization of Yolanda Prieto's resume bullets for the **Contracts and Procurement Manager** role at Kingsford County, Washington, based on the job description:
-
-### Priority Order:
-
-**1. (2) Administers 46 active federal and state grants totaling $88M for a county health and human services department.**
-* **Why:** This demonstrates the ability to manage a large, complex portfolio of financial/contractual obligations (analogous to managing $180M in spend). It shows high-level fiduciary responsibility and scope management.
-
-**2. (3) Wrote or edited 19 grant applications last cycle with a 63% award rate, above the department's 41% historical rate.**
-* **Why:** This directly speaks to the core function of procurement/contracts: writing, managing, and successfully securing contracts/awards. The quantifiable success rate is highly valuable.
-
-**3. (1) Built the department's first grants calendar and reporting tracker; on-time federal report submission went from 76% to 100%.**
-* **Why:** This shows the ability to establish and implement new systems (process improvement) necessary for a "newly centralized procurement division." It proves capability in creating the necessary infrastructure.
-
-**4. (8) Cut average subrecipient invoice turnaround from 34 days to 12.**
-* **Why:** This demonstrates efficiency and process improvement, which is crucial for managing a procurement division and ensuring timely contract execution.
-
-**5. (9) Recovered $2.3M in previously unbilled reimbursable costs by rebuilding the indirect-cost allocation schedule.**
-* **Why:** This shows financial acumen and the ability to manage complex financial/contractual reconciliation, which is often a component of procurement oversight.
-
-**6. (6) Trained 40 program staff on Uniform Guidance allowability rules.**
-* **Why:** This demonstrates the ability to train and establish compliance standards, which is necessary when setting up new procurement policies.
-
-**7. (5) Monitors 23 subrecipients including annual risk assessments and 9 on-site reviews a year.**
-* **Why:** This shows oversight and risk management capabilities, relevant for supervising buyers and managing contract performance.
-
-**8. (10) Reduced the single-audit finding count from 7 to 0 across two consecutive audit years.**
-* **Why:** This speaks to risk mitigation and ensuring
+Please let me know which shifts still require tier boards and daily management setup so we can discuss next steps.
 ```
 
 **Reference (what the training data says):**
 
 ```
-[2, 5, 9, 1, 8, 10]
+I'd like to hear which shifts still need tier boards and daily management stood up first. Let me know a good time to talk it through.
 ```
 
 ---
 
-### 5. `cover_close`
+### 5. `cover_open`
 
 <details><summary>prompt</summary>
 
 ```
-Second closing for the same Quillbase Director of Product, Automation letter. The posting mentions running the customer advisory session on automation each quarter as a responsibility. Write a different 1-2 sentence closing with a specific ask about that.
+Write the opening 1-2 sentences of a cover letter for the WMS Solutions Analyst role at Kettlebridge Depot. The posting describes their Sparks campus as three buildings running on one warehouse management instance, where cold-chain rules make every configuration change riskier than in dry goods. Hook on that specific detail.
 ```
 
 </details>
@@ -275,38 +228,38 @@ Second closing for the same Quillbase Director of Product, Automation letter. Th
 **CareerOps-4B:**
 
 ```
-I'd welcome the chance to run the customer advisory session on automation each quarter, as I've run advisory sessions on my own product three times a year. When is the next one scheduled?
+Kettlebridge's Sparks campus runs three buildings on one WMS instance, and cold-chain rules make every configuration change riskier than in dry goods. That's the kind of configuration risk I'd want to be working on.
 ```
 
 **Base Gemma 4 E2B:**
 
 ```
-Here are a few options for a different 1-2 sentence closing, focusing on the customer advisory session responsibility:
+Here are a few options for the opening 1-2 sentences, depending on the tone you want to strike:
 
-**Option 1 (Direct & Action-Oriented):**
-> I am eager to bring my experience in leading customer advisory sessions to your team. Could we discuss how I can immediately begin structuring and leading the quarterly automation advisory series?
+**Option 1 (Direct & Analytical):**
+> I was immediately drawn to the WMS Solutions Analyst role at Kettlebridge Depot because the complexity of managing a single warehouse instance across three buildings, especially with the inherent risk of cold-chain configurations, presents a unique and compelling analytical challenge. My experience in [mention a relevant skill/area] aligns perfectly with the need to ensure precision and mitigate risk in this environment.
 
-**Option 2 (Value-Focused):**
-> My background in driving product adoption aligns perfectly with your need for a regular customer advisory. I look forward to discussing the framework for launching and managing those sessions.
+**Option 2 (Enthusiastic & Problem-Solving Focused):**
+> The prospect of optimizing a warehouse management system where cold-chain integrity dictates every configuration change is precisely the type of high-stakes problem I thrive on solving. I am eager to apply my background in [mention a relevant skill/area] to ensure the efficiency and compliance of the Sparks campus operations.
 
-**Option 3 (Concise & Forward-Looking):**
-> I am confident I can effectively manage and lead the quarterly customer advisory on automation. I welcome the chance to detail my proposed structure for these sessions.
+**Option 3 (Concise & Role-Specific):**
+> My background in [mention a relevant skill/area] has prepared me to tackle the specific challenges of a multi-building, cold-chain WMS environment, which I understand is central to the Kettlebridge Depot's operations. I am confident I can contribute immediately to ensuring the stability and accuracy of your warehouse management instance.
 ```
 
 **Reference (what the training data says):**
 
 ```
-How the quarterly automation customer advisory session runs today, and what you'd want a new director to bring to it, is something I'm keen to hear about. Happy to find a time this week.
+Running three buildings on one WMS instance is hard enough before cold-chain rules make every configuration change riskier. That's the kind of environment where I'd want to work at Kettlebridge Depot.
 ```
 
 ---
 
-### 6. `cover_open`
+### 6. `cover_proof`
 
 <details><summary>prompt</summary>
 
 ```
-I'm applying to Marrow Ridge Health for the Director, Ambulatory Operations role. The posting requires survey experience, Joint Commission or CMS, with the paperwork trail to prove it. Write a 1-2 sentence cover letter opener hooking on that specific requirement.
+For my Rowanmere Health Technologies Director of Client Experience cover letter, write one proof-point paragraph connecting this fact — I cut time-to-value for new enterprise accounts from 74 days to 38 through a redesigned onboarding program — to the posting's requirement for designing an onboarding program that shortens time-to-value in a measurable way.
 ```
 
 </details>
@@ -314,40 +267,31 @@ I'm applying to Marrow Ridge Health for the Director, Ambulatory Operations role
 **CareerOps-4B:**
 
 ```
-Marrow Ridge Health's requirement for survey experience with a documented paper trail is the one I'm most familiar with. I've led two Joint Commission surveys and have the documentation ready to show it.
+I cut time-to-value for new enterprise accounts from 74 days to 38 through a redesigned onboarding program — the exact onboarding redesign this role is hiring to shorten time-to-value in a measurable way.
 ```
 
 **Base Gemma 4 E2B:**
 
 ```
-Here are a few options for your cover letter opener, focusing directly on the required experience:
+Here is a proof-point paragraph tailored for your cover letter:
 
-**Option 1 (Direct & Confident):**
-> My background includes extensive experience managing operations that require rigorous compliance, specifically with Survey, Joint Commission, and CMS standards, ensuring a complete and auditable paperwork trail for all operations.
-
-**Option 2 (Benefit-Oriented):**
-> I possess the proven ability to manage complex ambulatory operations while maintaining strict adherence to regulatory standards, including Survey and Joint Commission requirements, which directly aligns with the needs of the Director, Ambulatory Operations role.
-
-**Option 3 (Concise & Specific):**
-> I have a strong track record of managing operations under Survey, Joint Commission, and CMS guidelines, providing the necessary documentation and compliance history required for this position.
-
-**Which one resonates most with your personal style?** (I recommend Option 1 or 3 for maximum impact.)
+"My experience directly aligns with your requirement for designing an onboarding program that shortens time-to-value in a measurable way. As Director of Client Experience, I redesigned the entire onboarding process for new enterprise accounts, successfully cutting the time-to-value from an average of 74 days down to just 38 days. This initiative demonstrates my capability to not only design effective, streamlined programs but also to implement them with clear, quantifiable results that directly impact client success metrics."
 ```
 
 **Reference (what the training data says):**
 
 ```
-Survey readiness that holds up under Joint Commission or CMS scrutiny takes more than good intentions, it takes a documented trail. That's the discipline I want to bring to Marrow Ridge's outpatient division.
+Rowanmere wants time-to-value shortened in a measurable way, and that's precisely what a redesigned onboarding program did on my team: 74 days down to 38 for new enterprise accounts. That's the kind of measurable result I'd bring to Rowanmere's implementation handoff.
 ```
 
 ---
 
-### 7. `cover_proof`
+### 7. `followups`
 
 <details><summary>prompt</summary>
 
 ```
-Same Drayline posting, different proof point: connect this fact — I reduced accessorial charges $1.7M a year by fixing detention drivers at two facilities and enforcing a scheduled-appointment policy — to the posting's requirement to attack accessorial spend, starting with detention at the Houston yard.
+Quillbase, Director of Product, Automation — interview stage, A fit, 90% match, product-sense panel 11 days ago, ghost risk medium, tailored docs yes.
 ```
 
 </details>
@@ -355,66 +299,66 @@ Same Drayline posting, different proof point: connect this fact — I reduced ac
 **CareerOps-4B:**
 
 ```
-I cut accessorial charges $1.7M a year by fixing detention drivers at two facilities and enforcing a scheduled-appointment policy — the exact accessorial-spend attack this role wants, starting with detention at the Houston yard.
+Eleven days at interview stage with tailored docs is the longest you'll ever be in this board. Medium ghost risk means the risk is real, not a guess. Send a note today: "Quillbase's automation panel is a product-sense panel, and I'd like to hear what you're thinking." That's the only thing you can do.
 ```
 
 **Base Gemma 4 E2B:**
 
 ```
-Here is the analysis and suggested action based on your request:
+Here is the summary and action plan based on the information provided:
 
-## CareerOps Action Plan
+**Candidate Profile Snapshot:**
 
-**Goal:** Tailor your application materials (resume/cover letter) for the "Same Drayline" posting by directly connecting your proven achievement to the specific requirement of the job posting.
+* **Target Role:** Director of Product, Automation at Quillbase
+* **Interview Stage:** Interview stage
+* **Fit Assessment:** 90% match (Strong fit)
+* **Feedback:** Product-sense panel interview 11 days ago.
+* **Risk Assessment:** Ghost risk - Medium
+* **Action Taken:** Tailored documentation was provided (Yes).
 
-**Job Posting Requirement:** Attack accessorial spend, starting with detention at the Houston yard.
+**Next Steps & Action Plan:**
 
-**Your Proof Point:** Reduced accessorial charges by **$1.7M a year** by fixing detention drivers at two facilities and enforcing a scheduled-appointment policy.
+1. **Review Interview Feedback:** Analyze the feedback from the product-sense panel to identify specific areas of strength and potential gaps.
+2. **Prepare for Next Stage:** Based on the feedback, develop targeted talking points and case studies that directly address the product-sense panel's perspective on automation and product strategy.
+3. **Tailor Materials:** Ensure all future materials (e.g., follow-up responses, case studies) explicitly map past experience to the requirements of the Director of Product, Automation role at Quillbase.
+4. **Board Organization:** Ensure the candidate's board is organized to easily pull relevant experience for the next round of discussions.
+5. **Follow-up Strategy:** Determine the appropriate, professional follow-up cadence for the next stage.
 
----
+**What should you work on today?**
 
-### 1. Resume/Cover Letter Strategy
+* **Task:** Draft 3-5 specific, high-impact STAR method stories that demonstrate product vision and strategic thinking related to automation, specifically framed for a Director of Product role.
+* **Goal:** Prepare concrete evidence to counter any potential weak points identified in the product-sense panel interview.
 
-**How to Connect Them (Drafting Focus):**
-
-*   **Instead of:** Listing the achievement generally.
-*   **Focus on:** Framing the achievement as a direct, quantifiable solution to the employer's stated problem.
-
-**Suggested Language Hooks:**
-
-*   "My experience directly aligns with your need to attack accessorial spend. At [Previous Company], I successfully targeted detention charges, resulting in a **$1.7M annual reduction** by implementing driver training and a scheduled-appointment policy at two facilities, demonstrating a proven ability to drive down these costs immediately."
-*   "I am prepared to immediately address the accessorial spend at the Houston yard. I have a track record of success in this area, having reduced related charges by **$1.7M annually** through process improvement (driver training and scheduling enforcement)."
-
-### 2. Next Steps for You (What to Work On Today)
-
-**Today's Focus:** **Drafting the tailored content.**
-
-1.  **Review the Job Posting:** Identify 2-3 other key phrases in the posting related to "cost reduction," "accessorials," or "operational efficiency."
-2.  **Draft the Targeted Statement:** Write a 3-4 sentence summary for your cover letter that uses the **$1.7M figure** and explicitly mentions **detention/accessorials** to show immediate relevance.
-3.  **Update Resume Bullet:** Rewrite your most relevant bullet point to lead with the *result* and the *method* (fixing drivers/scheduling) rather than just the task.
-
-### How CareerOps Works (Explanation)
-
-CareerOps functions as your dedicated career strategist. I manage the entire job search lifecycle:
-
-1.  **Diagnosis:** I analyze job postings to identify the core skills and pain points they are trying to solve.
-2.  **Mapping:** I map your real
+**Do you have any specific job descriptions or materials you would like me to review now?**
 ```
 
 **Reference (what the training data says):**
 
 ```
-Attacking detention is where I'd start at the Houston yard too, because it's already worked for me: fixing detention drivers at two facilities and enforcing a scheduled-appointment policy cut accessorial charges $1.7M a year. That's a playbook ready to point at Houston.
+Eleven days after a product-sense panel with nothing back means the loop stalled somewhere internal, not on you. Write the recruiter Monday and ask a question they can actually answer: whether the role is still moving and what the next step would be. Skip any restatement of your enthusiasm — at an A and 90 percent, that's established. One message, then two weeks of quiet before you consider another.
 ```
 
 ---
 
-### 8. `followups`
+### 8. `jd_parsing`
 
 <details><summary>prompt</summary>
 
 ```
-Saltmoor Expeditions again, Director of Global Operations, but the conversation track - their COO called 9 days ago and asked me for references. Stage conversation, A-, 82%, ghost risk low, docs ready. I've been sitting on it.
+Parse the posting below into JSON — company, title, seniority, location, requirements. Just the JSON object, no explanation.
+
+Ready to apply? Click below.
+
+Sunderly is hiring: Principal Product Manager, Platform APIs
+Location: Remote (US)
+Level: Senior individual contributor
+
+What you'll need:
+- Written communication that stands on its own, because half this company is asynchronous
+- SQL and analytics fluency; we expect PMs to pull their own adoption numbers
+- Prior work with a developer relations or solutions engineering function is a plus
+
+More jobs at this company →
 ```
 
 </details>
@@ -422,84 +366,7 @@ Saltmoor Expeditions again, Director of Global Operations, but the conversation 
 **CareerOps-4B:**
 
 ```
-Nine days at conversation stage with a COO asking for references is a soft ask, not a hard one. Send the references today, and then close the row. A- at 82% with docs ready means you've done the work; the next step is the ask.
-```
-
-**Base Gemma 4 E2B:**
-
-```
-Here is the CareerOps analysis and action plan based on the information provided:
-
-## CareerOps Analysis & Action Plan
-
-**Client Profile Snapshot:**
-
-* **Target Role:** Director of Global Operations at Saltmoor Expeditions.
-* **Current Status:** Conversation track established, COO requested references 9 days ago.
-* **Performance Grade:** A- (82%).
-* **Risk Assessment:** Ghost risk is low.
-* **Readiness:** Documents are ready.
-* **Current Action:** Inactive/Waiting.
-
-**CareerOps Grade & Feedback:**
-
-* **Grade:** **A- (82%)**
-* **Feedback:** Strong performance in securing the conversation and managing the reference request. The 82% suggests high confidence and readiness.
-* **Area for Improvement (Focus for Next Stage):** Proactive follow-up management. While the process is set, the next step requires active management to ensure the process moves forward efficiently.
-
-**Next Steps & Recommendations (What to work on today):**
-
-1. **Develop a Proactive Follow-Up Strategy:** Since the documents are ready, the next step is to initiate contact to move the process forward.
-    * **Action:** Draft a concise, professional follow-up email to the COO (or the appropriate contact) that:
-        * References the previous conversation/request.
-        * Confirms the documents are attached/ready.
-        * Asks for the next step in the process.
-    * **Goal:** Move the process from "ready" to "in-progress."
-
-2. **Prepare for Next Stage:** While waiting for a response, use this time to prepare for the next potential interview stage.
-    * **Action:** Identify 3-5 specific operational challenges relevant to Saltmoor Expeditions' scope (based on your experience) and draft brief, high-impact STAR method responses for those challenges.
-
-**How CareerOps Works (Explanation):**
-
-CareerOps functions as your dedicated, end-to-end career management partner. I manage the entire job search lifecycle for you, ensuring maximum efficiency and strategic alignment.
-
-1. **Assessment & Grading:** I evaluate your performance against specific role requirements and provide a quantifiable grade (e.g., A-, 82%) based on the data provided.
-2. **Strategy & Tailoring:** I ensure all materials (resumes, cover letters) are hyper-tailored to the specific job posting or company needs.
-3. **Board
-```
-
-**Reference (what the training data says):**
-
-```
-He asked for references nine days ago - send them. That is the follow-up. No commentary beyond a line naming each person and why they're relevant to global operations. Doing the thing that was asked, on the same thread, restarts the process without any nudge at all. Get it out today; a reference request left for two weeks reads as disorganized.
-```
-
----
-
-### 9. `jd_parsing`
-
-<details><summary>prompt</summary>
-
-```
-Extract company, title, seniority, location, and requirements from this JD as raw JSON. Nothing else in your reply.
-
-Careers / All Jobs / Search Results
-
-Junipero Parcel is hiring: Vice President, Last-Mile Delivery
-Location: Philadelphia, PA — Hybrid, 3 days on-site
-Level: Vice president
-
-Requirements: Owned a nine-figure operating budget with accountability for cost per stop or equivalent unit economics. Peak season planning at volumes that double or more. You have expanded a delivery network into new metros and know what breakeven density actually costs.
-
-This description is a summary and may not include every duty.
-```
-
-</details>
-
-**CareerOps-4B:**
-
-```
-{"company": "Junipero Parcel", "title": "Vice President, Last-Mile Delivery", "seniority": "Vice president", "location": "Philadelphia, PA — Hybrid, 3 days on-site", "requirements": ["Owned a nine-figure operating budget with accountability for cost per stop or equivalent unit economics", "Peak season planning at volumes that double or more", "You have expanded a delivery network into new metros and know what breakeven density actually costs"]}
+{"company": "Sunderly", "title": "Principal Product Manager, Platform APIs", "seniority": "Senior individual contributor", "location": "Remote (US)", "requirements": ["Written communication that stands on its own, because half this company is asynchronous", "SQL and analytics fluency; we expect PMs to pull their own adoption numbers", "Prior work with a developer relations or solutions engineering function is a plus"]}
 ```
 
 **Base Gemma 4 E2B:**
@@ -507,15 +374,14 @@ This description is a summary and may not include every duty.
 ```
 ```json
 {
-  "company": "Junipero Parcel",
-  "title": "Vice President, Last-Mile Delivery",
-  "seniority": "Vice president",
-  "location": "Philadelphia, PA — Hybrid, 3 days on-site",
+  "company": "Sunderly",
+  "title": "Principal Product Manager, Platform APIs",
+  "seniority": "Senior individual contributor",
+  "location": "Remote (US)",
   "requirements": [
-    "Owned a nine-figure operating budget with accountability for cost per stop or equivalent unit economics.",
-    "Peak season planning at volumes that double or more.",
-    "Expanded a delivery network into new metros.",
-    "Know what breakeven density actually costs."
+    "Written communication that stands on its own, because half this company is asynchronous",
+    "SQL and analytics fluency; we expect PMs to pull their own adoption numbers",
+    "Prior work with a developer relations or solutions engineering function is a plus"
   ]
 }
 ```
@@ -524,25 +390,28 @@ This description is a summary and may not include every duty.
 **Reference (what the training data says):**
 
 ```
-{"company": "Junipero Parcel", "title": "Vice President, Last-Mile Delivery", "seniority": "Vice president", "location": "Philadelphia, PA — Hybrid, 3 days on-site", "requirements": ["Owned a nine-figure operating budget with accountability for cost per stop or equivalent unit economics", "Peak season planning at volumes that double or more", "You have expanded a delivery network into new metros and know what breakeven density actually costs"]}
+{"company": "Sunderly", "title": "Principal Product Manager, Platform APIs", "seniority": "Senior individual contributor", "location": "Remote (US)", "requirements": ["Written communication that stands on its own, because half this company is asynchronous", "SQL and analytics fluency; we expect PMs to pull their own adoption numbers", "Prior work with a developer relations or solutions engineering function is a plus"]}
 ```
 
 ---
 
-### 10. `match_grading`
+### 9. `match_grading`
 
 <details><summary>prompt</summary>
 
 ```
 Grade this candidate against this role. Return ONLY JSON, no other text: {"score":int,"summary":"...","strengths":[...],"gaps":[...]}
 
-ROLE: Steadmoor Distribution - Continuous Improvement Analyst, Network Operations (Senior individual contributor; parcel carrier, nine cross-dock facilities and a contracted delivery fleet)
-NEEDS: four or more years in logistics or supply chain analytics; SQL and a BI tool, Power BI; process improvement method, root cause discipline or DMAIC; warehouse throughput or route-level delivery economics; be in facilities rather than modelling from a desk; findings become standard work for other sites; Green Belt a plus
-CANDIDATE: Jared Whitlock - Store Operations Lead, Charlotte, NC.
-- Taught himself SQL; built a Tableau dashboard covering 11 stores
-- Wrote the district's holiday staffing playbook, used by 11 stores
-- Spends his time in the operation, not behind a desk
-SKILLS: SQL, Tableau, process documentation
+ROLE: Tessellate Software - VP, Customer Success (VP; construction project accounting for general contractors; $90M ARR)
+NEEDS: led a CS organisation of 25+; ownership of a gross retention number; moved retention where churn had structural causes; CSM segmentation and capacity models; Gainsight as system of record; carried or designed an expansion quota; vertical software preferred; hire two directors; present retention to the board quarterly
+CANDIDATE: Simone Aguilar - Head of Customer Success.
+- Leads a 31-person customer success organisation covering $74M ARR
+- Gross revenue retention 87% to 94% across a 900-account book
+- Rebuilt onboarding, time-to-value 74 days to 38
+- Health-scoring model predicts churn 90 days out at 71%
+- Segment pods lifted CSM capacity 22 to 34 accounts
+- Expansion revenue $4.1M to $12.6M after a CSM quota; no board exposure
+SKILLS: Gainsight, segmentation strategy
 ```
 
 </details>
@@ -550,7 +419,7 @@ SKILLS: SQL, Tableau, process documentation
 **CareerOps-4B:**
 
 ```
-{"score": 40, "summary": "He has the analytical tools and the operational mindset, but the role is a step up in scope and the methods he's used are not his own.", "strengths": ["SQL and a BI tool, Power BI, are both covered by his Tableau work", "He spends his time in the operation, not behind a desk", "Process documentation is his documented output, which is the standard work this role is hiring to create"], "gaps": ["No warehouse throughput or route-level delivery economics experience", "No root cause discipline or DMAIC, and no Green Belt", "The role is facilities rather than modelling from a desk, and his background is retail operations", "The role is a senior individual contributor role, and he's currently a store operations lead"]}
+{"score": 80, "summary": "Strong fit on the customer-success-leadership side, but the expansion quota and board-facing retention this VP role owns are missing.", "strengths": ["CS organisation size and scope match exactly: 31 people covering $74M ARR", "Gross retention 87% to 94% is a strong retention number", "Moved retention where churn had structural causes, with a 90-day health-scoring model at 71%", "CSM segmentation and capacity models are proven: segment pods lifted capacity from 22 to 34 accounts", "Gainsight is the system of record, and she has built it", "Vertical software experience is not shown, but the CSM model is transferable"], "gaps": ["No expansion quota carried or designed, and the role carries one", "No board exposure; retention is presented quarterly to the board"]}
 ```
 
 **Base Gemma 4 E2B:**
@@ -558,20 +427,22 @@ SKILLS: SQL, Tableau, process documentation
 ```
 ```json
 {
-  "score":65,
-  "summary": "Jared has relevant operational experience and self-taught analytical skills (SQL, Tableau) which align with the data/process needs. His experience writing a playbook that is adopted by multiple sites demonstrates a focus on creating standard work, which is a key requirement. However, the direct experience in logistics/supply chain analytics and specific process improvement methodologies (like DMAIC) needs to be explicitly mapped. The 'facilities' requirement is met by being in the operation, but the depth of experience in throughput/route economics needs verification.",
+  "score":85,
+  "summary": "Simone has strong, relevant experience in scaling CS organizations, managing large ARR books, and driving retention/expansion. The experience with segmentation, health scoring, and Gainsight aligns well with the needs. The main gap is the lack of direct board-level presentation experience.",
   "strengths": [
-    "Experience in operational roles (Store Operations Lead) suggests a facility-based mindset.",
-    "Self-taught SQL and built a Tableau dashboard, demonstrating analytical capability.",
-    "Wrote a playbook used by 11 stores, showing ability to create and implement standard work.",
-    "Spends time in the operation, satisfying the 'facilities rather than modelling' requirement."
+    "Leads a large CS organization (31 people) covering a significant ARR ($74M).",
+    "Demonstrated success in gross revenue retention (87% to 94%).",
+    "Experience in rebuilding onboarding/time-to-value, showing operational improvement.",
+    "Developed a predictive health-scoring model for churn (90 days out at 71%).",
+    "Proven ability to scale CSM capacity (lifting capacity from 22 to 34 accounts).",
+    "Direct experience with expansion revenue, including setting and exceeding a quota ($4.1M to $12.6M).",
+    "Proficiency in Gainsight and segmentation strategy."
   ],
   "gaps": [
-    "Lack of explicit four or more years in dedicated logistics or supply chain analytics experience.",
-    "Need to demonstrate direct experience with route-level delivery economics or warehouse throughput analysis.",
-    "Need to explicitly map process improvement methodology (e.g., DMAIC) experience.",
-    "Need to confirm proficiency in Power BI (only Tableau is mentioned).",
-    "Need to demonstrate that findings directly resulted in standard work adoption across multiple sites."
+    "Lacks explicit experience presenting retention metrics to a board quarterly.",
+    "The candidate has no stated experience hiring or managing direct reports (needs to confirm if they managed directors/VPs).",
+    "The role requires vertical software experience; this is not specified in the candidate's profile.",
+    "The candidate explicitly states 'no board exposure', which is a direct mismatch for a key requirement."
   ]
 }
 ```
@@ -580,21 +451,20 @@ SKILLS: SQL, Tableau, process documentation
 **Reference (what the training data says):**
 
 ```
-{"score": 38, "summary": "His operational analysis instincts are good and the setting is wrong. Warehouse throughput and route economics are both new, and the role sits above his level.", "strengths": ["SQL and dashboard building in Tableau are established; Power BI is a tool change, not a skill change", "He spends time in the operation rather than modelling it from a desk, which the posting values", "Process documentation is a listed skill, and his holiday staffing playbook is used by 11 stores"], "gaps": ["No logistics operations experience; nine cross-dock facilities and a contracted delivery fleet are outside his work", "Neither warehouse throughput nor route-level delivery economics is in his record", "No formal process improvement method: DMAIC, root cause discipline, or a Green Belt", "Four or more years in logistics or supply chain analytics is not met", "A senior individual contributor setting standard work for other sites is above his scope"]}
+{"score":83,"summary":"She has run this job at slightly smaller scale and moved the number that matters. Board exposure and the vertical are the gaps.","strengths":["A 31-person customer success organisation clears the stated 25+ threshold","Gross retention ownership is explicit: 87% to 94% across a 900-account book","Churn had structural causes; onboarding rebuilt, time-to-value 74 days to 38","Segmentation and capacity modelling proven: segment pods lifted CSM capacity 22 to 34","Gainsight is core, health scoring predicts churn 90 days out at 71%, and expansion grew $4.1M to $12.6M"],"gaps":["No board presentation experience; this role reports retention to the board quarterly","Construction project accounting and general contractors are outside her record; vertical software preferred","Her book is $74M against a $90M business, and hiring two directors is untested"]}
 ```
 
 ---
 
-### 11. `prioritisation`
+### 10. `prioritisation`
 
 <details><summary>prompt</summary>
 
 ```
-Career-switch board, and I know some of these are reaches. Rank them and be honest about the reaches.
-Bellrose Outfitters | Retail Operations Analyst | interview | B+ | 81% | 5 | low | docs yes
-Bramble and Rye Hospitality Group | Operations Analytics Analyst | applied | B | 74% | 10 | low | docs yes
-Palladia Logistics | Business Analyst, Distribution Operations | researched | B | 70% | 14 | medium | docs no
-Wickham Row | Director of E-commerce Operations | sourced | C | 56% | 22 | high | docs no
+Just three and I'm stuck on all of them.
+Fenwick Housing Institute · Senior Research Associate, Housing Policy · interview · B+ · 80% · 5 days · low · yes
+Foothill Community Health Alliance · Grants Manager · applied · A- · 85% · 24 days · high · yes
+Ninebark Regional Water Authority · Capital Programs Director · researched · C · 63% · 11 days · medium · no
 ```
 
 </details>
@@ -602,60 +472,67 @@ Wickham Row | Director of E-commerce Operations | sourced | C | 56% | 22 | high 
 **CareerOps-4B:**
 
 ```
-Bellrose Outfitters first — interview, B+ at 81%, docs done.
-Bramble and Rye Hospitality Group second, applied, B at 74%, ten days in applied with docs ready.
-Palladia Logistics third, researched, B at 70%, fourteen days at medium ghost risk, docs still unwritten.
-Wickham Row fourth, C at 56%, twenty-two days sourced, high risk, and no docs.
-Wickham Row is the one to drop.
+Three roles, three statuses.
+Ninebark is the one to drop. C, 63%, eleven days researched, no tailored docs — it's a dead thread.
+Foothill is the real one: A-, 85%, 24 days applied, high ghost risk. Write the follow-up this week.
+Fenwick is the tiebreaker. B+, 80%, five days at interview, low risk. Send the docs you've been told you'd be using.
+If you can't get a decision from Fenwick by Friday, that's when you decide whether to let the board sit or move it.
 ```
 
 **Base Gemma 4 E2B:**
 
 ```
-Here is an analysis and ranking of your career-switch board, focusing on the "reach" factor based on the information provided:
+Here is an analysis of your current job search status:
 
-## Career-Switch Board Analysis & Ranking
+## Job Search Status Summary
 
-I will rank these based on a combination of **Relevance/Fit (Grade)** and **Reach (Difficulty/Unlikelihood)**, using the provided metrics (Grade, Score, Reach Level, Docs Required).
-
-| Rank | Company | Role | Grade | Score | Reach Level | Docs Required | Rationale |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **1** | **Wickham Row** | Director of E-commerce Operations | C | 56% | **High** | No | Highest reach, but the potential payoff is highest if you can bridge the gap. |
-| **2** | **Bellrose Outfitters** | Retail Operations Analyst | B+ | 81% | Low | Yes | Strongest fit (highest grade), lowest reach. A solid starting point. |
-| **3** | **Bramble and Rye Hospitality Group** | Operations Analytics Analyst | B | 74% | Low | Yes | Good fit, slightly lower score than Bellrose, but still a manageable target. |
-| **4** | **Palladia Logistics** | Business Analyst, Distribution Operations | B | 70% | Medium | No | Medium reach. Good potential, but the lack of documentation might make the application harder to tailor. |
+| Role | Status | Grade | Score | Progress | Next Action |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **Fenwick Housing Institute** (Senior Research Associate, Housing Policy) | Interview | B+ | 80% | 5 days | **Focus on interview preparation/follow-up.** |
+| **Foothill Community Health Alliance** (Grants Manager) | Applied | A- | 85% | 24 days | **Follow up on application status.** |
+| **Ninebark Regional Water Authority** (Capital Programs Director) | Researched | C | 63% | 11 days | **Re-evaluate fit or pivot strategy.** |
 
 ---
 
-### Honest Assessment of "Reach"
+## Recommendations & Action Plan
 
-Here is a breakdown of what "Reach" means in this context:
+### 1. Fenwick Housing Institute (Senior Research Associate, Housing Policy) - **Priority: High**
 
-* **High Reach (Wickham Row):** This is the most challenging. It suggests a senior or specialized role, potentially in a field (E-commerce Director) that requires a very specific, high-level combination of experience.
-* **Medium Reach (Palladia Logistics):** This is a good target. The reach is moderate, suggesting the role is accessible if your existing experience can be framed correctly, but it requires a solid application.
-* **Low Reach (Bellrose Outfitters & Bramble and Rye):** These are your **safety/strong targets**. They are the most accessible based on your current profile, meaning you have the highest probability of success for these roles.
+*   **Grade Analysis (B+ / 80%):** This is a strong signal. You are competitive, but there is room for refinement to secure the offer.
+*   **Action Today:**
+    *   **Prepare for the next stage:** Identify 3-5 specific, high-level policy questions related to housing research that you can answer using your past experience.
+    *   **Draft a tailored talking track:** Ensure your narrative directly connects your past research/policy work to the specific needs of the Fenwick Institute.
+    *   **Follow-up:** If you haven't already, send a brief, professional thank-you note reiterating your interest and offering a specific, relevant thought on a recent topic in their field.
 
-**Key Takeaway:** You have a good mix. You have one high-risk/high-reward target (Wickham Row) and two solid
+### 2. Foothill Community Health Alliance (Grants Manager) - **Priority: Medium**
+
+*   **Grade Analysis (A- / 85%):** Excellent performance. You are a strong candidate.
+*   **Action Today:**
+    *   **Chase Status:** Send a polite, professional follow-up email to the contact person regarding the timeline for the Grants Manager role.
+    *   **Preparation:** If the interview is imminent, prepare specific examples of grant management, budget tracking, and stakeholder communication from your past roles to showcase readiness for the Grants Manager duties.
+
+### 3. Ninebark Regional Water Authority (Capital Programs Director) - **Priority: Low/Strategic**
+
+*   **Grade Analysis
 ```
 
 **Reference (what the training data says):**
 
 ```
-The interview is the whole board right now. Bellrose Outfitters first: B+, 81%, five days in, docs tailored, and it's the most direct translation of store operations into an analyst seat.
-Bramble and Rye Hospitality Group second — applied ten days ago at 74%, low risk, tailored. Wait one more week before nudging.
-Palladia Logistics third: 70%, fourteen days researched, nothing written.
-Wickham Row fourth, and it's the reach you asked about — a director title at 56% with high ghost risk after 22 days.
-Drop Wickham Row. The other three are the actual switch.
+First, Fenwick Housing Institute — five days into an interview, B+/80%, docs already tailored. Prepare for it; nothing else here has a date attached.
+Second, Foothill Community Health Alliance. A-/85% is the better fit, and it still ranks below an interview: 24 days applied at high ghost risk means the file is cold. Send one follow-up and treat silence as an answer.
+Third, Ninebark Regional Water Authority. C/63%, eleven days researched, no docs — a capital programs directorship is a different career, not a next step.
+Drop Ninebark. Then source two more housing-policy roles; a three-role board can't absorb a single no.
 ```
 
 ---
 
-### 12. `resume_analysis`
+### 11. `resume_analysis`
 
 <details><summary>prompt</summary>
 
 ```
-I direct last-mile delivery across 22 metro markets — 1,900 daily routes, 6.4M parcels a year — and I cut cost per stop from $4.62 to $3.71 through route densification and a mixed employee/contractor model. I also negotiated the delivery service partner contract template we now use with 64 contracted fleets, and I own a $140M delivery operating budget. There's a Director of Field Operations role at Tallow Creek Market Group in Atlanta that pairs 48 grocery stores with a same-day delivery operation, wants either store labor model or route-level delivery economics experience, and P&L ownership with the ability to defend a variance to a CFO. How do I compare?
+Quick fit check. My role: Warehouse Systems Analyst, 780,000 square-foot fulfillment center, 52,000 units a day. I led the labor management system configuration giving the site engineered standards on 14 activity types, reduced cycle-count variance from 1.9% to 0.4% by moving to daily ABC counting, and ran the wave-planning redesign that cut late-cutoff order miss rate from 3.1% to 0.6%. I documented 22 SOPs that became the template for two sister sites. The job: WMS Solutions Analyst at Kettlebridge Depot, Sparks, NV - configuring WMS changes in staging before they hit the floor, taking over reporting, and being first escalation for scanning and conveyor issues.
 ```
 
 </details>
@@ -663,52 +540,62 @@ I direct last-mile delivery across 22 metro markets — 1,900 daily routes, 6.4M
 **CareerOps-4B:**
 
 ```
-Your route-level economics work is a direct match for their delivery requirement — you cut cost per stop from $4.62 to $3.71 and own a $140M delivery budget, both the same store-labor model this role is trying to build. The contract negotiation experience with 64 fleets also lines up with their need to build a delivery service partner contract template. The gap is the scale: your 1,900 daily routes across 22 markets is a large delivery footprint, but Tallow Creek's 48 stores are smaller, and the role is about building a delivery operation from the ground up, not running an existing one. The P&L ownership is also a stretch — your budget is $140M, and this role is a $110M delivery budget with a CFO who will scrutinize every dollar.
+Strong fit on the core work. Your labor-management background is a direct match for the labor-management system configuration this role wants, and the cycle-count and wave-planning results show you can translate a process change into a measurable improvement. The documentation work also lines up with the SOP-template work this posting mentions. The gap is the WMS-specific part: nothing here shows you configuring a WMS, staging logic, or scanning/conveyor troubleshooting, which is the main technical ask of this role.
 ```
 
 **Base Gemma 4 E2B:**
 
 ```
-This is a great starting point. As your CareerOps assistant, my goal is to align your experience directly with the needs of the **Director of Field Operations** role at Tallow Creek Market Group.
+Here is your quick fit check:
 
-Here is a breakdown of how your experience compares to the job requirements, followed by an action plan.
+**Overall Fit Assessment: Strong Potential**
 
----
+**Alignment Breakdown:**
 
-### 1. Role Requirement Analysis vs. Your Experience
+*   **Warehouse Systems Analyst (Your Experience):**
+    *   **Strengths:** Deep, quantifiable experience in WMS/system configuration, process improvement (cycle-count variance reduction, wave-planning redesign), SOP development, and cross-site standardization.
+    *   **Key Skills:** System configuration, process optimization, data-driven problem-solving, documentation.
+*   **WMS Solutions Analyst (Target Role):**
+    *   **Requirements:** Configuring WMS changes in staging, taking over reporting, first escalation for scanning/conveyor issues.
+    *   **Key Skills:** WMS configuration/change management, operational troubleshooting, reporting, escalation management.
 
-| Job Requirement (Tallow Creek) | Your Relevant Experience | Alignment Strength | How to Frame It |
-| :--- | :--- | :--- | :--- |
-| **Pairs 48 grocery stores with a same-day delivery operation.** | Direct last-mile delivery across 22 metro markets (1,900 daily routes). | **High.** You have proven experience managing complex, high-volume, multi-stop logistics. | Focus on the *scale* and *complexity* of managing multiple, geographically dispersed points of service. |
-| **Wants either store labor model or route-level delivery economics experience.** | Cut cost per stop from \$4.62 to \$3.71 through route densification and a mixed employee/contractor model. | **Very High.** You have direct, quantifiable experience in optimizing economics and designing operational models. | Highlight the specific *methodology* (route densification, mixed model) and the *financial impact* (cost reduction). |
-| **P&L ownership.** | Own a \$140M delivery operating budget. | **High.** You have clear, large-scale financial ownership. | Emphasize the scope of responsibility and the accountability required to manage a significant budget. |
-| **Ability to defend a variance to a CFO.** | Negotiated the delivery service partner contract template. | **Medium-High.** This shows negotiation and contract-level financial acumen, which supports defending operational variances. | Frame contract negotiation as demonstrating the ability to structure agreements that control costs and protect the bottom line. |
+**How You Fit:**
 
-### 2. CareerOps Assessment & Strategy
+Your experience directly maps to the core functions of the target role.
 
-**Overall Fit Grade: Strong Potential (A-)**
+*   **Configuration/Change Management:** Your work configuring the labor management system and redesigning wave-planning shows you can handle system changes.
+*   **Operational Troubleshooting/Escalation:** Your role as the first point of contact for system-related issues (implied by leading system configuration) aligns well with being the first escalation point for scanning and conveyor issues.
+*   **Reporting:** You have experience driving metrics (cycle-count variance, order miss rate), which translates directly to taking over and managing reporting.
 
-Your background is highly relevant because you bridge **large-scale operational execution** with **direct P&L/cost ownership** and **contractual negotiation**.
+**Actionable Next Steps for Tailoring:**
 
-**Key Areas to Emphasize in Materials:**
+1.  **Resume Focus:** Reframe your achievements to emphasize **WMS configuration/change implementation** rather than just "labor management system configuration." Use language like "configured WMS changes," "managed system rollout," and "optimized workflow logic."
+2.  **Cover Letter Focus:** Directly map your success in reducing error rates (3.1% to 0.6%) to the need for operational stability and accuracy in the new role. Highlight your ability to handle system-level issues (scanning/conveyor) as a proven escalation point.
 
-1.  **Economics & Efficiency:** Do not just state you cut costs. Structure your bullet points around the *process*: **Challenge $\rightarrow$ Action (Methodology) $\rightarrow$ Result (Metric)**.
+**Next Step for CareerOps:**
+
+To proceed, please provide the **specific job description** for the WMS Solutions Analyst role at Kettlebridge Depot. I will then:
+
+1.  Parse the JD for required keywords and priorities.
+2.  Draft a **tailored resume summary** and a **draft cover letter** using *only* the experience you provided.
+3.  Organize your current job board/pipeline.
+4.  Determine the **top 3
 ```
 
 **Reference (what the training data says):**
 
 ```
-The route-level delivery economics are a direct match — your cost-per-stop reduction and the contracted-fleet template cover exactly what the posting asks for on the delivery side, and the $140M budget demonstrates P&L ownership at a scale beyond what defending a CFO variance would require. Gap: nothing here shows store labor model experience, and this role explicitly pairs delivery with 48 physical grocery stores you'd also need to run. Risk: grocery is a different business than parcel delivery, and your background doesn't show retail store operations at all, just the delivery layer. You'd cover half the job well and start from zero on the other half.
+Direct match: your wave-planning redesign and cycle-count accuracy work map exactly to their task-interleaving and inventory accuracy requirements, and writing 22 SOPs that became a template for two sister sites shows the documentation habit this role needs for training supervisors. Your labor management system configuration also covers ground they value. Gap: their environment is cold-chain and lot-tracking specific, which your background doesn't show experience with, though the JD notes they'll train for it. Confirm availability for occasional weekend cutovers and second-shift reachability, both explicitly required.
 ```
 
 ---
 
-### 13. `resume_summary`
+### 12. `resume_summary`
 
 <details><summary>prompt</summary>
 
 ```
-Write a leadership-focused resume summary for Imani Sørlie using only these facts: she facilitated a 14-member stakeholder working group of local governments, developers and tenant advocates to consensus on a formula change; she trains new analysts on her agency's methodology standards and peer-review process; she has presented findings to the agency's oversight board 7 times in two years.
+Write a general resume summary for Anneke Ruzicka, Production Manager in Cedar Rapids, IA, leading with achievements. Use these facts: she raised line throughput 21% by rebalancing the changeover sequence and standardizing two shift-handoff routines, cut changeover time from 78 minutes to 34 using SMED across 7 format changes, and improved schedule attainment from 82% to 96% over three quarters.
 ```
 
 </details>
@@ -716,58 +603,47 @@ Write a leadership-focused resume summary for Imani Sørlie using only these fac
 **CareerOps-4B:**
 
 ```
-Imani Sørlie leads through consensus and clarity: she facilitated a 14-member stakeholder working group of local governments, developers and tenant advocates to consensus on a formula change, trains new analysts on her agency's methodology standards and peer-review process, and has presented findings to the agency's oversight board 7 times in two years.
+Production Manager who raises throughput and schedule attainment by rebalancing changeover sequences and standardizing shift-handoff routines. Cut changeover time from 78 minutes to 34 using SMED across 7 format changes, and improved schedule attainment from 82% to 96% over three quarters.
 ```
 
 **Base Gemma 4 E2B:**
 
 ```
-Here are a few options for a leadership-focused resume summary for Imani Sørlie, based *only* on the facts provided. Choose the one that best fits the tone of the roles she is targeting.
+Here are a few options for Anneke Ruzicka's resume summary, tailored to highlight her achievements. Choose the one that best fits the tone of the roles she is targeting.
 
 ---
 
-### Option 1: Impact & Consensus Focused (Strongest for Policy/Government Roles)
+### Option 1: Achievement-Focused & Impact-Driven (Strongest for Operations/Continuous Improvement roles)
 
-**Highly effective leader skilled in driving complex, cross-sector consensus and ensuring high-quality analytical standards. Proven ability to facilitate diverse stakeholder groups (local governments, developers, tenant advocates) to achieve consensus on critical policy changes. Adept at building internal capacity by training analysts in rigorous methodology and peer-review processes, and effectively communicating complex findings to executive oversight boards.**
+**Highly accomplished Production Manager with a proven record of driving significant operational efficiency and performance improvement in manufacturing environments. Expertise in Lean methodologies, SMED, and process rebalancing. Successfully increased line throughput by 21% and drastically reduced changeover time from 78 minutes to 34 minutes across seven format changes. Consistently improved schedule attainment from 82% to 96% within three quarters, demonstrating a strong commitment to operational excellence and reliable output.**
 
-### Option 2: Training & Governance Focused (Strongest for Management/Program Roles)
+### Option 2: Concise & Metric-Heavy (Good for quick scanning by recruiters)
 
-**Results-oriented professional specializing in governance, stakeholder management, and team development. Expertise in leading high-stakes working groups to achieve agreement on complex formulas and ensuring operational excellence through standardized training. Successfully developed internal expertise by mentoring analysts on agency methodology and presenting data-driven recommendations to oversight bodies.**
+**Results-oriented Production Manager specializing in process optimization and throughput maximization. Achieved measurable results by rebalancing changeover sequences, cutting changeover time by 55% (from 78 min to 34 min) using SMED. Drove schedule reliability, increasing attainment from 82% to 96% over three quarters. Seeking roles where operational excellence and quantifiable process improvement are key drivers.**
 
-### Option 3: Concise & Achievement-Driven (Good for quick scanning)
+### Option 3: Role-Specific (Good if targeting roles focused on leadership and process design)
 
-**Leadership-focused expert with a track record of driving consensus among diverse stakeholders and ensuring analytical rigor. Successfully managed complex working groups to achieve policy agreement and enhanced organizational standards by training staff and presenting findings to executive oversight boards multiple times within a two-year period.**
+**Production Manager skilled in leading cross-functional teams to implement high-impact process improvements. Expertise includes SMED application for rapid changeover reduction and standardization of shift routines to enhance operational consistency. Successfully elevated line throughput by 21% and improved schedule adherence from 82% to 96%. Adept at transforming complex production challenges into streamlined, high-performing operations.**
 
 ---
 
-**CareerOps Explanation:**
-
-As your CareerOps assistant, my role is to be your dedicated career strategist. I manage your job search end-to-end by:
-
-1. **Grading Fit:** Assessing how well your experience matches specific job requirements.
-2. **Content Creation:** Writing highly tailored resumes and cover letters using *only* your actual experience to maximize impact.
-3. **Market Analysis:** Parsing job postings to identify keywords and required skills.
-4. **Organization:** Maintaining a clear, organized board of all your materials (resumes, notes, job targets).
-5. **Action Planning:** Deciding precisely what you should work on today to move your search forward.
-6. **Accountability:** Chasing follow-ups to ensure momentum.
-
-**How this applies to your summary:** The options above translate your actions (facilitating, 
+**Recommendation:** **Option 1** is the most comprehensive as it uses strong action verbs and clearly links the actions (rebalancing, standardizing) to the impressive results (throughput increase, time reduction, attainment improvement).
 ```
 
 **Reference (what the training data says):**
 
 ```
-Imani Sørlie facilitated a 14-member stakeholder working group of local governments, developers and tenant advocates to consensus on a formula change. She trains new analysts on her agency's methodology standards and peer-review process, and has presented findings to the agency's oversight board 7 times in two years.
+Raised line throughput 21% by rebalancing the changeover sequence and standardizing two shift-handoff routines. Cut changeover time from 78 minutes to 34 using SMED across 7 format changes, and improved schedule attainment from 82% to 96% over three quarters. Consistent record of moving floor metrics through operator-level process changes.
 ```
 
 ---
 
-### 14. `search_strategy`
+### 13. `search_strategy`
 
 <details><summary>prompt</summary>
 
 ```
-High ghost risk on almost everything. How do I tell which postings are real before I spend an hour tailoring a resume?
+All C fits. I am a clinical lab scientist in Madison moving into healthcare data analysis. Titles 'data analyst'. Keywords 'SQL, Power BI, Python'. Locations 'Madison'. I get generic analyst roles at insurance and marketing firms that want three years as an analyst.
 ```
 
 </details>
@@ -775,52 +651,60 @@ High ghost risk on almost everything. How do I tell which postings are real befo
 **CareerOps-4B:**
 
 ```
-Filter by "ghost risk" and set it to "high" — that's the only way to cut the noise. Then, sort by "days since applied" descending. The ones at the top are the ones you've already lost a week or more on, so drop them. The rest are fresh enough to still be tailored.
+Your titles and keywords are the problem, not the location. 'Clinical laboratory scientist' is a title that gets filtered out by every data analyst posting, and 'SQL, Power BI, Python' is the exact stack most of those roles list as a preference, not a requirement. Change titles to 'clinical laboratory scientist, laboratory scientist, clinical laboratory analyst' and add 'laboratory quality, CLIA, CAP, accreditation' to keywords. Then search 'healthcare data analyst' and 'clinical laboratory analyst' in your region. That is where the roles actually are.
 ```
 
 **Base Gemma 4 E2B:**
 
 ```
-As your CareerOps assistant, my goal is to ensure you spend your time on opportunities with the highest probability of success.
+Understood. I am your CareerOps assistant. My goal is to help you transition from a Clinical Lab Scientist to a Healthcare Data Analyst, specifically targeting roles in Madison, focusing on SQL, Power BI, and Python.
 
-Here is how we filter for "real" postings:
+Here is the plan to get started:
 
-1. **Analyze the Job Description (JD) for Specificity:**
-    * **Look for Concrete Requirements:** Real jobs list specific tools, technologies, methodologies, or quantifiable achievements.
-        * **Red Flag:** Vague terms like "great communicator," "self-starter," or "team player" without any supporting technical or functional context.
-        * **Green Flag:** "Must have experience with Python for data processing," or "Responsible for managing a budget of $50k/month."
-    * **Check for Role Alignment:** Does the required skill directly map to a skill you have *documented* in your experience? If the JD asks for "Agile experience" and your resume only shows project management, it's a mismatch.
+### Phase 1: Assessment & Foundation
 
-2. **Evaluate the Posting Source:**
-    * **Prioritize Verified Sources:** Postings from established, reputable industry recruiters, direct company career pages, or well-known industry-specific job boards are generally higher quality than generic, unvetted aggregators.
-    * **Be Skeptical of "Too Good to Be True":** If the salary range is extremely high for an entry-level role, or the requirements are impossibly broad, proceed with caution.
+**1. Current Profile Assessment (What I need from you):**
+To start, please provide me with the following:
+* **Your current resume (or a summary of your experience/achievements).**
+* **A list of 3-5 specific projects, tasks, or achievements from your clinical lab work that involved:**
+    * Data collection/management.
+    * Identifying trends or anomalies.
+    * Using any tools (even basic Excel functions) that relate to data manipulation.
+* **Any specific coursework, certifications, or personal projects you have done related to SQL, Power BI, or Python.**
 
-3. **The "Reverse Check" (Your Filter):**
-    * **Identify the Core Skill:** For any posting, isolate the **one or two non-negotiable skills** they emphasize.
-    * **Check Your Documentation:** Immediately search your existing experience/projects for a bullet point that *exactly* mirrors that requirement.
-    * **If you have a direct match:** The posting is likely real and worth tailoring.
-    * **If you have a *tangential* match (e.g., you used a similar tool but not in the context they need):** It's a potential fit, but the tailoring effort will be higher.
-    * **If you have *no* documented match:** Flag it as **High Ghost Risk** and defer tailoring until we can confirm the role's legitimacy or you have a stronger profile.
+**2. Target Market Analysis (What I will do):**
+Once I have your background, I will:
+* **Parse 5-10 current job postings** for "Data Analyst" roles in Madison/Wisconsin healthcare/insurance sectors.
+* **Identify the exact required skill overlap** between your clinical background and the required technical skills (SQL, Power BI, Python).
+* **Create a "Skill Gap Analysis"** to pinpoint exactly what you need to emphasize or learn to bridge the gap between your current experience and the target roles.
 
-**In summary: Don't spend an hour tailoring until the JD provides 2-3 concrete, verifiable requirements that directly align with your documented experience.**
+**3. Strategy Outline (What we will build):**
+We will focus on three core areas:
+* **Resume Transformation:** Rewriting your clinical experience to frame lab work as data-driven problem-solving.
+* **Portfolio Development:** Identifying 2-3 small, relevant projects you can build to showcase SQL/Power BI/Python proficiency.
+* **Targeted Outreach:** Developing a strategy for applying to roles that value domain knowledge (Clinical/Lab) combined with technical skills.
 
-How would you like to start? Please provide a job posting you are considering,
+**What is the first piece of information you can provide?**
 ```
 
 **Reference (what the training data says):**
 
 ```
-Check three things in about two minutes each. First, open the posting from the card and see whether the employer's own careers page still lists it; aggregator copies outlive the original constantly. Second, look for a posted or refreshed date, and treat anything older than eight weeks with no update as low priority. Third, check whether the same title has been posted repeatedly this year, which usually means a comp or bar problem rather than a fake role. Order your board by that assessment and tailor only for the top of it. Two searches a day is enough once you are filtering this way.
+Generic analyst titles hide the one thing that makes you competitive, which is that you already work inside a hospital. Change titles to 'healthcare data analyst, clinical informatics analyst, clinical data analyst' and add 'laboratory, Epic, HL7, turnaround time, HIPAA' to keywords. That flips your lab background from a gap into the qualification. Add 'Remote, Milwaukee' to locations. Three runs a day on that set. Health systems and specialty clinic networks run their own hiring pages and list there first, so check every system within an hour of Madison directly and use Add role for anything the scan missed.
 ```
 
 ---
 
-### 15. `skills_filter`
+### 14. `skills_filter`
 
 <details><summary>prompt</summary>
 
 ```
-Cinderpeak Resorts is hiring a Senior Vice President, Revenue and Distribution. Requirements include fifteen years in commercial or revenue leadership, multi-property revenue management with accountability for total revenue, distribution economics across brand.com, OTA, wholesale and group, ancillary and on-property revenue programs, and having led a pricing or inventory system replacement. Here's my full skills list: commercial strategy, cruise revenue management, net yield optimization, itinerary deployment planning, distribution channel strategy, direct-to-consumer growth, trade partner management, pricing architecture, onboard revenue, marketing P&L, demand forecasting, contact center operations, executive presentation, organizational leadership, capital investment cases, loyalty program strategy, Salesforce, Power BI. Which should I include?
+Considering a home infusion operations role and want help narrowing my skills list. Full list:
+
+clinical operations, Epic (Ambulatory, Cadence), staffing and scheduling, patient throughput, Lean healthcare, root cause analysis, Joint Commission readiness, infection control, nurse retention programs, capacity planning, budget ownership, quality metrics (HCAHPS), policy authoring, interdisciplinary rounding, vendor negotiation, change management, RN licensure (Ohio)
+
+The role is Operations Manager, Home Infusion at Wexley Care Partners in Columbus, hybrid, covering about 2,600 active patients and 70 field nurses across two states. They want 5 years in healthcare operations with at least two managing clinical or field staff, scheduling and capacity planning for a mobile workforce, experience rebuilding a workflow that crosses pharmacy, clinical, and intake teams, familiarity with infusion therapy or home health regulatory requirements, comfort owning productivity and quality dashboards, and a real focus on retention since field nurse turnover is their biggest cost driver. Which skills are relevant here?
 ```
 
 </details>
@@ -828,56 +712,57 @@ Cinderpeak Resorts is hiring a Senior Vice President, Revenue and Distribution. 
 **CareerOps-4B:**
 
 ```
-["commercial strategy", "distribution channel strategy", "pricing architecture", "demand forecasting", "executive presentation", "organizational leadership"]
+clinical operations, staffing and scheduling, patient throughput, Lean healthcare, root cause analysis, nurse retention programs, capacity planning, budget ownership, quality metrics (HCAHPS), policy authoring, interdisciplinary rounding, vendor negotiation
 ```
 
 **Base Gemma 4 E2B:**
 
 ```
-Here is an analysis of your skills against the requirements for the Senior Vice President, Revenue and Distribution role at Cinderpeak Resorts.
+Here is an analysis of your skills against the requirements for the Operations Manager, Home Infusion role at Wexley Care Partners, followed by recommendations on which skills to emphasize.
 
-### Skill Mapping Analysis
+### Skill Relevance Analysis
 
-| Job Requirement | Your Skills | Match Strength | Notes & Recommendations |
-| :--- | :--- | :--- | :--- |
-| Fifteen years in commercial or revenue leadership | commercial strategy, executive presentation, organizational leadership, marketing P&L | **Good** | You have the leadership and P&L experience, but you need to ensure your experience clearly spans 15 years in a senior revenue role. |
-| Multi-property revenue management with accountability for total revenue | commercial strategy, net yield optimization, demand forecasting, marketing P&L | **Good** | "Net yield optimization" and "demand forecasting" are strong indicators of multi-property accountability. |
-| Distribution economics across brand.com, OTA, wholesale and group | distribution channel strategy, trade partner management, pricing architecture | **Good** | These map directly to the required channels. Ensure your experience explicitly covers the *economics* of these channels. |
-| Ancillary and on-property revenue programs | onboard revenue, loyalty program strategy | **Good** | These are direct matches. |
-| Having led a pricing or inventory system replacement | (No direct match) | **Weak** | This is a specific technical requirement. You need to frame a past project where you led a system replacement. |
+| Your Skill | Relevance to Job Requirements | Assessment |
+| :--- | :--- | :--- |
+| **Clinical Operations** | Directly relevant to managing the operational flow of home infusion. | **High** |
+| **Epic (Ambulatory, Cadence)** | Relevant for understanding the EMR/system used for patient management. | **High** |
+| **Staffing and Scheduling** | Directly addresses the need for scheduling a mobile workforce and managing field nurses. | **High** |
+| **Patient Throughput** | Directly addresses capacity planning and managing the volume of 2,600 patients. | **High** |
+| **Lean Healthcare** | Relevant for rebuilding workflows and improving efficiency. | **High** |
+| **Root Cause Analysis** | Relevant for identifying and solving operational bottlenecks. | **Medium-High** |
+| **Joint Commission Readiness** | Relevant for regulatory compliance in a healthcare setting. | **Medium** |
+| **Infection Control** | Standard requirement, relevant for home care operations. | **Medium** |
+| **Nurse Retention Programs** | **Crucial.** Directly addresses the requirement to focus on retention as a major cost driver. | **High (Must Emphasize)** |
+| **Capacity Planning** | Directly addresses the need for capacity planning for a mobile workforce. | **High** |
+| **Budget Ownership** | Relevant for operational management and cost control. | **Medium-High** |
+| **Quality Metrics (HCAHPS)** | Directly addresses the need to own productivity and quality dashboards. | **High** |
+| **Policy Authoring** | Relevant for creating standardized processes. | **Medium** |
+| **Interdisciplinary Rounding** | Relevant for rebuilding workflows that cross pharmacy, clinical, and intake teams. | **High** |
+| **Vendor Negotiation** | Relevant for managing external relationships (e.g., vendors, potentially staffing agencies). | **Medium** |
+| **Change Management** | Relevant for rebuilding workflows. | **High** |
+| **RN Licensure (Ohio)** | A baseline requirement, not a core operational skill, but necessary for context. | **Low (Baseline)** |
 
-### Recommendation for Resume/Application Focus
+---
 
-**Include the following skills and frame your experience to directly address the requirements:**
+### Recommended Skill Prioritization for Your Job Search
 
-1. **Distribution Channel Strategy:** (Direct match)
-2. **Pricing Architecture:** (Direct match)
-3. **Net Yield Optimization:** (Strong indicator of revenue accountability)
-4. **Trade Partner Management:** (Covers wholesale/group aspects)
-5. **Marketing P&L:** (Covers the business/commercial leadership aspect)
-6. **Organizational Leadership / Executive Presentation:** (Covers the senior leadership requirement)
-
-**Action Item for You:**
-
-*   **For the "System Replacement" requirement:** You must revise your resume or prepare a specific bullet point detailing a time you successfully led the replacement of a pricing or inventory system. If you don't have that exact experience, we need to focus on framing a major system *optimization* project as a replacement/transformation.
-
-**Next Step:** Please provide your current resume or a summary of your relevant work history so I can start tai
+To maximize your fit
 ```
 
 **Reference (what the training data says):**
 
 ```
-["commercial strategy", "cruise revenue management", "net yield optimization", "distribution channel strategy", "direct-to-consumer growth", "trade partner management", "pricing architecture", "onboard revenue", "demand forecasting", "executive presentation", "organizational leadership"]
+["clinical operations", "staffing and scheduling", "capacity planning", "quality metrics (HCAHPS)", "nurse retention programs", "change management", "RN licensure (Ohio)"]
 ```
 
 ---
 
-### 16. `stage_moves`
+### 15. `stage_moves`
 
 <details><summary>prompt</summary>
 
 ```
-Loftwren | Senior Manager, Pricing and Analytics | applied | 27 days | B+ fit | 76% match | ghost risk high | docs tailored. The posting is off their careers page and the recruiter's mailbox bounces.
+Vandry Surgical, Supplier Quality Engineer II. Fourteen days in conversation, A- fit, 85% match, ghost risk low, docs ready. The recruiter said this morning that the posting is live and I should submit through it.
 ```
 
 </details>
@@ -885,68 +770,50 @@ Loftwren | Senior Manager, Pricing and Analytics | applied | 27 days | B+ fit | 
 **CareerOps-4B:**
 
 ```
-Twenty-seven days at high ghost risk with no recruiter contact is a real reason to stop. The posting is off their careers page and the mailbox bounces — that's not a hiring channel. Send one email to the general HR inbox, not the recruiter, and ask specifically to be added to the pricing and analytics pipeline for this role. That's the only thing you can control.
+Fourteen days in conversation with a recruiter who says the posting is live is a sign the process has stalled, not that it's dead. Send the tailored resume and cover letter today, and ask specifically to bypass the recruiter and go to the hiring manager. A- at 85% with docs ready is the strongest case you have.
 ```
 
 **Base Gemma 4 E2B:**
 
 ```
-Here is the CareerOps analysis and action plan based on the information provided:
+Here is the action plan based on the information provided:
 
-## CareerOps Analysis & Action Plan
+**1. Job Application Strategy:**
 
-**Role:** Senior Manager, Pricing and Analytics at Loftwren
-**Status:** Applied (27 days ago)
-**Fit Grade:** B+
-**Match Score:** 76%
-**Risk Assessment:** Ghost risk is high.
-**Current Status:** Application is not being tracked effectively (posting is off the careers page, recruiter mailbox bounces).
+*   **Action:** Submit the application for the "Supplier Quality Engineer II" role at Vandry Surgical immediately.
+*   **Focus:** Ensure the submitted materials (resume/cover letter) are highly tailored to the requirements of the job description, leveraging the 85% match.
 
----
+**2. Next Steps for You (The Candidate):**
 
-### 1. Role Fit Assessment (B+ Grade, 76% Match)
+*   **Task 1 (Immediate):** Confirm the exact link/portal where the posting is live.
+*   **Task 2 (Preparation):** Review the job description one last time to ensure your submitted materials directly address the key responsibilities and required skills.
+*   **Task 3 (Follow-up Prep):** Prepare for potential screening calls by solidifying your talking points based on your experience matching the role.
 
-**Strengths (Why the 76% Match?):**
-*   *Action Required:* I need your actual resume/experience to confirm this.
-*   *Hypothesis:* The 76% match suggests a strong overlap in core responsibilities (Pricing, Analytics) but potential gaps in specific domain knowledge or seniority level expectations.
+**3. CareerOps Tracking Update:**
 
-**Weaknesses/Gaps (Why not A+?):**
-*   *Action Required:* I need your resume to identify where the 24% gap lies.
-*   *Hypothesis:* The mismatch might be in the specific tools, industry context, or the exact scope of "Senior Manager" responsibilities as defined by Loftwren.
+*   **Role:** Supplier Quality Engineer II, Vandry Surgical
+*   **Fit Score:** A- (85% Match)
+*   **Risk Assessment:** Ghost risk low.
+*   **Status:** Application submission pending.
+*   **Next Action for CareerOps:** Once submitted, track the application status and prepare for the next stage (e.g., screening call).
 
-**Ghost Risk Assessment (High):**
-*   **Risk:** High. The lack of feedback/tracking means we don't know if the application was seen or if the process is broken.
-*   **Mitigation Strategy:** We need to immediately pivot from passive application to active engagement.
-
----
-
-### 2. Immediate Action Plan (What to Work On Today)
-
-**Priority 1: Application Re-engagement & Tracking (Immediate)**
-
-1.  **Verify Application Status:** Check if there is an alternative application portal or direct contact method for Loftwren.
-2.  **Develop Targeted Outreach:** Draft a highly personalized, brief message (LinkedIn InMail or direct email) referencing a specific achievement from your experience that directly maps to the job description's requirements.
-3.  **Resume Tailoring:** Create a **"Loftwren-Optimized" version** of your resume, ensuring the language used mirrors the job description's keywords and focuses on quantifiable results relevant to pricing/analytics.
-
-**Priority 2: Content Creation (Next Steps)**
-
-1.  **STAR Method Prep:** Prepare 3-5 detailed STAR method stories based on your experience that demonstrate success in:
+**What would you like me to do next?** (e.g., Draft a tailored cover letter based on your experience, or set a follow-up reminder.)
 ```
 
 **Reference (what the training data says):**
 
 ```
-applied → closed. Nobody rejected you — the req is off the page and the recruiter's mailbox bounces, so there is no one left to make a decision. You end it. Twenty-seven days at high ghost risk had already told you this. The tailored pricing docs still travel.
+Recruiter told you to submit, so conversation → applied. Fourteen days of back-and-forth with docs already ready is long enough. Apply through the live posting today and email the recruiter the confirmation — an A- at 85% should not get lost in an applicant queue.
 ```
 
 ---
 
-### 17. `app_operation`
+### 16. `board_triage`
 
 <details><summary>prompt</summary>
 
 ```
-What does the onboarding wizard actually ask me for?
+everything on my board has gone quiet and I hate opening it. cinderpeak resorts SVP revenue and distribution, conversation, A-, 86%, 33 days, ghost risk high, docs ready. wanderfare group senior manager revenue science, applied, B, 64%, 41 days, high, docs ready. loftwren senior manager pricing and analytics, applied, B, 61%, 38 days, medium, yes. sablewood resorts group director of revenue strategy, researched, B+, 77%, 22 days, low, no.
 ```
 
 </details>
@@ -954,46 +821,68 @@ What does the onboarding wizard actually ask me for?
 **CareerOps-4B:**
 
 ```
-The onboarding wizard asks for your full name, email, and phone number. It also asks whether you're comfortable with our cookie policy, and whether you've read and understood our remote work policy.
+Nothing is quiet because nothing is open. Cinderpeak is the only real thing here: conversation, A-, 86%, docs ready, 33 days, high ghost risk. Write the follow-up today.
+Wanderfare at 64% and 41 days is a real risk, but it's not a ghost risk yet — docs are ready, so it's a one-day nudge, not a week-long chase.
+Loftwren at 61% and 38 days is the one to drop.
+Sablewood at 77% and 22 days is the only role worth keeping.
 ```
 
 **Base Gemma 4 E2B:**
 
 ```
-As the CareerOps assistant, I don't have access to a specific "onboarding wizard" you might be referring to, as I manage your job search based on the information you provide to me.
+Here is an analysis and action plan based on your current board status:
 
-**To tell you exactly what the wizard asks for, you need to tell me which wizard you are referring to.**
+## Board Analysis Summary
 
-However, generally, an onboarding process for a CareerOps service like mine is designed to gather the following information so I can start working effectively for you:
+| Role | Status | Score | Time Since Last Activity | Risk Level | Next Step Recommendation |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **Cinderpeak Resorts SVP Revenue & Distribution** | Conversation | A- | 33 days | High (Ghost Risk) | **High Priority Follow-up.** Need to re-engage. |
+| **Wanderfare Group Senior Manager Revenue Science** | Applied | B | 41 days | High | **Medium Priority Follow-up.** Need to gauge interest. |
+| **Loftwren Senior Manager Pricing & Analytics** | Applied | B | 38 days | Medium | **Medium Priority Follow-up.** Need to confirm next steps. |
+| **Sablewood Resorts Group Director of Revenue Strategy** | Researched | B+ | 22 days | Low | **Low Priority Nurture.** Keep on the radar, but not an immediate push. |
 
-1. **Your Background/Experience:** Details about your past roles, responsibilities, and achievements.
-2. **Target Roles/Industries:** What kind of jobs are you looking for?
-3. **Career Goals:** What are your priorities (e.g., salary range, work-life balance, specific skill development)?
-4. **Preferred Application Style:** How you like your materials (e.g., formal, creative, results-driven).
-5. **Any Specific Constraints or Preferences:** Things you absolutely *must* include or *must* avoid.
+---
 
-**If you can tell me the context (where you saw the wizard), I can give you a much more precise answer!**
+## Action Plan for Today
+
+**Today's Focus: Re-engagement & Information Gathering**
+
+1. **Cinderpeak Resorts (High Priority):**
+    * **Action:** Send a brief, value-driven follow-up email. Focus on a specific recent industry trend or a relevant insight you have that connects to their current challenges in revenue/distribution.
+    * **Goal:** Re-open the conversation and determine if they are still actively looking or if the timing is off.
+
+2. **Wanderfare Group (Medium Priority):**
+    * **Action:** Send a brief, low-pressure check-in. Ask a specific, open-ended question about their current priorities in revenue science.
+    * **Goal:** Gauge current interest level without demanding an immediate commitment.
+
+3. **Loftwren (Medium Priority):**
+    * **Action:** Send a brief note confirming your interest and asking if they have any updates on their internal process or timeline.
+    * **Goal:** Confirm if they are still in the running or if they have moved forward internally.
+
+4. **Sablewood Resorts (Low Priority):**
+    * **Action:** **No immediate action.** Keep the file organized. Schedule a reminder to check in again in 3-4 weeks, or wait for a new relevant role to surface.
+
+---
+
+**Next Steps for
 ```
 
 **Reference (what the training data says):**
 
 ```
-Five numbered sections under "Let's set up your job search 👋": "1 · What roles are you after?" (target titles, keywords, seniority, locations), "2 · About you" (name, phone, LinkedIn, location), "3 · Paste your résumé," "4 · AI" (optional keys), and "5 · How you'll actually use it."
+Thirty-three quiet days at Cinderpeak is the number that matters, and it's still your best role — A-, 86%, docs already built. Go around the recruiter today and ask a cruise contact for a warm intro to the commercial lead.
+Sablewood is second: B+, 77%, 22 days in researched, no docs. Build them and apply this week.
+Wanderfare and Loftwren are both B-grade, 64% and 61%, past 38 days with everything already sent. Two down-level roles don't earn a fourth touch. Stop spending on them.
 ```
 
 ---
 
-### 18. `board_triage`
+### 17. `bullet_rewrite`
 
 <details><summary>prompt</summary>
 
 ```
-quick one — I open this board every morning and do nothing. break the tie for me.
-
-Halvard & Pike / Senior Manager, Digital Merchandising / interview / A / 92% / 2 days / low / docs yes
-Wickham Row / Director of E-commerce Operations / conversation / A- / 83% / 8 days / low / docs no
-Northmarch Consumer Brands / Category Manager, Marketplace / applied / B+ / 75% / 24 days / medium / docs yes
-Bellrose Outfitters / Retail Operations Analyst / sourced / C / 49% / 30 days / high / docs no
+Trying to punch up this bullet for a Vice President, Risk Analytics application at Northfell Capital Partners: "Manages 12 analysts and data scientists across strategy, modelling and portfolio monitoring." They're consolidating three fractured analytics groups into one function. Give me a stronger version.
 ```
 
 </details>
@@ -1001,70 +890,63 @@ Bellrose Outfitters / Retail Operations Analyst / sourced / C / 49% / 30 days / 
 **CareerOps-4B:**
 
 ```
-Halvard & Pike is the only role worth opening. Two days into an interview at A and 92%, docs already tailored, and nothing else here is close.
-Wickham Row is the second stop: eight days in conversation at A-/83%, docs missing.
-Northmarch Consumer Brands is a B+ at 75% and 24 days applied — it's a real application, not a warm intro.
-Bellrose Outfitters is a C at 49% and 30 days sourced.
-Drop Bellrose.
+Manages 12 analysts and data scientists across strategy, modelling and portfolio monitoring — the exact function Northfell is consolidating from three fractured groups.
 ```
 
 **Base Gemma 4 E2B:**
 
 ```
-As your CareerOps assistant, my goal is to maximize your job search efficiency and effectiveness.
+Here are a few stronger options, depending on the specific angle you want to emphasize for a VP, Risk Analytics role. Choose the one that best aligns with the core competencies of the job description you are targeting:
 
-Here is my analysis and recommendation for what you should work on today:
+**Option 1: Emphasizing Leadership & Transformation (Strongest for a consolidation role)**
 
-### **Analysis of Your Board**
+> "Led and scaled a cross-functional team of 12 analysts and data scientists, successfully consolidating three disparate analytics functions into a unified, high-performing risk analytics unit."
 
-| Company | Role | Status | Grade | Fit Score | Time to Hire | Level | Docs Needed |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| Halvard & Pike | Senior Manager, Digital Merchandising | Interview | A | 92% | 2 days | Low | Yes |
-| Wickham Row | Director of E-commerce Operations | Conversation | A- | 83% | 8 days | Low | No |
-| Northmarch Consumer Brands | Category Manager, Marketplace | Applied | B+ | 75% | 24 days | Medium | Yes |
-| Bellrose Outfitters | Retail Operations Analyst | Sourced | C | 49% | 30 days | High | No |
+**Option 2: Emphasizing Scope & Impact (Good for showing breadth of responsibility)**
 
-**Key Observations:**
+> "Directed a team of 12 analysts and data scientists, overseeing strategy, quantitative modeling, and portfolio monitoring to drive data-informed risk decision-making across the firm."
 
-1.  **Highest Potential:** The **Halvard & Pike** role has the highest fit score (92%) and is in the interview stage, suggesting a strong alignment.
-2.  **Highest Effort/Longest Cycle:** **Bellrose Outfitters** requires the most time (30 days) and has the lowest current fit score (49%), indicating it might require more tailored material or is a weaker match.
-3.  **Actionable Next Steps:** You have an active interview with Halvard & Pike, which should be prioritized for follow-up.
+**Option 3: Emphasizing Strategic Oversight (Good for a VP level)**
 
-### **My Recommendation for Today**
+> "Provided strategic oversight and management for 12 analysts and data scientists, ensuring the integrity and standardization of risk analytics processes across strategy, modeling, and portfolio monitoring."
 
-**🎯 Focus Today: Halvard & Pike (Senior Manager, Digital Merchandising)**
+**Why these are stronger:**
 
-**Action Plan:**
+* **Action Verbs:** They start with strong verbs (Led, Directed, Provided) instead of the passive "Manages."
+* **Quantifies the Achievement:** They explicitly state the *result* of the management (consolidation, standardization, driving decision-making).
+* **Elevates the Role:** They shift the focus from *managing people* to *managing a function/strategy*.
 
-1.  **Follow-up:** Since you are in the interview stage, I recommend drafting a concise, high-impact follow-up email to the hiring contact. This should reference a specific point from the interview to reinforce your fit and show engagement.
-2.  **Preparation:** Spend 1-2 hours reviewing the job description one last time to ensure you have 1-2 specific, data-driven examples ready to discuss merchandising success.
-
-**Secondary Task (If time allows):**
-
-*   **Wickham Row:** Since this is a "conversation" stage, I recommend preparing 3 strong, specific questions to ask them to demonstrate strategic thinking, moving the conversation forward.
-
----
-
-###
+**Recommendation:** **Option 1** is the most powerful for a role involving organizational change, as it directly addresses the "consolidating three fractured groups" context.
 ```
 
 **Reference (what the training data says):**
 
 ```
-Two days after a Halvard & Pike interview at A/92% — that's your whole morning. Write the follow-up while the conversation is still fresh in your head.
-Wickham Row is the step up and it has no tailored docs after eight days of conversation. Build them before that thread cools.
-Northmarch: 24 days applied, medium ghost risk. One recruiter note, then stop checking it daily.
-Bellrose is a C at 49% and thirty days untouched. That role is why you freeze when you open the board. Delete it.
+Manages 12 analysts and data scientists across strategy, modelling and portfolio monitoring — team-building at the scale this VP role needs to merge three fractured analytics groups into one.
 ```
 
 ---
 
-### 19. `bullet_rewrite`
+### 18. `bullet_select`
 
 <details><summary>prompt</summary>
 
 ```
-Trying to punch up this bullet for a Grants Manager application at Foothill Community Health Alliance: "Cut average subrecipient invoice turnaround from 34 days to 12." They want someone who reconciles grant revenue and expenditure monthly with the controller. Give me a stronger version.
+Here is my full bullet list, followed by a role I'm targeting. Return only a JSON array of the bullet IDs I should keep for this JD. Do not rank them.
+
+1. Directs operations for 210 specialty stores across 14 states, $1.1B in annual sales and about 4,800 employees.
+2. Improved four-wall operating margin 2.4 points over three years without closing stores.
+3. Cut chain-wide shrink from 1.9% to 1.1%, worth roughly $8.8M a year.
+4. Rolled out a new labor model to all 210 stores, saving 340,000 annual hours while lifting mystery-shop scores from 81 to 92.
+5. Reduced store manager turnover from 34% to 19% by rebuilding onboarding and the bonus structure.
+6. Launched buy-online-pickup-in-store across the fleet in 5 months, now 14% of digital orders.
+7. Consolidated 31 operational reports into a single daily scorecard used by 12 district managers.
+8. Owns a $92M store operating expense budget.
+9. Led the pilot and rollout of a mobile task-management app; task completion visibility went from unmeasured to 94%.
+10. Opened 38 new stores over four years with average time-to-plan-sales of 7 months against a 10-month target.
+11. Built the succession pipeline that filled 11 of 14 district manager openings internally.
+
+Which should I highlight first for this one?
 ```
 
 </details>
@@ -1072,61 +954,29 @@ Trying to punch up this bullet for a Grants Manager application at Foothill Comm
 **CareerOps-4B:**
 
 ```
-Cut average subrecipient invoice turnaround from 34 days to 12 — the monthly reconciliation cadence this grants manager role runs with the controller.
+[1, 2, 3, 4, 6, 7, 8, 10]
 ```
 
 **Base Gemma 4 E2B:**
 
 ```
-Here are a few stronger options, tailored to emphasize the reconciliation and financial control aspects relevant to a Grants Manager role:
-
-**Option 1 (Focus on Accuracy and Compliance):**
-> "Streamlined the subrecipient invoice reconciliation process, reducing the average turnaround time from 34 days to 12 days, ensuring timely and accurate financial reporting for grant compliance."
-
-**Option 2 (Focus on Process Improvement and Control):**
-> "Developed and implemented a standardized reconciliation workflow for subrecipient invoices, cutting the average processing time by 40% (from 34 to 12 days) and establishing a robust monthly reconciliation process with the controller."
-
-**Option 3 (More Action-Oriented/Impact-Focused):**
-> "Improved grant financial operations by optimizing the subrecipient invoice lifecycle, decreasing the average invoice turnaround time from 34 days to 12 days, which directly supported accurate monthly revenue and expenditure reconciliation."
-
-**Which one should you choose?**
-
-*   **If the job description heavily emphasizes compliance and accuracy:** Choose **Option 1**.
-*   **If the job description emphasizes process improvement and system building:** Choose **Option 2**.
-*   **If you want the strongest, most direct statement of impact:** Choose **Option 3**.
-
-**Key takeaway:** All options shift the focus from just "cutting time" to *why* it matters (accuracy, compliance, and supporting reconciliation).
+Please provide the job description you are targeting.
 ```
 
 **Reference (what the training data says):**
 
 ```
-Cut average subrecipient invoice turnaround from 34 days to 12 — the financial reconciliation discipline this grants manager role will run jointly with the controller every month.
+[1, 4, 6, 7, 9]
 ```
 
 ---
 
-### 20. `bullet_select`
+### 19. `cover_close`
 
 <details><summary>prompt</summary>
 
 ```
-Vice President, Customer Success at Tessellate Software (Boston, MA). Bullets:
-1. Leads a 31-person customer success organization covering $74M in annual recurring revenue.
-2. Raised gross revenue retention from 87% to 94% in two years across a 900-account book.
-3. Built the health-scoring model that now predicts churn 90 days out with 71% precision.
-4. Cut time-to-value for new enterprise accounts from 74 days to 38 through a redesigned onboarding program.
-5. Grew expansion revenue from $4.1M to $12.6M by giving CSMs a structured account-planning motion and a quota.
-6. Restructured the team into segment pods, which lifted CSM capacity from 22 to 34 accounts each without a satisfaction drop.
-7. Reduced CSM attrition from 29% to 12% after rebuilding the career ladder and compensation plan.
-8. Partnered with product to launch an in-app adoption program that moved a key feature from 19% to 58% usage.
-9. Runs quarterly business reviews for the top 40 accounts personally.
-10. Owns a $3.9M departmental budget and the customer success technology stack.
-11. Cut the escalation queue from an average of 41 open items to 9 by introducing a defined severity framework with product.
-
-Needs: led a customer success organization of 25 people or more. Role: rebuild health scoring so leading indicators arrive early enough to act on.
-
-Given this JD, which bullets carry the most weight? List them in priority order.
+For my Rowanmere Health Technologies Director of Client Experience cover letter, write the closing 1-2 sentences. The posting says the role runs quarterly business reviews for the twenty largest health system relationships. Ask specifically to discuss those reviews.
 ```
 
 </details>
@@ -1134,37 +984,61 @@ Given this JD, which bullets carry the most weight? List them in priority order.
 **CareerOps-4B:**
 
 ```
-[3, 1, 6, 7, 10, 4, 8]
+I'd welcome a conversation about how the quarterly business reviews for the twenty largest health system relationships are currently run.
 ```
 
 **Base Gemma 4 E2B:**
 
 ```
-Here is the prioritization of your bullets based on the provided Job Description (JD):
+Here are a few options for the closing 1-2 sentences, depending on the tone you want to strike:
 
-**Priority Order:**
+**Option 1: Direct and Action-Oriented**
 
-1. **Built the health-scoring model that now predicts churn 90 days out with 71% precision.** (Directly addresses the need to "rebuild health scoring so leading indicators arrive early enough to act on.")
-2. **Leads a 31-person customer success organization covering $74M in annual recurring revenue.** (Addresses the scale/size requirement: "led a customer success organization of 25 people or more.")
-3. **Reduced CSM attrition from 29% to 12% after rebuilding the career ladder and compensation plan.** (Demonstrates ability to build and improve the team structure, which is often a key component of scaling success organizations.)
-4. **Grew expansion revenue from $4.1M to $12.6M by giving CSMs a structured account-planning motion and a quota.** (Shows impact on revenue growth, a key metric for a VP role.)
-5. **Restructured the team into segment pods, which lifted CSM capacity from 22 to 34 accounts each without a satisfaction drop.** (Demonstrates operational restructuring and scaling capability.)
-6. **Raised gross revenue retention from 87% to 94% in two years across a 900-account book.** (Shows direct impact on core success metric—retention.)
-7. **Cut time-to-value for new enterprise accounts from 74 days to 38 through a redesigned onboarding program.** (Shows ability to improve the customer journey/onboarding process.)
-8. **Cut the escalation queue from an average of 41 open items to 9 by introducing a defined severity framework with product.** (Shows ability to improve operational efficiency and reduce friction.)
-9. **Partnered with product to launch an in-app adoption program that moved a key feature from 19% to 58% usage.** (Demonstrates cross-functional influence on product adoption.)
-10. **Runs quarterly business reviews for the top 40 accounts personally.** (Shows high-level engagement and strategic oversight.)
-11. **Owns a $3.9M departmental budget and the customer success technology stack.** (Demonstrates P&L/resource management.)
+> I am eager to discuss how my experience leading quarterly business reviews for major health system relationships aligns with your needs. I look forward to the opportunity to detail my approach to managing those high-stakes reviews.
 
-**Summary Rationale:**
+**Option 2: Confident and Focused**
 
-The top priority is the **Health Scoring** bullet because it is the most direct match for the specific skill
+> I welcome the chance to elaborate on my success in managing quarterly business reviews for large health systems. I am available to schedule a conversation to explore how I can immediately drive success in this area.
+
+**Option 3: Brief and Enthusiastic**
+
+> I am very keen to discuss the specifics of running your quarterly business reviews for the twenty largest health system relationships. Thank you for your consideration; I look forward to hearing from you soon.
 ```
 
 **Reference (what the training data says):**
 
 ```
-[2, 1, 6, 3, 5, 9, 11]
+I'd appreciate a conversation about how quarterly business reviews for your twenty largest health system relationships are structured today.
+```
+
+---
+
+### 20. `cover_open`
+
+<details><summary>prompt</summary>
+
+```
+Write cover_open (≤50 words, 1-2 sentences) for Colby Iyengar, a Kansas City high school math teacher applying to the Data Analyst I, Lending opening at Prairiestone Credit Group. Hook on this line from the posting: 'Would rather hire someone who reasons carefully and writes clearly than someone with two extra years of tooling experience; has hired career changers into this team twice before.' No resume recap, no generic openers like 'I am excited to apply.'
+```
+
+</details>
+
+**CareerOps-4B:**
+
+```
+I'd rather hire someone who reasons carefully and writes clearly than someone with two extra years of tooling experience — that's the kind of hiring I'd want to be part of at Prairiestone.
+```
+
+**Base Gemma 4 E2B:**
+
+```
+Leverage your high school math teaching experience to demonstrate strong analytical reasoning and clear communication. My background proves I can quickly master complex data concepts and translate findings into actionable insights for lending decisions.
+```
+
+**Reference (what the training data says):**
+
+```
+Prairiestone has hired career changers into its analytics team twice before, and I'd like to be the third: a math teacher who reasons carefully with data and writes clearly enough that a room full of non-statisticians follows along.
 ```
 
 ---

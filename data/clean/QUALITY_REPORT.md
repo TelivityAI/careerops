@@ -491,6 +491,20 @@ rows.
 
 ---
 
+## Corpus correction log — 2026-07-21
+
+Task-shape fixes only; no new row count.
+
+- `bullet_select`: prompts ask for keep-only JSON id arrays; answers are unordered keep sets.
+- `search_strategy`: symptom-matched gold rewritten on location / funnel / over-filter rows.
+- `stage_moves`: `→ closed` destinations raised to 20/100.
+- Merge: `app_operation` excluded from `careerops_train.jsonl` / `careerops_val.jsonl`
+  (file remains on disk). Merged split: 2203 train / 67 val across 15 tasks.
+
+Gates: `validate_clean.py` pass; ban-list clean; `preflight_corpus.sh` pass.
+
+---
+
 ## Session — match_grading regeneration (Opus 4.8, verification session acting as generator)
 
 **Task:** replace `match_grading.jsonl` entirely. The prior file ran ~1.2k–1.6k tokens per

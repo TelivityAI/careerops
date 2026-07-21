@@ -2,6 +2,9 @@
 
 **2,380 rows · 16 files · zero personal rows.** `validate_clean.py` and `privacy/grep_ban.py` both pass.
 
+Merged trainable corpus excludes `app_operation` (file stays on disk): **2,270 accepted rows
+across 15 tasks** (`careerops_train.jsonl` 2203 / `careerops_val.jsonl` 67).
+
 Train target: Gemma E2B, QLoRA, Kaggle T4x2, `max_length=768`.
 
 ## Token budget
@@ -47,8 +50,8 @@ answer are structural (`{"company": ...`), so a low score here is a metric artif
 duplication. `validate_clean.py` excludes JSON tasks from the distinct gate for this reason.
 All 130 `jd_parsing` answers and all 80 `skills_filter` answers are fully distinct.
 
-`app_operation` and `jd_parsing` carry `persona_id: null` by design — UI how-tos (corpus retained; not a claimed model capability — see local operator notes (untracked)) and posting
-parsing are not persona-scoped.
+`app_operation` and `jd_parsing` carry `persona_id: null` by design — UI how-tos (corpus retained
+on disk, but excluded from the next train merge) and posting parsing are not persona-scoped.
 
 **Tightest row in the corpus:** `match_grading` at 742/768, 26 tokens of headroom.
 Second is `bullet_select` at 704.
@@ -91,3 +94,6 @@ verified by whoever wrote it. Model stamps are what actually produced the row �
 Ready for Cursor: `validate_clean.py` + a real-tokenizer length audit before any Kaggle run.
 The number that matters is the **max**, not the median, and specifically the 13
 `match_grading` rows in the 551-598 band.
+
+Current preflight + merge status: passes `scripts/preflight_corpus.sh`; train merge writes
+15-task outputs with `app_operation` skipped by design.
