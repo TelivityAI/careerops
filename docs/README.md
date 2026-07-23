@@ -1,5 +1,5 @@
 # Docs
 
-Public product and train notes live in the root [README](../README.md) and under `kernel/` / `scripts/`.
+Product + deploy: see the root [README](../README.md) and [web/README.md](../web/README.md).
 
-Operator-only notes are **not** in this repo — see [INTERNAL.md](INTERNAL.md).
+Model cards: Hugging Face `telivity/CareerOps-4B*`.

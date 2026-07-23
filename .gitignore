@@ -63,3 +63,6 @@ docs/_internal/
 career-ops-ux/
 supabase/
 .kaggle_upload_train/
+
+# Local deploy secrets for the web app
+web/config.js
