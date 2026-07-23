@@ -58,3 +58,9 @@ Requires: Node.js, [Vercel CLI](https://vercel.com/docs/cli) logged in, and a Su
 
 Copyright © Telivity / contributors  
 Licensed under the Apache License, Version 2.0 — see [LICENSE](LICENSE).
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md).  
+Be kind: [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).  
+Security reports: [SECURITY.md](SECURITY.md).
