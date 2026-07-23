@@ -66,3 +66,9 @@ supabase/
 
 # Local deploy secrets for the web app
 web/config.js
+
+# Training/eval — private vault only, never re-add to public
+data/
+eval/
+evalkernel/
+kernel/

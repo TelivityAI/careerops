@@ -139,7 +139,6 @@ That deploys `web/` to Vercel. Any static host works if you serve `web/` with yo
 | `scripts/deploy-web.sh` | One-command Vercel deploy |
 | `LICENSE` | Apache-2.0 |
 | `CONTRIBUTING.md` / `CODE_OF_CONDUCT.md` / `SECURITY.md` | Community health |
-| `data/`, `eval/`, `kernel/` | Optional assets related to CareerOps-4B training/eval |
 
 ### What you must bring
 
@@ -175,8 +174,10 @@ Optional model providers (Claude / Kimi) via YOUR keys or free tier
 
 | | |
 |--|--|
-| **This repo** | Forkable **dashboard** (+ optional train/eval trees) |
+| **This repo** | Forkable **dashboard** (deployable SPA) |
 | **Hugging Face** | **CareerOps-4B** weights ([adapter](https://huggingface.co/telivity/CareerOps-4B) / [merged](https://huggingface.co/telivity/CareerOps-4B-merged) / [GGUF](https://huggingface.co/telivity/CareerOps-4B-GGUF)) |
+
+Training/eval corpora and kernels are **not** in this public repo — they live in Telivity’s private ops vault. Public model weights are on Hugging Face only.
 
 The live UI’s match/rewrite path goes through Supabase edge functions — it does **not** load HF weights in the browser.
 
