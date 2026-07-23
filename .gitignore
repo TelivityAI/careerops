@@ -11,6 +11,8 @@ hf_token
 !.env.example
 **/secrets/**
 kaggle.json
+.sb_token
+.sb-*.txt
 
 # Python
 .venv/
@@ -52,5 +54,12 @@ data/clean/_rejected/**
 huggingface/
 .venv-probe/
 
-# Operator / chat artifacts — local only, never ship
+# Operator / chat / product-ops — never ship publicly
+# Prefer ~/career-ops-private; local park is .operator/
+.operator/
+.fake-home/
+.supabase-cli-home/
 docs/_internal/
+career-ops-ux/
+supabase/
+.kaggle_upload_train/

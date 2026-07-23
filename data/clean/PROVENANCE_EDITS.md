@@ -44,4 +44,4 @@ automatically:
 - no first-four-word sequence in more than ~5% of a file
 - no 8-word sequence occurring 3+ times in a prose (non-JSON) file
 
-Not applied — the validator is Cursor's file.
+Not applied — the validator is the repo's file.

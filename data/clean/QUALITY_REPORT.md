@@ -554,5 +554,5 @@ strength/gap items ≤20 words; 0 errors.
 
 **Caveat for the length audit:** `approx_tokens` is `ceil(chars/3.5)`, a generation-time
 estimate. On JSON-dense text the true ratio may be nearer 3.2, which would push the top rows
-up ~10%. Cursor should re-measure the **max** with the Gemma tokenizer — specifically the 13
+up ~10%. Maintainers should re-measure the **max** with the Gemma tokenizer — specifically the 13
 rows in the 551–598 band — not the median.

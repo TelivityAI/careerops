@@ -91,7 +91,7 @@ verified by whoever wrote it. Model stamps are what actually produced the row â€
 
 ## Handoff state
 
-Ready for Cursor: `validate_clean.py` + a real-tokenizer length audit before any Kaggle run.
+Ready for maintainers: `validate_clean.py` + a real-tokenizer length audit before any Kaggle run.
 The number that matters is the **max**, not the median, and specifically the 13
 `match_grading` rows in the 551-598 band.
 

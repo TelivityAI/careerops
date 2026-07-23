@@ -1,6 +1,6 @@
 # Privacy ban-list for CareerOps clean corpus grep gate
 # One pattern per line. Lines starting with # are comments.
-# Cursor maintains this file. Generators must never introduce these strings.
+# Maintainers maintain this file. Generators must never introduce these strings.
 
 # --- Real identity (user) ---
 Dušan

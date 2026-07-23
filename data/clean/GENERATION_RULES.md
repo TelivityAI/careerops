@@ -44,7 +44,7 @@ One `.jsonl` per task, named exactly as the task. Rejected rows go to `_rejected
 
 ## Hard bans — reject the row
 
-**The authoritative machine-checked list is `scripts/privacy/ban_list.txt` (Cursor maintains it). Read it before generating.** The rules below are additional and are checked by human review, not only by grep.
+**The authoritative machine-checked list is `scripts/privacy/ban_list.txt` (maintainers update it). Read it before generating.** The rules below are additional and are checked by human review, not only by grep.
 
 - Any real person's name, email, phone, LinkedIn, address
 - Any real company name (use only companies invented in PERSONAS.md / the JD bank)
