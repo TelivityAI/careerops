@@ -72,3 +72,16 @@ data/
 eval/
 evalkernel/
 kernel/
+
+# Never re-add train tooling to public
+scripts/assemble*.py
+scripts/assembler.py
+scripts/audit_*.py
+scripts/demo_infer.py
+scripts/merge_*.py
+scripts/preflight_corpus.sh
+scripts/quickstart.sh
+scripts/run_privacy_probe.py
+scripts/validate_clean.py
+scripts/privacy/
+requirements-infer.txt
