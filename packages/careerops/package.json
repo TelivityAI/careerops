@@ -1,0 +1,36 @@
+{
+  "name": "@telivity/careerops",
+  "version": "1.1.0",
+  "description": "Init CareerOps agent skill + wire web/config.js for self-host",
+  "bin": {
+    "careerops": "bin/careerops.js"
+  },
+  "type": "module",
+  "files": [
+    "bin",
+    "skill",
+    "README.md"
+  ],
+  "scripts": {
+    "test": "node ./test/init-smoke.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "license": "Apache-2.0",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TelivityAI/careerops.git",
+    "directory": "packages/careerops"
+  },
+  "homepage": "https://careerops.telivity.app",
+  "keywords": [
+    "careerops",
+    "job-search",
+    "agent-skill",
+    "telivity"
+  ]
+}

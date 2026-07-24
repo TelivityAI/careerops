@@ -5,9 +5,12 @@ Find roles, track the pipeline, check fit, and generate tailored drafts from **o
 
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 [![Demo](https://img.shields.io/badge/demo-careerops.telivity.app-0ccabf)](https://careerops.telivity.app)
+[![npm](https://img.shields.io/npm/v/@telivity/careerops.svg)](https://www.npmjs.com/package/@telivity/careerops)
+[![Skill](https://img.shields.io/badge/agent%20skill-careerops-0ccabf)](docs/SKILL.md)
 
 **Live demo:** [careerops.telivity.app](https://careerops.telivity.app)  
-**Model weights (separate):** [CareerOps-4B on Hugging Face](https://huggingface.co/telivity/CareerOps-4B)
+**Model weights (separate):** [CareerOps-4B on Hugging Face](https://huggingface.co/telivity/CareerOps-4B)  
+**Agent skill:** `npx @telivity/careerops@1.1.0 init` (or latest) — modes scan / evaluate / rank / tailor / interview / followup / outcome ([docs](docs/SKILL.md))
 
 ---
 
@@ -35,29 +38,35 @@ The product doctrine is blunt and encoded in the UI:
 
 ## What you get
 
-### 1. Pipeline board (8 stages)
+### 1. Find — fill the board with hygiene
 
 Sourced → Researched → Conversation → Applied → Interview → Offer → Rejected → Closed.
 
 - **Run job search** scans live company career boards (Greenhouse / Ashby / Lever-style sources) using your titles, keywords, seniority, and locations.  
-- **Add role** (on the Researched column and in the header): paste **link + job description** — you don’t wait on a broken scrape.  
-- **LinkedIn**: no LinkedIn API. Opens Google `site:linkedin.com/jobs` (and LinkedIn search) from your Settings prefs, then you paste links back in.  
-- Cards stay calm: company, title, optional PDF/sent markers, staleness — **not** a screaming match % on every card.
+- **Find hygiene** (Settings): company **blocklist**, **max posting age**, **remote preference**, and soft-hide of blocked / stale / non-matching roles.  
+- **Triage** on Sourced: batch match, dedupe, sort/filter by verdict — tags scores only; never applies.  
+- **Add role**: paste **link + job description** when a scrape is incomplete.  
+- **LinkedIn**: no LinkedIn API — opens Google `site:linkedin.com/jobs` from your prefs; you paste links back in.  
+- Cards stay calm: company, title, optional PDF/sent markers, staleness — not a screaming match % on every card.
 
-### 2. Side drawer — decide
+### 2. Decide — drawer evaluate
 
 Click a card:
 
 - Load or paste the JD (with provenance: from link / pasted / saved).  
-- **Garbage JD reject**: careers/marketing scrapes (nav chrome, “Loading…”, footers) are refused so you don’t “match” against a homepage.  
+- **Garbage JD reject**: careers/marketing scrapes are refused so you don’t “match” against a homepage.  
 - **Check my match** → score + materials coverage (“N of M in your materials”).  
 - Gaps split into **In your materials** vs **Worth adding?**  
-- **Apply / Stretch / Skip** tag the card only — they do **not** apply for you and do **not** move columns.
+- **Evaluate pack**: structured call suggestion (Apply / Stretch / Skip) — tags the card only; does **not** apply for you or move columns.  
+- Interview angles, research/outreach drafts, and outcome notes when you need them.  
+- **Follow-ups**: Applied / Interview roles surface a due strip so nothing goes silent.
 
-### 3. Full-page builder — write
+### 3. Write — builder with locks, review, sent
 
-- Left: **Summary / Experience / Skills** nav + tick the experience bullets that feed Generate.  
-- Center: draft paper, **Re-check match**, Word export, append-only **Saved versions**.  
+- Left: **Summary / Experience / Skills** nav + tick bullets that feed Generate.  
+- **Section locks**: Education locked by default (AI won’t overwrite); optional Experience lock.  
+- Center: draft paper, **Review draft** (lists issues only — never edits for you), Word export, append-only **Saved versions**.  
+- **Sent** marker freezes a version until you unfreeze — so you know what left the building.  
 - Right: match hero, gap cards, **Generate draft** (resume and/or cover).  
 
 Hard rules in code, not just marketing:
@@ -66,11 +75,13 @@ Hard rules in code, not just marketing:
 - Generate is driven by **checked experience** + materials you added.  
 - Versions are **append-only** with human names like `Company — Role — date`.
 
-### 4. Honesty by default
+### 4. Bring your own model + offline skill
 
-- Banner: treat AI text as a draft; it can be wrong; never claim experience you don’t have.  
-- Optional **BYO** Anthropic (Claude) or Kimi keys in Settings (your bill). Free-tier messaging when no key.  
-- Exports strip API keys. Event logging stores **action names / ids**, not resume or JD text.
+- Optional **BYO** keys in Settings: Anthropic (Claude), Kimi, or any **OpenAI-compatible** base URL + key + model (your bill). Free-tier messaging when no key.  
+- **Board pack** export (Settings → Your data): sanitized JSON for local agent skill runs — API keys never included.  
+- Agent skill via `npx @telivity/careerops init` — modes scan / evaluate / rank / tailor / interview / followup / outcome.  
+- Exports strip API keys. Event logging stores **action names / ids**, not resume or JD text.  
+- Banner doctrine: treat AI text as a draft; **never invent** experience; you apply on the employer site.
 
 ---
 
@@ -136,6 +147,9 @@ That deploys `web/` to Vercel. Any static host works if you serve `web/` with yo
 | Path | Purpose |
 |------|---------|
 | `web/` | The dashboard SPA |
+| `.agents/skills/careerops/` | Open Agent Skill (CLI symlinks under `.claude` / `.codex` / `.opencode`) |
+| `packages/careerops` | `npx @telivity/careerops init` |
+| `docs/SKILL.md` | Public skill overview |
 | `scripts/deploy-web.sh` | One-command Vercel deploy |
 | `LICENSE` | Apache-2.0 |
 | `CONTRIBUTING.md` / `CODE_OF_CONDUCT.md` / `SECURITY.md` | Community health |
@@ -161,12 +175,23 @@ Browser (static SPA)
 Your Supabase project
    │  Edge Functions (search, JD fetch, match, rewrite, chat, free AI)
    ▼
-Optional model providers (Claude / Kimi) via YOUR keys or free tier
+Optional model providers (Claude / Kimi / OpenAI-compatible) via YOUR keys or free tier
 ```
 
 - **UI IA:** board → drawer (decide) → builder (write). Escape hatch: `?legacy=1` for the old centered role panel.  
 - **Mobile:** board + drawer; builder asks for a larger screen.  
-- **Config:** `window.CAREEROPS_CONFIG` from `config.js` (see `web/config.example.js`).
+- **Config:** `window.CAREEROPS_CONFIG` from `config.js` (see `web/config.example.js`).  
+- **Skill:** export a Board pack from Settings for offline agent modes, or point the skill at your Supabase/`config.js`.
+
+---
+
+## Agent skill (optional)
+
+```bash
+npx @telivity/careerops init
+```
+
+Installs `.agents/skills/careerops/` and symlinks for common agent CLIs. See [docs/SKILL.md](docs/SKILL.md). The web board remains the human SoT; the skill is a power-user front door that respects the same doctrine.
 
 ---
 
@@ -205,3 +230,11 @@ Security: [SECURITY.md](SECURITY.md).
 
 Copyright © Telivity and contributors.  
 Licensed under the [Apache License, Version 2.0](LICENSE).
+
+---
+
+## Releases
+
+Versioning follows git tags (`v1.1.0`, …). See [CHANGELOG.md](CHANGELOG.md).  
+Publish: `cd packages/careerops && npm publish --access public` (or the `Release` workflow when `NPM_TOKEN` is set).
+

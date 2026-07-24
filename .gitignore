@@ -55,7 +55,7 @@ huggingface/
 .venv-probe/
 
 # Operator / chat / product-ops — never ship publicly
-# Prefer ~/career-ops-private; local park is .operator/
+# Local park for private ops notes is .operator/
 .operator/
 .fake-home/
 .supabase-cli-home/
@@ -66,6 +66,13 @@ supabase/
 
 # Local deploy secrets for the web app
 web/config.js
+
+# Editor / agent backups — never ship
+*.bak*
+*.bak-*
+*.broken*
+web/*.bak*
+web/*.preview*
 
 # Training/eval — private vault only, never re-add to public
 data/
@@ -85,3 +92,4 @@ scripts/run_privacy_probe.py
 scripts/validate_clean.py
 scripts/privacy/
 requirements-infer.txt
+packages/**/*.tgz

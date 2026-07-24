@@ -1,0 +1,16 @@
+{
+  "name": "careerops",
+  "private": true,
+  "version": "1.1.0",
+  "description": "CareerOps public repo — dashboard SPA + agent skill",
+  "scripts": {
+    "test": "node scripts/smoke-web.mjs && npm test --prefix packages/careerops",
+    "test:web": "node scripts/smoke-web.mjs",
+    "test:cli": "npm test --prefix packages/careerops",
+    "pack:careerops": "npm pack --prefix packages/careerops"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "license": "Apache-2.0"
+}

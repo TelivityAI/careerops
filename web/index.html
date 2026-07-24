@@ -4,6 +4,7 @@
 <!-- responsive-fix: 2026-07-23-hdr-board-fu -->
 <!-- match-score-fix: 2026-07-23-v3-builder-hero -->
 <!-- gaps-ux-fix: 2026-07-23-v2-materials-insert -->
+
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZXKVCL5TGG"></script>
 <script>
@@ -15,10 +16,14 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#eceef3; --surface:#ffffff; --surface-2:#f4f6f9; --col:rgba(255,255,255,.55);
-    --border:#e6e8ef; --border-strong:#d7dae3; --hair:rgba(29,32,51,.07);
-    --text:#1d2033; --text-2:#5b6076; --text-3:#9a9fb0;
-    --accent:#06bdb4; --accent-ink:#00a692; --accent-weak:#e2f7f4; --accent-ring:rgba(6,189,180,.30);
+    /* Telivity brand: teal + navy + orange + gold (logo) — teal reserved for ONE primary CTA */
+    --bg:#e8ebf2; --surface:#ffffff; --surface-2:#f2f4f8; --col:rgba(255,255,255,.55);
+    --border:#dde1ea; --border-strong:#c9cfdb; --hair:rgba(35,39,61,.08);
+    --text:#23273d; --text-2:#444863; --text-3:#8a90a4;
+    --navy:#23273d; --navy-2:#444863; --navy-weak:#eef0f6;
+    --accent:#06bdb4; --accent-ink:#00a692; --accent-weak:#e2f7f4; --accent-ring:rgba(6,189,180,.28);
+    --orange:#f2641b; --orange-ink:#d45512; --orange-weak:#fff0e8;
+    --gold:#eec517; --gold-ink:#8a6d0e; --gold-weak:#fbf1cd;
     --apply:#0a8577; --apply-bg:#dcf3ee;
     --stretch:#8a6d0e; --stretch-bg:#fbf1cd;
     --skip:#5b6076; --skip-bg:#eceef4;
@@ -31,7 +36,7 @@
     --font:"Montserrat",-apple-system,Arial,Helvetica,sans-serif;
     /* legacy aliases used elsewhere */
     --card:#fff; --line:var(--border); --ink:var(--text); --sub:var(--text-2);
-    --blue:var(--accent); --green:var(--accent-ink); --navy:var(--text); --orange:#f2641b;
+    --blue:var(--accent); --green:var(--accent-ink);
   }
   *{box-sizing:border-box}
   html,body{margin:0;height:100%}
@@ -137,6 +142,46 @@
     background:var(--surface-2);border-radius:999px;padding:5px 11px}
   .chip .src{font-weight:600;color:var(--text)}
   .chip.miss{background:#fff0f0;color:#c00}
+  .chip.ghost-low{background:#e8f7ef;color:#1a7f37}
+  .chip.ghost-med{background:#fff6e0;color:#9a6b00}
+  .chip.ghost-high{background:#fff0f0;color:#b42318}
+  .chip.ghost-unknown{background:var(--surface-2);color:var(--text-2)}
+  .chip.live-ok{background:#e8f7ef;color:#1a7f37}
+  .chip.live-stale{background:#fff6e0;color:#9a6b00}
+  .chip.live-dead{background:#fff0f0;color:#b42318}
+  .chip.dbreak{background:#fff0f0;color:#b42318;font-weight:600}
+  .risk-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;align-items:center}
+  .eval-box{border:1px solid var(--hair);border-radius:12px;padding:12px 14px;background:var(--surface-2);margin-top:10px}
+  .eval-box h4{margin:0 0 8px;font-size:13px}
+  .eval-box ul{margin:6px 0 0;padding-left:18px;font-size:12.5px;line-height:1.45;color:var(--text-2)}
+  .eval-box .ev-call{margin-top:10px;font-size:13px;font-weight:600;color:var(--text)}
+  .triage-bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:8px 18px 0}
+  .triage-bar .muted{font-size:12.5px}
+  .triage-bar select,.triage-bar label{font-size:12.5px}
+  .triage-bar select{padding:6px 8px;border-radius:8px;border:1px solid var(--hair);background:var(--surface)}
+  .cardlet .match-pill{font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:999px;background:var(--accent-weak);color:var(--accent-ink)}
+  .lock-row{display:flex;flex-direction:column;gap:6px;padding:8px 12px;margin:6px 0 10px;border:1px solid var(--hair);border-radius:10px;background:var(--surface-2);font-size:12.5px}
+  .lock-row label{display:flex;gap:8px;align-items:center;font-weight:400;margin:0}
+  .review-box,.ats-box,.draft-ans,.story-box,.outcome-box,.research-box,.interview-box{
+    border:1px solid var(--hair);border-radius:12px;padding:12px 14px;background:var(--surface-2);margin-top:10px;font-size:12.5px;line-height:1.5}
+  .review-box h4,.ats-box h4,.draft-ans h4,.story-box h4,.outcome-box h4,.research-box h4,.interview-box h4{margin:0 0 8px;font-size:13px}
+  .ats-box .chip.hit{background:#e8f7ef;color:#1a7f37}
+  .ats-box .chip.miss{background:#fff0f0;color:#c00}
+  .sent.on{background:#e8f7ef;color:#1a7f37;cursor:pointer}
+  .sent{cursor:pointer}
+  .paper.frozen textarea{background:#f7f7f9;color:var(--text-2)}
+  .fu-actions{display:inline-flex;gap:4px;margin-left:6px}
+  .fu-actions button{font-size:11px;padding:3px 8px}
+  .usage-meter{font-size:11.5px;color:var(--muted,#666);margin-top:6px;line-height:1.4}
+  .usage-meter b{color:var(--text,#222);font-weight:600}
+  .pretriage{margin-top:10px;padding:10px 12px;border-radius:10px;background:#f7f7f9;border:1px solid var(--hair,#e4e7eb);font-size:12.5px;line-height:1.45}
+  .pretriage.warn{background:#fff8e8;border-color:#f0d9a0;color:#6a4b00}
+  .pretriage.skip{background:#fff0f0;border-color:#f0c0c0;color:#8a1f11}
+  .cardlet .ghost-pill{font-size:10.5px;font-weight:600;padding:2px 8px;border-radius:999px;letter-spacing:.02em}
+  .cardlet .ghost-pill.low{background:#e8f7ef;color:#1a7f37}
+  .cardlet .ghost-pill.med{background:#fff6e0;color:#9a6b00}
+  .cardlet .ghost-pill.high{background:#fff0f0;color:#b42318}
+  .cardlet .ghost-pill.unknown{background:var(--surface-2);color:var(--text-3)}
   .chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
   .lbl{font-size:11px;font-weight:600;letter-spacing:.10em;text-transform:uppercase;color:var(--text-3);margin:0 0 12px}
   .section{margin-bottom:22px}
@@ -371,6 +416,30 @@
     .col{flex-basis:260px;width:260px;min-width:260px}
     .cardlet{padding:14px 12px 12px;min-height:0}
   }
+
+  /* Brand diversity — primary teal CTA only; navy/orange/gold for secondary chrome */
+  button:not(.primary):not(.green):hover{border-color:var(--navy-2);color:var(--navy)}
+  .btn:not(.primary):not(.green){background:var(--surface);color:var(--navy-2);border-color:var(--border-strong)}
+  .btn:not(.primary):not(.green):hover{border-color:var(--orange);color:var(--orange-ink)}
+  .btn.ghost{color:var(--navy-2)}
+  header .brand{color:var(--orange)}
+  .match-pct{color:var(--orange-ink)!important}
+  .match-kicker{color:var(--navy-2)!important;letter-spacing:.08em}
+  .match-hero{background:linear-gradient(135deg,var(--navy-weak),#fff 55%,var(--orange-weak));border:1px solid var(--border)}
+  .bv-top-score{color:var(--navy);background:var(--navy-weak);border:1px solid var(--border)}
+  .gap-group.have .gg-h{color:var(--apply)}
+  .gap-group.case .gg-h{color:var(--orange-ink)}
+  .gap-group.have{background:var(--apply-bg);border-color:#b8e0d4}
+  .gap-group.case{background:var(--orange-weak);border-color:#f5c9a8}
+  .cardlet .match-pill{background:var(--orange-weak);color:var(--orange-ink)}
+  .col-h{color:var(--navy-2)}
+  .verdict.apply{color:var(--apply);background:var(--apply-bg)}
+  .verdict.stretch{color:var(--gold-ink);background:var(--gold-weak)}
+  .empty-build .big{color:var(--navy)}
+  .rail-foot .btn.primary.block{box-shadow:0 8px 20px rgba(6,189,180,.28)}
+  #bv_err,#bv_err_empty{color:#b42318;font-size:13px;line-height:1.45;min-height:0;margin:8px 0 0}
+  #bv_err:empty,#bv_err_empty:empty{display:none}
+
 </style></head><body>
 
 <!-- ============ AUTH ============ -->
@@ -510,6 +579,25 @@
   <div class="muted" id="status" style="padding:8px 18px 0;font-size:13px"></div>
   <div id="setupbanner" class="hidden" style="margin:8px 18px 0;padding:9px 14px;background:#fff8e6;border:1px solid #f0dfa8;border-radius:10px;font-size:13px"></div>
   <div id="followups" class="fu-bar hidden"></div>
+  <div id="triage" class="triage-bar hidden">
+    <button type="button" class="btn sm primary" id="triage_batch">Rank Sourced (batch match)</button>
+    <button type="button" class="btn sm" id="triage_dedupe">Dedupe board</button>
+    <label>Sort <select id="triage_sort" title="Sort Sourced column">
+      <option value="match_desc">Match ↓</option>
+      <option value="match_asc">Match ↑</option>
+      <option value="newest">Newest</option>
+      <option value="company">Company A–Z</option>
+    </select></label>
+    <label>Filter <select id="triage_filter" title="Filter Sourced by verdict">
+      <option value="all">All</option>
+      <option value="apply">Apply</option>
+      <option value="stretch">Stretch</option>
+      <option value="skip">Skip</option>
+      <option value="unscored">Unscored</option>
+      <option value="no_verdict">No verdict</option>
+    </select></label>
+    <span class="muted" id="triage_status">Match Sourced roles that already have a JD — tags scores, never applies.</span>
+  </div>
   <div id="stage" class="stage">
     <div id="board" class="board"></div>
     <div id="scrim" class="scrim hidden" aria-hidden="true"></div>
@@ -528,6 +616,10 @@
         <div class="err" id="rp2_err"></div>
         <div class="section">
           <div class="chip" id="dw_jdchip"><span class="src">JD</span> · not loaded yet</div>
+          <div class="risk-row" id="dw_riskrow">
+            <span class="chip ghost-unknown" id="dw_ghost">Ghost · —</span>
+            <span class="chip" id="dw_live">Posting · checking…</span>
+          </div>
           <div id="rp2_jdread" class="rp2-jdread empty" style="margin-top:9px">No job description yet.</div>
           <div class="row" style="margin-top:8px;align-items:center">
             <button type="button" class="rp2-link" id="rp2_jdtoggle">Edit / paste</button>
@@ -544,6 +636,7 @@
             <button class="primary" id="rp2_match">Check my match</button>
             <span class="muted" style="font-size:12px">Uses your resume in Settings.</span>
           </div>
+          <p class="usage-meter" id="dw_usage" aria-live="polite">Usage —</p>
           <div id="rp2_scorebox" class="fit-score hidden" style="margin-top:12px" aria-live="polite">
             <div class="match-hero">
               <div class="match-line">
@@ -574,6 +667,17 @@
           <div id="rp2_gaps" class="hidden"></div>
           <div id="rp2_gaps_gen" class="hidden"></div>
         </div>
+        <div class="section">
+          <div class="lbl">Evaluate</div>
+          <p class="muted" style="margin:0 0 8px;font-size:12.5px;line-height:1.5">Structured decision pack from your match + JD signals. Suggests a call — you still tag Apply / Stretch / Skip yourself.</p>
+          <div class="row" style="gap:8px;align-items:center">
+            <button type="button" class="primary" id="dw_evaluate">Build evaluate pack</button>
+            <button type="button" id="dw_eval_suggest" class="btn sm" title="Fill Your call from the pack suggestion">Use suggested call</button>
+          </div>
+          <div id="dw_pretriage" class="pretriage hidden" aria-live="polite"></div>
+          <div id="dw_dealwarn" class="hidden" style="margin-top:10px;padding:10px 12px;border-radius:10px;background:#fff0f0;border:1px solid #f0c0c0;color:#8a1f11;font-size:12.5px;line-height:1.45"></div>
+          <div id="dw_eval" class="eval-box hidden" aria-live="polite"></div>
+        </div>
         <div class="section" style="margin-bottom:6px">
           <div class="lbl">Your call on this job</div>
           <p class="muted" style="margin:0 0 10px;font-size:12.5px;line-height:1.5">Tags the card only — does <b>not</b> apply for you, does <b>not</b> move columns. Drag the card to change stage.</p>
@@ -582,6 +686,49 @@
             <button type="button" class="vbtn stretch" data-v="stretch" title="Reach role — still worth a tailored pack">Stretch</button>
             <button type="button" class="vbtn skip" data-v="skip" title="Low interest — stays on the board">Skip</button>
           </div>
+        </div>
+        <div class="section">
+          <div class="lbl">Form / email answer drafts</div>
+          <p class="muted" style="margin:0 0 8px;font-size:12.5px;line-height:1.5">Drafts from your materials only — copy/paste yourself. Never submits anywhere.</p>
+          <div class="row" style="gap:8px;flex-wrap:wrap">
+            <button type="button" class="btn sm" data-ans="why">Why this role?</button>
+            <button type="button" class="btn sm" data-ans="salary">Comp expectations</button>
+            <button type="button" class="btn sm" data-ans="notice">Notice / start date</button>
+            <button type="button" class="btn sm" data-ans="email">Recruiter email</button>
+          </div>
+          <div id="dw_ans" class="draft-ans hidden" aria-live="polite"></div>
+        </div>
+        <div class="section" id="dw_interview_sec">
+          <div class="lbl">Interview prep</div>
+          <p class="muted" style="margin:0 0 8px;font-size:12.5px;line-height:1.5">Angles from your evaluate pack + story bank. You still speak for yourself.</p>
+          <button type="button" class="btn sm" id="dw_interview_btn">Build interview angles</button>
+          <div id="dw_interview_box" class="interview-box hidden" aria-live="polite"></div>
+        </div>
+        <div class="section">
+          <div class="lbl">Company research &amp; outreach</div>
+          <p class="muted" style="margin:0 0 8px;font-size:12.5px;line-height:1.5">Short blurb + outreach draft from JD + your materials. Copy only — never send.</p>
+          <button type="button" class="btn sm" id="dw_research_btn">Draft research + outreach</button>
+          <div id="dw_research_box" class="research-box hidden" aria-live="polite"></div>
+        </div>
+        <div class="section">
+          <div class="lbl">Outcome</div>
+          <p class="muted" style="margin:0 0 8px;font-size:12.5px;line-height:1.5">Optional note when you get an offer, reject, or withdraw. Stored on this device.</p>
+          <div class="row" style="gap:8px;align-items:end">
+            <div style="flex:1"><label>Result</label>
+              <select id="dw_outcome_kind">
+                <option value="">—</option>
+                <option value="offer">Offer</option>
+                <option value="reject">Reject</option>
+                <option value="withdraw">Withdrew</option>
+                <option value="ghost">Ghosted</option>
+              </select>
+            </div>
+            <div style="flex:1"><label>Date</label><input id="dw_outcome_date" type="date"></div>
+          </div>
+          <label>Why / notes</label>
+          <textarea id="dw_outcome_note" style="min-height:70px" placeholder="Offer terms, reject reason, what you’d do differently…"></textarea>
+          <button type="button" class="btn sm" id="dw_outcome_save" style="margin-top:8px">Save outcome</button>
+          <div id="dw_outcome_view" class="outcome-box hidden" style="margin-top:8px"></div>
         </div>
       </div>
       <div class="drawer-f">
@@ -615,6 +762,11 @@
       <a href="#" data-jump="experience">Experience</a>
       <a href="#" data-jump="skills">Skills</a>
       <p class="muted" style="font-size:11.5px;padding:10px 12px;line-height:1.45">Jumps to that section in the draft. Tick experience bullets below to feed Generate. Education: edit yourself.</p>
+      <div class="lock-row" id="bv_locks">
+        <div class="muted" style="font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;margin-bottom:2px">Section locks</div>
+        <label><input type="checkbox" id="bv_lock_edu" style="width:auto" checked> Lock Education (AI won’t overwrite)</label>
+        <label><input type="checkbox" id="bv_lock_exp" style="width:auto"> Lock Experience (optional)</label>
+      </div>
       <div class="nl" style="margin-top:18px">Your experience</div>
       <div id="rp2_pick"><p class="muted" style="font-size:12.5px;margin:6px 8px">Loading your experience…</p></div>
       <p class="rp2-pickstat muted" id="rp2_pickstat" style="padding:0 12px"></p>
@@ -623,7 +775,7 @@
       <div class="verbar">
         <span class="vpill" id="bv_verpill">No draft yet</span>
         <span class="saved hidden" id="bv_saved">Saved</span>
-        <span class="sent" id="bv_sent">not sent</span>
+        <span class="sent" id="bv_sent" title="Mark this version Sent — freezes edits until you unfreeze">not sent</span>
         <div style="flex:1"></div>
         <button class="btn primary" id="rp2_edsave">Save this draft</button>
       </div>
@@ -631,17 +783,21 @@
         <div class="big">Generate a first draft for this job</div>
         <p>Uses only what you provide as truth — your resume and anything you add under Worth adding?. You own Education; edit it yourself anytime.</p>
         <button class="btn primary" id="bv_gen_empty">✨ Generate first draft</button>
+        <div class="err" id="bv_err_empty" role="alert"></div>
       </div>
       <div id="rp2_editor" class="paper hidden">
         <p style="font-weight:600;margin:0 0 8px;font-size:13px" id="rp2_edtitle">Your draft — check every line before you send</p>
         <textarea id="rp2_edtext"></textarea>
         <div class="row" style="margin-top:10px">
           <button id="rp2_edmatch">Re-check match</button>
+          <button id="rp2_review">Review draft</button>
           <button id="rp2_eddl">⬇︎ Word (.doc)</button>
           <button id="rp2_edclose" class="hidden">Close</button>
           <button id="rp2_humanize" class="hidden">Humanize</button>
         </div>
-        <p class="muted" style="font-size:12px;margin:8px 0 0">Saving never overwrites. Treat AI text as a draft until you check it.</p>
+        <p class="muted" style="font-size:12px;margin:8px 0 0">Saving never overwrites. Treat AI text as a draft until you check it. Review lists issues only — it never edits for you.</p>
+        <div id="rp2_review_box" class="review-box hidden" aria-live="polite"></div>
+        <div id="rp2_ats_box" class="ats-box hidden" aria-live="polite"></div>
       </div>
       <div style="max-width:740px;margin:22px auto 0">
         <div class="lbl">Saved versions</div>
@@ -671,6 +827,8 @@
           <label style="display:flex;gap:6px;align-items:center;margin:0;font-weight:400"><input type="checkbox" id="rp2_gcov" style="width:auto"> Cover letter</label>
         </div>
         <button class="btn primary block" id="rp2_generate">✨ Generate draft</button>
+        <div class="err" id="bv_err" role="alert"></div>
+        <p class="usage-meter" id="bv_usage" aria-live="polite">Usage —</p>
         <p class="muted" id="rp2_gennote">Builds a draft from your picked experience bullets, plus Summary and Skills. Education stays as you wrote it. Uses only what you add under Worth adding? Check before you send.</p>
       </div>
     </aside>
@@ -827,14 +985,47 @@
   <label>Keywords</label><input id="s_keywords">
   <div class="row"><div><label>Seniority</label><input id="s_seniority"></div><div><label>Locations</label><input id="s_locations"></div></div>
   <label>Resume</label><textarea id="s_resume"></textarea>
+
+  <h3 style="margin-top:20px;border-top:1px solid var(--line);padding-top:16px">Find hygiene</h3>
+  <p class="muted" style="font-size:12.5px;margin:0 0 8px">Filters apply when you add roles and when the board loads. Search scans still run on the server — blocklist/age also clean up what lands on your board.</p>
+  <label>Company blocklist <span class="h">comma-separated — never add / soft-hide these</span></label>
+  <input id="s_blocklist" placeholder="Acme Staffing, FakeCorp, …">
+  <div class="row">
+    <div><label>Max posting age (days) <span class="h">0 = no limit</span></label><input id="s_max_age" type="number" min="0" max="365" placeholder="30"></div>
+    <div><label>Remote preference</label>
+      <select id="s_remote_pref">
+        <option value="any">Any location</option>
+        <option value="prefer_remote">Prefer remote (flag on-site)</option>
+        <option value="remote_only">Remote only (hide on-site)</option>
+        <option value="onsite_ok">On-site / hybrid OK</option>
+      </select>
+    </div>
+  </div>
+  <label style="display:flex;gap:8px;align-items:center;font-weight:400;margin-top:10px"><input type="checkbox" id="s_hide_blocked" style="width:auto" checked> Soft-hide blocked / over-age / non-remote roles on the board</label>
+
+  <h3 style="margin-top:20px;border-top:1px solid var(--line);padding-top:16px">Decide — deal-breakers</h3>
+  <p class="muted" style="font-size:12.5px;margin:0 0 8px">If a JD contains these phrases, the drawer warns before you tag Apply. Never auto-rejects or auto-applies.</p>
+  <label>Deal-breaker phrases <span class="h">comma-separated</span></label>
+  <input id="s_dealbreakers" placeholder="must relocate, unpaid, clearance required, 60% travel">
+
+  <h3 style="margin-top:20px;border-top:1px solid var(--line);padding-top:16px">Story bank</h3>
+  <p class="muted" style="font-size:12.5px;margin:0 0 8px">Short true stories you can reuse in Generate, interview prep, and outreach. One story per line: Situation → Action → Result. Never invent.</p>
+  <textarea id="s_stories" style="min-height:110px" placeholder="Led pricing redesign → cut churn 12% in 2 quarters&#10;Built partner portal → 40% fewer support tickets"></textarea>
+
   <h3 style="margin-top:20px;border-top:1px solid var(--line);padding-top:16px">AI</h3>
   <div class="stepnote" id="freestate">
-    <b>Free AI — no key needed.</b> CareerOps includes a free AI model, <b>30 uses per day per person</b>. Your text is sent to the model provider to generate the answer; it is <b>not used to train any AI model</b>. For higher-quality writing and no daily limit, add your own key — <b>Anthropic (Claude)</b> or <b>Kimi K3</b>, whichever you prefer.
+    <b>Free AI — no key needed.</b> CareerOps includes a free AI model, <b>30 uses per day per person</b>. Your text is sent to the model provider to generate the answer; it is <b>not used to train any AI model</b>. For higher-quality writing and no daily limit, add your own key — <b>Anthropic (Claude)</b>, <b>Kimi K3</b>, or an <b>OpenAI-compatible</b> base URL.
   </div>
   <p id="s_keystatus" class="muted" style="font-size:12.5px;margin:10px 0 6px"></p>
   <label>Anthropic (Claude) API key <span class="h">paste a new key to replace · type “remove” to delete · leave blank to keep</span></label><input id="s_key" type="password" placeholder="sk-ant-… (blank = keep saved key)" autocomplete="off">
   <label>Kimi K3 (Moonshot) API key <span class="h">paste a new key to replace · type “remove” to delete · leave blank to keep</span></label><input id="s_kimi" type="password" placeholder="sk-… (blank = keep saved key)" autocomplete="off">
-  <p class="muted" style="font-size:12px;margin:4px 0 0">Keys never reappear in these boxes after save (on purpose). The status line above shows what’s stored. If both are saved, Claude is used.</p>
+  <label style="margin-top:12px">OpenAI-compatible base URL <span class="h">any /v1 host — OpenAI, Groq, Together, local, etc.</span></label>
+  <input id="s_oai_base" placeholder="https://api.openai.com/v1" autocomplete="off">
+  <label>OpenAI-compatible API key <span class="h">paste to replace · type “remove” to delete · leave blank to keep</span></label>
+  <input id="s_oai_key" type="password" placeholder="sk-… (blank = keep saved key)" autocomplete="off">
+  <label>OpenAI-compatible model <span class="h">optional</span></label>
+  <input id="s_oai_model" placeholder="gpt-4o-mini">
+  <p class="muted" style="font-size:12px;margin:4px 0 0">Keys never reappear in these boxes after save (on purpose). The status line above shows what’s stored. Priority: Claude → Kimi → OpenAI-compat → free tier.</p>
   <div class="row" style="margin-top:12px"><div><label>Humanizer email <span class="h">optional</span></label><input id="s_hemail" autocomplete="off"></div><div><label>Humanizer password <span class="h">blank = keep saved password</span></label><input id="s_hpw" type="password" placeholder="••••••••" autocomplete="new-password"></div></div>
   <p id="s_humanstatus" class="muted" style="font-size:12.5px;margin:6px 0 0"></p>
   <div class="err" id="seterr"></div>
@@ -848,27 +1039,20 @@
   <div class="row" style="margin-top:10px">
     <button id="exp_json">⬇︎ Export everything (JSON)</button>
     <button id="exp_csv">⬇︎ Export board (CSV)</button>
+    <button id="exp_boardpack" title="Roles + materials + reports for local skill runs">⬇︎ Board pack (skill)</button>
   </div>
+  <p class="muted" style="font-size:12px;margin:8px 0 0">Board pack is a sanitized ZIP-ready JSON for agent skill modes (scan/evaluate/rank/tailor/…). API keys are never included.</p>
 </div></div>
 
-<script src="./config.js"></script>
 <script type="module">
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
-// Runtime config: copy config.example.js → config.js (gitignored) or set via deploy.
-const CFG = (typeof window !== 'undefined' && window.CAREEROPS_CONFIG) ? window.CAREEROPS_CONFIG : {}
-const SUPABASE_URL = CFG.supabaseUrl || ''
-const SUPABASE_KEY = CFG.supabaseAnonKey || ''
-if(!SUPABASE_URL || !SUPABASE_KEY){
-  document.addEventListener('DOMContentLoaded',()=>{
-    const a=document.getElementById('auth')
-    if(a){ a.classList.remove('hidden'); a.innerHTML='<div class="card"><h1>Configure CareerOps</h1><p class="muted">Copy <code>web/config.example.js</code> to <code>web/config.js</code>, set your Supabase URL + anon key, then reload. See the repo README.</p></div>' }
-  })
-}
-const sb = createClient(SUPABASE_URL||'https://example.supabase.co', SUPABASE_KEY||'public-anon-key')
+const SUPABASE_URL = 'https://vqcjdqhcdhxjlznpqing.supabase.co'
+const SUPABASE_KEY = 'sb_publishable_nNiBFGj8_NHI2vksvZEpFw_D30oUi5x'
+const sb = createClient(SUPABASE_URL, SUPABASE_KEY)
 const $ = id => document.getElementById(id)
 const esc = s => (s||'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]))
 const list = s => (s||'').split(',').map(x=>x.trim()).filter(Boolean)
-const DONATE_URL = CFG.donateUrl || ''
+const DONATE_URL = 'https://donate.stripe.com/cNi7sK5PEfwy7lB9H6cV204'  // Stripe donation link — free forever, donations optional
 // Free-AI tier messages (single source of truth — shown wherever an AI call can fail or run out)
 // Behaviour log for future model training — action names + ids only, never resume/JD text
 function logEvent(action, roleId, meta){
@@ -884,9 +1068,202 @@ function logEvent(action, roleId, meta){
             (e)          => { console.warn('[logEvent] threw:', action, e?.message||e) })
   }catch(e){ console.warn('[logEvent] sync throw:', action, e?.message||e) }
 }
-const FREE_LIMIT_MSG = "You've used your 30 free AI actions today — resets at midnight. Add your own Anthropic or Kimi K3 key in Settings for unlimited use."
-const FREE_DOWN_MSG  = 'Free AI is temporarily unavailable. Try again shortly, or add your own Anthropic or Kimi K3 key in Settings.'
+const FREE_LIMIT_MSG = "You've used your 30 free AI actions today — resets at midnight. Add your own Anthropic, Kimi K3, or OpenAI-compatible key in Settings for unlimited use."
+const FREE_DOWN_MSG  = 'Free AI is temporarily unavailable. Try again shortly, or add your own Anthropic, Kimi K3, or OpenAI-compatible key in Settings.'
 const AI_NOTE = '⚠️ Written by AI — check every line before you send it. It can be wrong or invent things. Never let it claim experience you don\'t have.'
+// ---- T24/T25 BYO OpenAI-compat + usage meter (localStorage; keys never exported) ----
+function openaiPrefsKey(){ return 'co_openai_prefs_'+(ME?.id||'anon') }
+function loadOpenaiPrefs(){
+  try{
+    const j=JSON.parse(localStorage.getItem(openaiPrefsKey())||'{}')||{}
+    return { base:String(j.base||'').replace(/\/+$/,''), key:String(j.key||''), model:String(j.model||'gpt-4o-mini') }
+  }catch(_e){ return { base:'', key:'', model:'gpt-4o-mini' } }
+}
+function saveOpenaiPrefs(p){
+  const cur=loadOpenaiPrefs()
+  const next={
+    base: p.base!=null ? String(p.base).replace(/\/+$/,'') : cur.base,
+    key: p.key==='remove' ? '' : (p.key ? String(p.key) : cur.key),
+    model: p.model!=null ? String(p.model||'gpt-4o-mini') : cur.model,
+  }
+  localStorage.setItem(openaiPrefsKey(), JSON.stringify(next))
+  return next
+}
+function usageKey(){ return 'co_usage_'+(ME?.id||'anon')+'_'+new Date().toISOString().slice(0,10) }
+function loadUsage(){ try{ return JSON.parse(localStorage.getItem(usageKey())||'{"match":0,"generate":0}')||{match:0,generate:0} }catch(_e){ return {match:0,generate:0} } }
+function bumpUsage(kind){
+  const u=loadUsage(); if(kind==='match') u.match=(u.match||0)+1; if(kind==='generate') u.generate=(u.generate||0)+1
+  localStorage.setItem(usageKey(), JSON.stringify(u)); paintUsageMeters(); return u
+}
+function paintUsageMeters(){
+  const u=loadUsage()
+  const oai=loadOpenaiPrefs()
+  const byo = PROFILE?.ai_key ? 'Claude' : PROFILE?.kimi_key ? 'Kimi' : oai.key ? 'OpenAI-compat' : 'Free tier'
+  const line = `Today · Match <b>${u.match||0}</b> · Generate <b>${u.generate||0}</b> · route <b>${byo}</b>`
+  ;['dw_usage','bv_usage'].forEach(id=>{ const el=$(id); if(el) el.innerHTML=line })
+}
+function byoEdgeExtras(){
+  const o=loadOpenaiPrefs()
+  if(!o.key || !o.base) return {}
+  return { openai_base_url:o.base, openai_key:o.key, openai_model:o.model||'gpt-4o-mini' }
+}
+async function openaiChat({ system, messages, max_tokens=1500, json=false }){
+  const o=loadOpenaiPrefs()
+  if(!o.base || !o.key) throw new Error('OpenAI-compatible base URL + key required')
+  const msgs=[...(system?[{role:'system',content:system}]:[]), ...(messages||[])]
+  const body={ model:o.model||'gpt-4o-mini', messages:msgs, max_tokens, temperature:0.3 }
+  if(json) body.response_format={ type:'json_object' }
+  const r=await fetch(o.base.replace(/\/+$/,'')+'/chat/completions',{
+    method:'POST',
+    headers:{ 'Content-Type':'application/json', Authorization:'Bearer '+o.key },
+    body:JSON.stringify(body)
+  })
+  if(!r.ok) throw new Error('openai-compat '+r.status+' '+(await r.text()).slice(0,200))
+  const j=await r.json()
+  let text=(j?.choices?.[0]?.message?.content||'').trim()
+  text=text.replace(/^```(?:json)?\s*/i,'').replace(/\s*```$/,'').trim()
+  if(!text) throw new Error('openai-compat returned no text')
+  return { text, method:'openai-compat', truncated:j?.choices?.[0]?.finish_reason==='length' }
+}
+const MATCH_PROMPT=(jd,resume)=>`You are a senior recruiter with deep expertise in the candidate's industry. Assess how well this candidate fits this specific job.
+
+Score fit 0-100 the way a great recruiter would:
+- 85-100: exceptional — the JD could have been written for them
+- 70-84: strong fit — clearly interview-worthy
+- 50-69: partial fit — relevant background, real gaps
+- below 50: weak fit
+
+Judge substance, not vocabulary. Ignore boilerplate. Do not invent experience.
+
+JOB DESCRIPTION:
+${String(jd||'').slice(0,12000)}
+
+CANDIDATE RÉSUMÉ:
+${String(resume||'').slice(0,12000)}
+
+Reply with ONLY this JSON, no markdown fences:
+{"score": <integer>, "summary": "<2-3 sentences>", "strengths": ["<up to 6>"], "gaps": ["<up to 6>"]}`
+function parseMatchAssessment(text, method){
+  const m=String(text||'').match(/\{[\s\S]*\}/)
+  if(!m) throw new Error('no JSON in reply')
+  const p=JSON.parse(m[0])
+  const score=Math.max(0,Math.min(100,Math.round(Number(p.score)||0)))
+  return {match_score:score, method, summary:String(p.summary||''), present:(p.strengths||[]).map(String).slice(0,8), missing:(p.gaps||[]).map(String).slice(0,8)}
+}
+function preferClientOpenai(){
+  const o=loadOpenaiPrefs()
+  return !!(o.base && o.key) && !PROFILE?.ai_key && !PROFILE?.kimi_key
+}
+async function invokeMatch({ resume_text, jd_text }){
+  if(preferClientOpenai()){
+    const out=await openaiChat({ messages:[{role:'user',content:MATCH_PROMPT(jd_text,resume_text)}], max_tokens:1200, json:true })
+    return parseMatchAssessment(out.text, 'openai-compat')
+  }
+  const { data, error } = await sb.functions.invoke('resume-match',{ body:Object.assign({ resume_text, jd_text }, byoEdgeExtras()) })
+  if(error||data?.error) throw new Error(data?.error||error?.message||'match failed')
+  return data
+}
+async function invokeRewrite(body){
+  // Always send an explicit resume when available — edge + BYO both need materials.
+  if(body && !body.resume_text && body.mode!=='bullet' && (PROFILE?.resume_text||'').trim()){
+    body = Object.assign({}, body, { resume_text: PROFILE.resume_text })
+  }
+  if(preferClientOpenai()){
+    const mode=body.mode||'resume'
+    const resume = (body.resume_text||PROFILE?.resume_text||'').trim()
+    if(mode!=='bullet' && !resume){
+      return { error: 'Add your resume in Settings (or tick experience bullets) before Generate.' }
+    }
+    const sys = mode==='cover'
+      ? 'You write truthful, concise cover letters. NEVER invent employers, titles, dates, metrics, or skills. Return only the letter body.'
+      : mode==='bullet'
+      ? 'Rewrite one resume bullet for the JD. Keep every fact. Never invent. Return ONLY the bullet text.'
+      : 'You tailor résumés truthfully. NEVER invent facts. Return ONLY the full résumé text with PROFESSIONAL SUMMARY / EXPERIENCE / SKILLS / EDUCATION.'
+    const gaps = Array.isArray(body.gaps)?body.gaps:(Array.isArray(body.missing_keywords)?body.missing_keywords:[])
+    const gapsBlock = gaps.length ? '\n\nMATCH GAPS:\n'+gaps.map(g=>'- '+g).join('\n') : ''
+    const userMsg = mode==='bullet'
+      ? `JOB DESCRIPTION:\n${body.jd_text}\n\nRESUME BULLET:\n${body.bullet_text}`
+      : `JOB DESCRIPTION:\n${body.jd_text}${gapsBlock}\n\nMY RESUME:\n${resume}`
+    const out=await openaiChat({ system:sys, messages:[{role:'user',content:userMsg}], max_tokens: mode==='bullet'?400:4000 })
+    return { rewritten:out.text, method:'openai-compat', truncated:!!out.truncated }
+  }
+  const { data, error } = await sb.functions.invoke('resume-rewrite',{ body:Object.assign({}, body, byoEdgeExtras()) })
+  if(data && data.error){
+    // Soft codes the UI maps to human copy — do not throw so builder can show them.
+    return data
+  }
+  if(error){
+    const msg = await fnMsg(error)
+    throw new Error(msg||error.message||'rewrite failed')
+  }
+  if(!data) throw new Error('rewrite failed — empty response')
+  return data
+}
+async function invokeChat(messages){
+  if(preferClientOpenai()){
+    const out=await openaiChat({
+      system:'You are the CareerOps assistant. Never invent the user\'s experience. Be concise and practical. No auto-apply.',
+      messages:(messages||[]).slice(-20),
+      max_tokens:2000
+    })
+    return { reply:out.text, method:'openai-compat' }
+  }
+  const { data, error } = await sb.functions.invoke('chat',{ body:Object.assign({ messages }, byoEdgeExtras()) })
+  if(error||data?.error) throw new Error(data?.error||error?.message||'chat failed')
+  return data
+}
+// Cheap keyword overlap (no LLM) — T26
+function cheapKeywordOverlap(resume_text, jd_text){
+  const STOP=new Set('a an the and or of to in for with on at by as is are be will you your our we they this that role team work experience years including from into about their them who what when where how all any can may must should more most other than then us it its need needs required requirements'.split(' '))
+  const toks=s=>String(s||'').toLowerCase().replace(/[^a-z0-9 +#]/g,' ').split(/\s+/).filter(w=>w.length>2&&!STOP.has(w)&&!/^\d+$/.test(w))
+  const rset=new Set(toks(resume_text))
+  const jtoks=toks(jd_text)
+  const freq={}; for(const t of jtoks) freq[t]=(freq[t]||0)+1
+  const terms=Object.entries(freq).sort((a,b)=>b[1]-a[1]).slice(0,30).map(([w])=>w)
+  if(!terms.length) return { score:0, present:[], missing:[] }
+  let hit=0; const present=[], missing=[]
+  for(const t of terms){ if(rset.has(t)||rset.has(t+'s')||(t.endsWith('s')&&rset.has(t.slice(0,-1)))){ hit++; present.push(t) } else missing.push(t) }
+  return { score:Math.round(hit/terms.length*100), present:present.slice(0,20), missing:missing.slice(0,20) }
+}
+function isLikelyDupRole(role){
+  if(!role) return false
+  const url=(role.url||'').trim()
+  const fp=typeof roleFingerprint==='function' ? roleFingerprint(role.company, role.title) : ''
+  const others=Object.values(ROLESMAP||{}).filter(r=>r && r.id!==role.id && r.stage!==CLOSED)
+  for(const o of others){
+    if(url && (o.url||'').trim()===url) return true
+    if(fp && typeof roleFingerprint==='function' && roleFingerprint(o.company,o.title)===fp) return true
+  }
+  return false
+}
+async function cheapPreTriage(role, { resume, jd }={}){
+  const out={ skipLlm:false, reasons:[], live:null, keyword:null, dup:false }
+  const live=await checkAtsLiveness(role)
+  out.live=live
+  if(live?.status==='dead'){ out.skipLlm=true; out.reasons.push('ATS posting looks closed') }
+  out.dup=isLikelyDupRole(role)
+  if(out.dup){ out.reasons.push('Likely duplicate of another board card') }
+  const textJd=(jd||role?.jd||'').trim()
+  const textRes=(resume||PROFILE?.resume_text||'').trim()
+  if(textJd && textRes){
+    out.keyword=cheapKeywordOverlap(textRes, textJd)
+    if(out.keyword.score < 18){ out.skipLlm=true; out.reasons.push('Keyword overlap only '+out.keyword.score+'% — weak materials signal before LLM') }
+  }
+  if(isBlockedCompany(role?.company)){ out.skipLlm=true; out.reasons.push('Company is on your blocklist') }
+  return out
+}
+function paintPreTriage(tri){
+  const el=$('dw_pretriage'); if(!el) return
+  if(!tri){ el.classList.add('hidden'); el.textContent=''; return }
+  el.classList.remove('hidden')
+  el.className='pretriage'+(tri.skipLlm?' skip':' warn')
+  const bits=[]
+  if(tri.live?.status) bits.push('Liveness: '+tri.live.status+(tri.live.detail?' ('+tri.live.detail+')':''))
+  if(tri.keyword) bits.push('Keyword pre-score: '+tri.keyword.score+'%')
+  if(tri.dup) bits.push('Possible duplicate')
+  if(tri.reasons?.length) bits.push(tri.reasons.join(' · '))
+  el.innerHTML='<b>Pre-triage (no LLM):</b> '+(bits.join(' · ')||'clear')+(tri.skipLlm?' — skipped LLM evaluate spend.':' — proceeding to match.')
+}
 const aiNote = () => `<p class="muted" style="font-size:12px;margin:6px 0 0">${AI_NOTE}</p>`
 // Shows the free-tier state (remaining calls today) in Settings
 async function freeStatus(){
@@ -894,13 +1271,15 @@ async function freeStatus(){
   try{
     const { data } = await sb.functions.invoke('ai-free',{ body:{ probe:'status' } })
     if(data && data.enabled){
-      const own = PROFILE?.ai_key ? 'Claude (your key)' : PROFILE?.kimi_key ? 'Kimi K3 (your key)' : null
+      const oai=loadOpenaiPrefs()
+      const own = PROFILE?.ai_key ? 'Claude (your key)' : PROFILE?.kimi_key ? 'Kimi K3 (your key)' : (oai.key ? 'OpenAI-compat (your key)' : null)
       el.innerHTML = '<b>Free AI — no key needed.</b> ' + (own
         ? `You're using <b>${own}</b>, so the free tier isn't being used. Remove your key to fall back to it.`
         : `<b>${data.remaining} of ${data.cap} free uses left today.</b>`)
-        + ' Your text is sent to the model provider to generate the answer; it is <b>not used to train any AI model</b>. For higher-quality writing and no daily limit, add your own key — <b>Anthropic (Claude)</b> or <b>Kimi K3</b>.'
+        + ' Your text is sent to the model provider to generate the answer; it is <b>not used to train any AI model</b>. For higher-quality writing and no daily limit, add your own key — <b>Anthropic (Claude)</b>, <b>Kimi K3</b>, or an <b>OpenAI-compatible</b> base URL.'
     }
   }catch(_e){}
+  paintUsageMeters()
 }
 const STAGES=['sourced','researched','conversation','applied','interview','offer','rejected'], CLOSED='closed'
 const LABEL={sourced:'Sourced',researched:'Researched',conversation:'Conversation',applied:'Applied',interview:'Interview',offer:'Offer',rejected:'Rejected',closed:'Closed'}
@@ -958,6 +1337,7 @@ if(new URLSearchParams(location.hash.slice(1)).get('type')==='recovery'){ RECOVE
 async function boot(){
   const { data } = await sb.from('mt_profiles').select('*').eq('owner',ME.id).maybeSingle()
   PROFILE = data
+  FIND_PREFS = loadFindPrefs()
   $('auth').classList.add('hidden')
   if(!PROFILE || (!PROFILE.onboarded && !localStorage.getItem('co_skip'))){ showOnboard() } else { showApp() }
 }
@@ -1065,7 +1445,7 @@ async function sendChat(){
   $('chaterr').textContent=''; CHATMSGS.push({role:'user',content:t}); $('chatin').value=''; renderChat()
   const b=$('chatsend'), o=b.textContent; b.disabled=true; b.textContent='…'
   try{
-    const { data, error } = await sb.functions.invoke('chat',{ body:{ messages:CHATMSGS } })
+    let data=null, error=null; try{ data=await invokeChat(CHATMSGS) }catch(e){ error=e }
     if(error) throw error
     if(data.error==='free_limit'){ $('chaterr').textContent=FREE_LIMIT_MSG }
     else if(data.error==='free_unavailable'||data.error==='free_not_enabled'){ $('chaterr').textContent=FREE_DOWN_MSG }
@@ -1114,7 +1494,315 @@ function setVerdict(id, v){
 function sentStore(){ try{ return JSON.parse(localStorage.getItem('co_sent')||'{}')||{} }catch(_e){ return {} } }
 function isSent(id){ return !!sentStore()[id] }
 function setSent(id, on){ const m=sentStore(); if(on) m[id]=1; else delete m[id]; localStorage.setItem('co_sent', JSON.stringify(m)) }
+function sentVerStore(){ try{ return JSON.parse(localStorage.getItem('co_sent_ver')||'{}')||{} }catch(_e){ return {} } }
+function isVerSent(verId){ return !!sentVerStore()[verId] }
+function setVerSent(verId, on){
+  const m=sentVerStore(); if(on) m[verId]=1; else delete m[verId]
+  localStorage.setItem('co_sent_ver', JSON.stringify(m))
+}
+function roleHasSentVer(roleId){
+  if(isSent(roleId)) return true
+  const m=sentVerStore()
+  return (RP2ROWS||[]).some(r=>r.role_id===roleId && (r.kind==='resume'||r.kind==='cover') && m[r.id])
+    || Object.keys(m).length>0 && (RP2ROWS||[]).some(r=>(r.kind==='resume'||r.kind==='cover') && m[r.id] && CURROLE?.id===roleId)
+}
+function writeLocksKey(){ return 'co_write_locks_'+(ME?.id||'anon') }
+function loadWriteLocks(){
+  try{
+    const raw=JSON.parse(localStorage.getItem(writeLocksKey())||'null')
+    if(!raw||typeof raw!=='object') return { edu:true, exp:false }
+    return { edu: raw.edu!==false, exp: !!raw.exp }
+  }catch(_e){ return { edu:true, exp:false } }
+}
+function saveWriteLocks(p){
+  const next={ edu:!!p.edu, exp:!!p.exp }
+  localStorage.setItem(writeLocksKey(), JSON.stringify(next))
+  WRITE_LOCKS=next; return next
+}
+let WRITE_LOCKS={ edu:true, exp:false }
+function triagePrefsKey(){ return 'co_triage_prefs_'+(ME?.id||'anon') }
+function loadTriagePrefs(){
+  try{
+    const raw=JSON.parse(localStorage.getItem(triagePrefsKey())||'null')
+    if(!raw||typeof raw!=='object') return { sort:'match_desc', filter:'all' }
+    return {
+      sort:['match_desc','match_asc','newest','company'].includes(raw.sort)?raw.sort:'match_desc',
+      filter:['all','apply','stretch','skip','unscored','no_verdict'].includes(raw.filter)?raw.filter:'all',
+    }
+  }catch(_e){ return { sort:'match_desc', filter:'all' } }
+}
+function saveTriagePrefs(p){
+  const next={ sort:p.sort||'match_desc', filter:p.filter||'all' }
+  localStorage.setItem(triagePrefsKey(), JSON.stringify(next))
+  TRIAGE_PREFS=next; return next
+}
+let TRIAGE_PREFS={ sort:'match_desc', filter:'all' }
+function storiesKey(){ return 'co_stories_'+(ME?.id||'anon') }
+function loadStories(){
+  try{ return String(localStorage.getItem(storiesKey())||'') }catch(_e){ return '' }
+}
+function saveStories(t){ localStorage.setItem(storiesKey(), String(t||'')); return t }
+function storyList(){ return loadStories().split(/\n+/).map(x=>x.trim()).filter(Boolean) }
+function outcomesKey(){ return 'co_outcomes_'+(ME?.id||'anon') }
+function loadOutcomes(){ try{ return JSON.parse(localStorage.getItem(outcomesKey())||'{}')||{} }catch(_e){ return {} } }
+function saveOutcome(roleId, o){
+  const m=loadOutcomes(); if(!o||!o.kind) delete m[roleId]; else m[roleId]=o
+  localStorage.setItem(outcomesKey(), JSON.stringify(m)); return m
+}
 function materialsStore(){ try{ return JSON.parse(localStorage.getItem('co_materials')||'{}')||{} }catch(_e){ return {} } }
+
+// ---- Find / Decide prefs (local; durable per browser + user) ----
+const FIND_PREFS_DEFAULT = {
+  blocklist: [], max_age_days: 0, remote_pref: 'any', hide_filtered: true, dealbreakers: []
+}
+function findPrefsKey(){ return 'co_find_prefs_'+(ME?.id||'anon') }
+function loadFindPrefs(){
+  try{
+    const raw=JSON.parse(localStorage.getItem(findPrefsKey())||'null')
+    if(!raw||typeof raw!=='object') return {...FIND_PREFS_DEFAULT}
+    return {
+      blocklist: Array.isArray(raw.blocklist)?raw.blocklist:list(String(raw.blocklist||'')),
+      max_age_days: Math.max(0, parseInt(raw.max_age_days,10)||0),
+      remote_pref: ['any','prefer_remote','remote_only','onsite_ok'].includes(raw.remote_pref)?raw.remote_pref:'any',
+      hide_filtered: raw.hide_filtered!==false,
+      dealbreakers: Array.isArray(raw.dealbreakers)?raw.dealbreakers:list(String(raw.dealbreakers||'')),
+    }
+  }catch(_e){ return {...FIND_PREFS_DEFAULT} }
+}
+function saveFindPrefs(p){
+  const next={
+    blocklist:(p.blocklist||[]).map(x=>String(x).trim()).filter(Boolean),
+    max_age_days: Math.max(0, parseInt(p.max_age_days,10)||0),
+    remote_pref: p.remote_pref||'any',
+    hide_filtered: !!p.hide_filtered,
+    dealbreakers:(p.dealbreakers||[]).map(x=>String(x).trim()).filter(Boolean),
+  }
+  localStorage.setItem(findPrefsKey(), JSON.stringify(next))
+  FIND_PREFS = next
+  return next
+}
+let FIND_PREFS = FIND_PREFS_DEFAULT
+let LAST_EVAL = null
+const ATS_CACHE = {} // roleId -> { status, at, detail }
+
+function roleFingerprint(company, title){
+  return String((company||'')+' '+(title||'')).toLowerCase()
+    .replace(/\([^)]*\)/g,'').replace(/[^a-z0-9 ]+/g,'').replace(/\s+/g,' ').trim()
+}
+function normCompany(s){ return String(s||'').toLowerCase().replace(/[^a-z0-9]+/g,' ').replace(/\s+/g,' ').trim() }
+function isBlockedCompany(company){
+  const c=normCompany(company); if(!c) return false
+  return (FIND_PREFS.blocklist||[]).some(b=>{
+    const n=normCompany(b); if(!n) return false
+    return c===n || c.includes(n) || n.includes(c)
+  })
+}
+function roleAgeDays(r){
+  const t=r?.created_at || r?.date_found || r?.updated_at
+  if(!t) return null
+  const ms=Date.now()-new Date(t).getTime()
+  if(isNaN(ms)||ms<0) return 0
+  return Math.floor(ms/864e5)
+}
+function locBlob(r){
+  return [r?.location, r?.loc, r?.jd, r?.title, r?.company].map(x=>String(x||'')).join(' ').toLowerCase()
+}
+function isRemoteRole(r){
+  const t=locBlob(r)
+  if(/\bon[- ]?site\b|\bin[- ]?office\b|hybrid/.test(t) && !/\bremote\b/.test(t)) return false
+  return /\bremote\b|work from home|\bwfh\b|distributed/.test(t)
+}
+function isOnsiteHeavy(r){
+  const t=locBlob(r)
+  return /\bon[- ]?site\b|\bin[- ]?office\b|must (?:be|work) in|relocat/.test(t) && !/\bremote\b/.test(t)
+}
+function roleFilterReason(r){
+  if(isBlockedCompany(r.company)) return 'blocked'
+  const age=roleAgeDays(r)
+  if(FIND_PREFS.max_age_days>0 && age!=null && age>FIND_PREFS.max_age_days) return 'over_age'
+  if(FIND_PREFS.remote_pref==='remote_only' && isOnsiteHeavy(r) && !isRemoteRole(r)) return 'not_remote'
+  return null
+}
+function shouldHideRole(r){
+  if(!FIND_PREFS.hide_filtered) return false
+  return !!roleFilterReason(r)
+}
+function normalizeGhost(g){
+  const s=String(g||'unknown').toLowerCase()
+  if(s==='low'||s==='med'||s==='medium'||s==='high'||s==='unknown') return s==='medium'?'med':s
+  return 'unknown'
+}
+function estimateGhostRisk(r){
+  const existing=normalizeGhost(r?.ghost_risk)
+  if(existing!=='unknown') return existing
+  let score=0
+  const title=String(r?.title||'')
+  const url=String(r?.url||'')
+  if(!url) score+=2
+  if(/linkedin\.com\/jobs/i.test(url)) score+=1
+  if(/urgent|immediate start|no experience|work from phone|whatsapp|crypto|\$\d+k\/week/i.test(title+' '+(r?.jd||''))) score+=3
+  if(/staffing|recruiting agency|talent solutions/i.test(String(r?.company||''))) score+=1
+  if(score>=4) return 'high'
+  if(score>=2) return 'med'
+  return 'low'
+}
+function ghostLabel(g){
+  const n=normalizeGhost(g)
+  if(n==='low') return { cls:'ghost-low', text:'Ghost risk · low' }
+  if(n==='med') return { cls:'ghost-med', text:'Ghost risk · medium' }
+  if(n==='high') return { cls:'ghost-high', text:'Ghost risk · high' }
+  return { cls:'ghost-unknown', text:'Ghost risk · unknown' }
+}
+function findDealBreakers(jd){
+  const t=String(jd||'').toLowerCase()
+  if(!t) return []
+  return (FIND_PREFS.dealbreakers||[]).filter(p=>{
+    const q=String(p||'').trim().toLowerCase(); return q && t.includes(q)
+  })
+}
+function boardFingerprints(roles){
+  const urls=new Set(), fps=new Set()
+  for(const r of roles||[]){
+    if(r.url) urls.add(String(r.url).trim())
+    fps.add(roleFingerprint(r.company, r.title))
+  }
+  return { urls, fps }
+}
+async function isDuplicateRole({ company, title, url }, excludeId){
+  const roles=Object.values(ROLESMAP||{})
+  const fp=roleFingerprint(company, title)
+  for(const r of roles){
+    if(excludeId && +r.id===+excludeId) continue
+    if(url && r.url && String(r.url).trim()===String(url).trim()) return { dup:true, reason:'same URL', id:r.id }
+    if(fp && roleFingerprint(r.company,r.title)===fp) return { dup:true, reason:'same company + title', id:r.id }
+  }
+  return { dup:false }
+}
+function paintGhostChip(r){
+  const g=estimateGhostRisk(r)
+  const meta=ghostLabel(g)
+  const el=$('dw_ghost')
+  if(el){ el.className='chip '+meta.cls; el.textContent=meta.text }
+  return g
+}
+function paintLiveChip(status, detail){
+  const el=$('dw_live'); if(!el) return
+  if(status==='ok'){ el.className='chip live-ok'; el.textContent='Posting · looks live'+(detail?' · '+detail:'') }
+  else if(status==='stale'){ el.className='chip live-stale'; el.textContent='Posting · may be stale'+(detail?' · '+detail:'') }
+  else if(status==='dead'){ el.className='chip live-dead'; el.textContent='Posting · likely closed'+(detail?' · '+detail:'') }
+  else { el.className='chip'; el.textContent='Posting · '+(detail||'not checked') }
+}
+async function checkAtsLiveness(role){
+  if(!role) return
+  const id=role.id
+  const cached=ATS_CACHE[id]
+  if(cached && Date.now()-cached.at < 10*60e3){ paintLiveChip(cached.status, cached.detail); return cached }
+  paintLiveChip('…', 'checking…')
+  if(!role.url){
+    const out={ status:'stale', detail:'no link', at:Date.now() }
+    ATS_CACHE[id]=out; paintLiveChip(out.status, out.detail); return out
+  }
+  // Prefer existing fetch-jd edge — CORS-safe, already deployed
+  try{
+    const { data, error } = await sb.functions.invoke('fetch-jd',{ body:{ url:role.url, probe:true } })
+    if(error){
+      const out={ status:'stale', detail:'couldn’t reach ATS', at:Date.now() }
+      ATS_CACHE[id]=out; paintLiveChip(out.status, out.detail); return out
+    }
+    if(data?.closed || data?.gone || data?.status===404){
+      const out={ status:'dead', detail:'ATS says gone', at:Date.now() }
+      ATS_CACHE[id]=out; paintLiveChip(out.status, out.detail); return out
+    }
+    if(data?.jd){
+      const got=acceptFetchedJd(data.jd)
+      if(!got.ok){
+        const out={ status: got.reason==='careers_page' ? 'stale' : 'stale', detail: got.reason==='careers_page'?'careers page, not JD':'thin response', at:Date.now() }
+        ATS_CACHE[id]=out; paintLiveChip(out.status, out.detail); return out
+      }
+      const out={ status:'ok', detail:'JD reachable', at:Date.now() }
+      ATS_CACHE[id]=out; paintLiveChip(out.status, out.detail); return out
+    }
+    const out={ status:'stale', detail:'no JD body', at:Date.now() }
+    ATS_CACHE[id]=out; paintLiveChip(out.status, out.detail); return out
+  }catch(_e){
+    const out={ status:'stale', detail:'check failed', at:Date.now() }
+    ATS_CACHE[id]=out; paintLiveChip(out.status, out.detail); return out
+  }
+}
+function paintDealBreakers(jd){
+  const hits=findDealBreakers(jd)
+  const el=$('dw_dealwarn')
+  if(!el) return hits
+  if(!hits.length){ el.classList.add('hidden'); el.textContent=''; return hits }
+  el.classList.remove('hidden')
+  el.innerHTML='<b>Deal-breaker language found:</b> '+hits.map(esc).join(' · ')+'. Review before tagging Apply — this never auto-rejects.'
+  return hits
+}
+function buildEvaluatePack(role, matchData){
+  const jd=($('rp2_jd')?.value||role?.jd||'').trim()
+  const ghost=estimateGhostRisk(role)
+  const deal=findDealBreakers(jd)
+  const age=roleAgeDays(role)
+  const score = matchData?.match_score!=null ? rp2ParseMatchPct(matchData.match_score)
+    : rp2ParseMatchPct(role?.match_score)
+  const missing = Array.isArray(matchData?.missing) ? matchData.missing
+    : (Array.isArray(RP2LASTMISS)?RP2LASTMISS:[])
+  const present = Array.isArray(matchData?.present) ? matchData.present : []
+  const strengths=[]
+  if(!isNaN(score) && score>=70) strengths.push('Match score '+score+'% vs your materials')
+  else if(!isNaN(score)) strengths.push('Match score '+score+'% — review gaps before applying')
+  if(present.length) strengths.push('Covered signals: '+present.slice(0,6).join(', '))
+  if(ghost==='low') strengths.push('Ghost risk looks low')
+  if(isRemoteRole(role) && FIND_PREFS.remote_pref!=='onsite_ok') strengths.push('Remote-friendly language in materials')
+  const risks=[]
+  if(deal.length) risks.push('Deal-breakers: '+deal.join(', '))
+  if(ghost==='high'||ghost==='med') risks.push('Ghost risk: '+ghost)
+  if(age!=null && FIND_PREFS.max_age_days>0 && age>FIND_PREFS.max_age_days) risks.push('Posting age '+age+'d exceeds your max '+FIND_PREFS.max_age_days+'d')
+  if(isBlockedCompany(role?.company)) risks.push('Company is on your blocklist')
+  if(missing.length) risks.push('Not in materials yet: '+missing.slice(0,8).join(', '))
+  const live=ATS_CACHE[role?.id]
+  if(live?.status==='dead') risks.push('ATS posting looks closed')
+  else if(live?.status==='stale') risks.push('ATS liveness uncertain')
+
+  let suggest='stretch'
+  if(deal.length || ghost==='high' || live?.status==='dead' || (!isNaN(score)&&score<45)) suggest='skip'
+  else if(!isNaN(score) && score>=72 && ghost==='low' && !deal.length) suggest='apply'
+  else if(isNaN(score) && ghost==='low' && !deal.length) suggest='stretch'
+
+  const pack={
+    at: new Date().toISOString(),
+    score: isNaN(score)?null:score,
+    ghost, deal, age, suggest,
+    strengths, risks,
+    missing: missing.slice(0,12),
+    present: present.slice(0,12),
+  }
+  LAST_EVAL = pack
+  return pack
+}
+function renderEvaluatePack(pack){
+  const el=$('dw_eval'); if(!el||!pack) return
+  el.classList.remove('hidden')
+  const call = pack.suggest==='apply' ? 'Suggested call: Apply'
+    : pack.suggest==='skip' ? 'Suggested call: Skip'
+    : 'Suggested call: Stretch'
+  const meta=(pack.score!=null?('Match '+pack.score+'% · '):'')+'Ghost '+esc(pack.ghost)+(pack.age!=null?(' · age '+pack.age+'d'):'')
+  const strengths=(pack.strengths.length?pack.strengths:['Run Check my match for a fuller pack']).map(s=>'<li>'+esc(s)+'</li>').join('')
+  const risks=(pack.risks.length?pack.risks:['None flagged from your prefs']).map(s=>'<li>'+esc(s)+'</li>').join('')
+  el.innerHTML='<h4>Decision pack</h4><div class="muted" style="font-size:12.5px">'+meta+'</div><ul><li><b>Strengths</b><ul>'+strengths+'</ul></li><li><b>Watch-outs</b><ul>'+risks+'</ul></li></ul><div class="ev-call">'+esc(call)+' — tag it below (never auto-applied).</div>'
+}
+async function persistEvaluateReport(pack){
+  if(!CURROLE||!pack) return
+  try{
+    await sb.from('mt_reports').insert({
+      role_id: CURROLE.id,
+      kind: 'evaluate',
+      match_score: pack.score,
+      missing_keywords: pack.missing||[],
+      rewritten: JSON.stringify(pack),
+    })
+  }catch(_e){}
+}
 function getMaterials(id){ const m=materialsStore()[id]; return Array.isArray(m)?m:[] }
 function addMaterial(id, text){
   const t=String(text||'').trim(); if(!t) return
@@ -1161,10 +1849,12 @@ function openBuilderView(){
   closeDrawer()
   $('builderView')?.classList.remove('hidden')
   document.body.style.overflow='hidden'
+  hydrateWriteLocksUI()
   syncBuilderChrome()
   renderMaterialsGaps()
   rp2PaintMatchPct()
   rp2HydrateBuilderScore()
+  applySentFreezeUI()
   const hasDraft = ($('rp2_edtext')?.value||'').trim().length>40
   $('bv_empty')?.classList.toggle('hidden', hasDraft)
   $('rp2_editor')?.classList.toggle('hidden', !hasDraft)
@@ -1178,13 +1868,55 @@ async function load(){
   ])
   ROLESMAP = Object.fromEntries((roles||[]).map(r=>[r.id,r]))
   HASDOC = new Set((reps||[]).filter(x=>x.kind==='resume'||x.kind==='cover').map(x=>x.role_id))
+  FIND_PREFS = loadFindPrefs()
   const byStage={}; for(const s of [...STAGES,CLOSED]) byStage[s]=[]
-  for(const r of (roles||[])) (byStage[r.stage]||(byStage[r.stage]=[])).push(r)
-  const active=(roles||[]).filter(r=>r.stage!==CLOSED&&r.stage!=='rejected').length
-  $('status').textContent = active+' active roles · click a card to decide · Tailor opens the builder · drag between columns'
+  let hiddenN=0
+  for(const r of (roles||[])){
+    if(shouldHideRole(r)){ hiddenN++; continue }
+    ;(byStage[r.stage]||(byStage[r.stage]=[])).push(r)
+  }
+  const active=(roles||[]).filter(r=>r.stage!==CLOSED&&r.stage!=='rejected' && !shouldHideRole(r)).length
+  const sourcedN=(byStage.sourced||[]).length
+  $('status').textContent = active+' active roles'+(hiddenN?` · ${hiddenN} hidden by Find filters`:'')+' · click a card to decide · Tailor opens the builder · drag between columns'
+  if($('triage')){
+    $('triage').classList.toggle('hidden', sourcedN===0)
+    if($('triage_status') && !$('triage_status').dataset.busy)
+      $('triage_status').textContent = sourcedN
+        ? `${sourcedN} in Sourced — batch match scores JDs you already have (never applies).`
+        : 'No Sourced roles right now.'
+  }
+  TRIAGE_PREFS = loadTriagePrefs()
+  if($('triage_sort')) $('triage_sort').value = TRIAGE_PREFS.sort
+  if($('triage_filter')) $('triage_filter').value = TRIAGE_PREFS.filter
   const activeCard = CURROLE && !$('drawer')?.classList.contains('hidden') ? CURROLE.id : null
+  function scoreNum(r){ const n=parseInt(String(r.match_score||''),10); return isNaN(n)?-1:n }
+  function triageFilterRole(r){
+    const f=TRIAGE_PREFS.filter||'all'
+    if(f==='all') return true
+    const v=getVerdict(r.id)
+    if(f==='apply'||f==='stretch'||f==='skip') return v===f
+    if(f==='unscored') return scoreNum(r)<0
+    if(f==='no_verdict') return !v
+    return true
+  }
+  function triageSortRoles(arr){
+    const a=arr.slice()
+    const s=TRIAGE_PREFS.sort||'match_desc'
+    if(s==='match_desc') a.sort((x,y)=>scoreNum(y)-scoreNum(x) || String(x.company||'').localeCompare(String(y.company||'')))
+    else if(s==='match_asc') a.sort((x,y)=>{
+      const sx=scoreNum(x), sy=scoreNum(y)
+      if(sx<0&&sy<0) return 0
+      if(sx<0) return 1
+      if(sy<0) return -1
+      return sx-sy
+    })
+    else if(s==='company') a.sort((x,y)=>String(x.company||'').localeCompare(String(y.company||'')) || String(x.title||'').localeCompare(String(y.title||'')))
+    else a.sort((x,y)=>new Date(y.created_at||0)-new Date(x.created_at||0))
+    return a
+  }
   $('board').innerHTML = [...STAGES,CLOSED].map(s=>{
-    const it=byStage[s]||[]
+    let it=byStage[s]||[]
+    if(s==='sourced'){ it=triageSortRoles(it.filter(triageFilterRole)) }
     const cards= it.length? it.map(r=>{
       const v = getVerdict(r.id)
       const stale = daysSince(r.updated_at||r.created_at)
@@ -1193,10 +1925,16 @@ async function load(){
         : `<span class="stale">${stale}d</span>`)
       const doc = HASDOC.has(r.id) ? (isSent(r.id) ? '<span class="doc">✓ sent</span>' : '<span class="doc">PDF</span>') : ''
       const vHtml = v ? `<span class="verdict ${esc(v)}">${esc(v[0].toUpperCase()+v.slice(1))}</span>` : ''
+      const sn=scoreNum(r)
+      const mHtml = sn>=0 ? `<span class="match-pill" title="Match score">${sn}%</span>` : ''
+      const g = estimateGhostRisk(r)
+      const gHtml = `<span class="ghost-pill ${esc(g)}" title="Ghost risk">${esc(g)}</span>`
+      const why=roleFilterReason(r)
+      const flag = (!FIND_PREFS.hide_filtered && why) ? `<span class="doc" title="${esc(why)}">filtered</span>` : ''
       return `<div class="cardlet${activeCard===r.id?' active':''}" draggable="true" data-id="${r.id}">
       <div class="co">${esc(r.company||'—')}</div>
       <div class="role">${esc(r.title||'')}</div>
-      <div class="meta">${vHtml}${doc}${staleHtml}</div>
+      <div class="meta">${mHtml}${vHtml}${gHtml}${doc}${flag}${staleHtml}</div>
       ${r.url?`<a class="jd" href="${esc(r.url)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">Open JD ↗</a>`:''}
     </div>`}).join('') : '<div class="muted" style="font-size:11px;padding:6px">—</div>'
     return `<div class="col" data-stage="${s}"><h3>${LABEL[s]}<span>${it.length}</span></h3>${
@@ -1216,15 +1954,37 @@ async function load(){
   $('followups').classList.toggle('hidden', !fu.length)
   $('followups').innerHTML = fu.length ? '<span class="fu-label">⏰ FOLLOW-UPS DUE</span><div class="fu-row">'+fu.map(f=>{
     const label=`${f.r.company||'—'} — ${f.r.title||''} · ${f.overdue?'follow up now':'by '+f.due.toISOString().slice(0,10)}`
-    return `<span data-fu="${f.r.id}" class="fu-chip${f.overdue?' overdue':''}" title="${esc(label)}"><span class="fu-txt">${esc(label)}</span></span>`
+    return `<span class="fu-chip${f.overdue?' overdue':''}" title="${esc(label)}"><span class="fu-txt" data-fu="${f.r.id}">${esc(label)}</span><span class="fu-actions"><button type="button" data-fu-draft="${f.r.id}" title="Draft follow-up note — never sends">Draft note</button></span></span>`
   }).join('')+'</div>' : ''
   $('followups').querySelectorAll('[data-fu]').forEach(el=>el.onclick=()=>openRole(+el.dataset.fu))
+  $('followups').querySelectorAll('[data-fu-draft]').forEach(el=>el.onclick=e=>{ e.stopPropagation(); draftFollowupNote(+el.dataset.fuDraft) })
 }
 // unwrap the real error message from Edge Function failures (instead of "non-2xx status code")
 async function fnMsg(err){
   try{ if(err && err.context && typeof err.context.json==='function'){ const j=await err.context.json(); if(j && j.error) return j.error } }catch(_e){}
   return String(err && err.message || err)
 }
+function rp2ShowErr(msg){
+  const m=String(msg||'').trim()
+  if($('rp2_err')) $('rp2_err').textContent=m
+  if($('bv_err')) $('bv_err').textContent=m
+  if($('bv_err_empty')) $('bv_err_empty').textContent=m
+  const inBuilder = $('builderView') && !$('builderView').classList.contains('hidden')
+  const el = inBuilder ? ($('bv_err')||$('bv_err_empty')) : $('rp2_err')
+  try{ el?.scrollIntoView({behavior:'smooth',block:'nearest'}) }catch(_e){}
+}
+function rp2ClearErr(){
+  if($('rp2_err')) $('rp2_err').textContent=''
+  if($('bv_err')) $('bv_err').textContent=''
+  if($('bv_err_empty')) $('bv_err_empty').textContent=''
+}
+function mapRewriteSoftError(code){
+  const c=String(code||'')
+  if(c==='free_limit') return FREE_LIMIT_MSG
+  if(c==='free_unavailable'||c==='free_not_enabled'||c==='no_key') return FREE_DOWN_MSG
+  return c
+}
+
 
 // drag to move stage
 const board=$('board'); let dragId=null
@@ -1330,13 +2090,58 @@ async function loadSaved(id){
 const rpSafe=s=>(s||'').replace(/[^a-zA-Z0-9]+/g,'_')
 const rpName=k=>`${rpSafe(PROFILE?.full_name||'Me')}_${rpSafe(CURROLE?.company||'Role')}_${k==='cover'?'CoverLetter':k==='jobscan'?'JobscanReport':'Resume'}`
 function dlDoc(name,text){ const e2=s=>s.replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]))
-  download(name+'.doc','<html><head><meta charset="utf-8"></head><body style="font-family:Calibri,Arial,sans-serif;white-space:pre-wrap;font-size:11pt">'+e2(text)+'</body></html>','application/msword') }
+  download(name+'.doc','<html><head><meta charset="utf-8"></head><body style="font-family:Calibri,Arial,sans-serif;white-space:pre-wrap;font-size:11pt">'+e2(text)+'</body></html>','application/msword')
+  try{ showAtsKeywordCheck(text) }catch(_e){}
+}
+function extractAtsKeywords(jd, missing){
+  const fromMiss=(missing||[]).map(x=>String(x||'').replace(/^\s*no\s+/i,'').trim()).filter(Boolean)
+  const stop=new Set('the a an and or for with from that this your our their into onto over under about into across within without using use used based basedon must have has will would should can may team role job work years year experience strong ability'.split(' '))
+  const toks=String(jd||'').toLowerCase().match(/[a-z][a-z0-9+#./-]{2,}/g)||[]
+  const freq={}
+  for(const t of toks){ if(stop.has(t)||t.length<3) continue; freq[t]=(freq[t]||0)+1 }
+  const fromJd=Object.entries(freq).filter(([,n])=>n>=2).sort((a,b)=>b[1]-a[1]).slice(0,18).map(([k])=>k)
+  const seen=new Set()
+  const out=[]
+  for(const k of [...fromMiss, ...fromJd]){
+    const key=k.toLowerCase()
+    if(seen.has(key)) continue
+    seen.add(key); out.push(k)
+    if(out.length>=24) break
+  }
+  return out
+}
+function showAtsKeywordCheck(draftText){
+  const box=$('rp2_ats_box'); if(!box) return
+  const jd=($('rp2_jd')?.value||CURROLE?.jd||'').trim()
+  const keys=extractAtsKeywords(jd, RP2LASTMISS)
+  if(!keys.length){
+    box.classList.remove('hidden')
+    box.innerHTML='<h4>ATS keyword check</h4><p class="muted" style="margin:0">Downloaded. Add a JD or run match to score keyword coverage.</p>'
+    return
+  }
+  const body=String(draftText||'').toLowerCase()
+  const hit=[], miss=[]
+  for(const k of keys){
+    const tokens=String(k).toLowerCase().split(/[^a-z0-9+#]+/).filter(w=>w.length>2)
+    const ok=tokens.length ? tokens.every(tok=>body.includes(tok)) : body.includes(String(k).toLowerCase())
+    ;(ok?hit:miss).push(k)
+  }
+  box.classList.remove('hidden')
+  box.innerHTML='<h4>ATS keyword check <span class="muted">(after Word download)</span></h4>'
+    +'<p style="margin:0 0 8px"><b>'+hit.length+'</b> covered · <b>'+miss.length+'</b> missing from this draft</p>'
+    +'<div class="chips">'
+    +hit.slice(0,16).map(k=>'<span class="chip hit">'+esc(k)+'</span>').join('')
+    +miss.slice(0,16).map(k=>'<span class="chip miss">'+esc(k)+'</span>').join('')
+    +'</div>'
+    +'<p class="muted" style="margin:8px 0 0;font-size:12px">Coverage only — add missing terms only when true in your materials.</p>'
+  logEvent('ats_keyword_check', CURROLE?.id, { hit:hit.length, miss:miss.length })
+}
 $('rp_match').onclick = async ()=>{
   $('rp_err').textContent=''
   const jd=$('rp_jd').value.trim(); if(!jd){ $('rp_err').textContent='Load or paste the job description first.'; return }
   const b=$('rp_match'),o=b.textContent; b.disabled=true; b.textContent='Scoring…'
   try{
-    const { data, error } = await sb.functions.invoke('resume-match',{ body:{ resume_text:PROFILE?.resume_text||'', jd_text:jd } })
+    const data = await invokeMatch({ resume_text:PROFILE?.resume_text||'', jd_text:jd }); const error=null; bumpUsage('match')
     if(error||data?.error) throw new Error(data?.error||error.message)
     logEvent('match_report', CURROLE.id, { score:data.match_score, method:data.method })
     $('rp_score').textContent=data.match_score+'%'
@@ -1367,7 +2172,7 @@ async function rpGenerate(mode){
     let jobscan=''
     try{ const { data:js } = await sb.from('mt_reports').select('rewritten').eq('role_id',CURROLE.id).eq('kind','jobscan').not('rewritten','is',null).order('created_at',{ascending:false}).limit(1)
       if(js && js[0] && js[0].rewritten) jobscan=js[0].rewritten.slice(0,6000) }catch(_e){}
-    const { data, error } = await sb.functions.invoke('resume-rewrite',{ body:{ jd_text:jd, mode, jobscan_text:jobscan } })
+    let data=null, error=null; try{ data=await invokeRewrite({ jd_text:jd, mode, jobscan_text:jobscan }); bumpUsage('generate') }catch(e){ error=e }
     if(error) throw error
     if(data.error==='free_limit'){ $('rp_err').textContent=FREE_LIMIT_MSG }
     else if(data.error==='free_unavailable'||data.error==='free_not_enabled'||data.error==='no_key'){ $('rp_err').textContent=FREE_DOWN_MSG }
@@ -1385,7 +2190,7 @@ async function rpGenerate(mode){
       if(mode==='resume'){
         // auto-rescore the tailored resume so the card reflects the improvement
         try{
-          const { data:m2 } = await sb.functions.invoke('resume-match',{ body:{ resume_text:data.rewritten, jd_text:jd } })
+          let m2=null; try{ m2=await invokeMatch({ resume_text:data.rewritten, jd_text:jd }); bumpUsage('match') }catch(_e){}
           if(m2 && !m2.error && typeof m2.match_score==='number'){
             await sb.from('mt_roles').update({ match_score: m2.match_score+'%' }).eq('id',CURROLE.id)
             if(ROLESMAP[CURROLE.id]) ROLESMAP[CURROLE.id].match_score=m2.match_score+'%'
@@ -1523,6 +2328,20 @@ async function openRole2(id){
   openDrawerShell()
   document.querySelectorAll('.cardlet.active').forEach(el=>el.classList.remove('active'))
   document.querySelector(`.cardlet[data-id="${id}"]`)?.classList.add('active')
+  paintGhostChip(CURROLE)
+  paintLiveChip('…', 'checking…')
+  checkAtsLiveness(CURROLE)
+  paintDealBreakers(CURROLE.jd||$('rp2_jd')?.value||'')
+  try{ paintOutcomeUI(id) }catch(_e){}
+  // T20: interview prep when stage ≥ Interview (also Offer)
+  try{
+    const ix=STAGES.indexOf(CURROLE.stage)
+    const iInterview=STAGES.indexOf('interview')
+    const showIv = ix>=0 && iInterview>=0 && ix>=iInterview
+    $('dw_interview_sec')?.classList.toggle('hidden', !showIv)
+  }catch(_e){}
+  LAST_EVAL=null
+  if($('dw_eval')){ $('dw_eval').classList.add('hidden'); $('dw_eval').innerHTML='' }
   rp2RenderGaps()
   rp2LoadVers(id); rp2LoadPick(id)
   // Hydrate last match so score + gaps are visible without re-checking
@@ -1559,6 +2378,7 @@ async function openRole2(id){
           rp2SetJdProvenance()
         } else {
           $('rp2_jd').value=got.jd; saveJd(CURROLE, got.jd); rp2SetJdProvenance('link')
+          paintDealBreakers(got.jd)
         }
       } else {
         $('rp2_err').textContent='No job description came back — use Edit / paste job description.'
@@ -2161,7 +2981,7 @@ async function rp2MaybePolishBullet(sourceText, gapText){
   if(!base || rp2IsGapEcho(base, gapText)) return { text:'', how:'' }
   if(!jd || base.length<24) return { text:base, how:'Inserted from your experience' }
   try{
-    const { data } = await sb.functions.invoke('resume-rewrite',{ body:{ jd_text:jd, mode:'bullet', bullet_text:base } })
+    const data = await invokeRewrite({ jd_text:jd, mode:'bullet', bullet_text:base })
     const rw=String(data?.rewritten||'').trim().replace(/^[-•·▪◦*]\s*/,'')
     if(rw && !rp2IsGapEcho(rw, gapText) && rw.length>12){
       return { text:rw, how:'Polished from your experience' }
@@ -2292,8 +3112,8 @@ async function rp2MatchText(text, btn, contextNote){
   }
   const o=btn.textContent; btn.disabled=true; btn.textContent='Scoring… usually ~10 seconds'
   try{
-    const { data, error } = await sb.functions.invoke('resume-match',{ body:{ resume_text:text, jd_text:jd } })
-    if(error||data?.error) throw new Error(data?.error||error.message)
+    const data = await invokeMatch({ resume_text:text, jd_text:jd })
+    bumpUsage('match')
     if(data.match_score==null || (typeof data.match_score!=='number' && isNaN(parseInt(data.match_score,10)))){
       throw new Error('Match ran but returned no score — try again in a moment.')
     }
@@ -2332,7 +3152,7 @@ function rp2VerLabel(r, vnum, { latest=false }={}){
   const custom=rp2VerNames()[r.id]
   const isPdf=r.kind==='jobscan'&&r.jd_text
   const name=custom || rp2HumanVerName(r)
-  const sent = (r.kind==='resume'||r.kind==='cover') && isSent(CURROLE?.id) && latest ? ' <span class="sent" style="margin-left:6px">✓ sent</span>' : ''
+  const sent = (r.kind==='resume'||r.kind==='cover') && isVerSent(r.id) ? ' <span class="sent on" style="margin-left:6px">✓ sent · frozen</span>' : ''
   return `<span class="rp2-vername">${esc(name)}</span>${latest?' <span class="muted">· Latest</span>':''}${isPdf?' (PDF)':''}${sent}`
 }
 function rp2VerRow(r, vnum, { latest=false, scoreFallback=null }={}){
@@ -2348,6 +3168,7 @@ function rp2VerRow(r, vnum, { latest=false, scoreFallback=null }={}){
     ? `<details class="rp2-more"><summary>⋯</summary><div class="rp2-moremenu">
         <button type="button" data-v2match="${r.id}">Re-run match check on this version</button>
         <button type="button" class="rp2-link" data-v2dl="${r.id}">⬇︎ Download Word (.doc)</button>
+        <button type="button" class="rp2-link" data-v2sent="${r.id}">${isVerSent(r.id)?'Unfreeze Sent':'Mark Sent (freeze)'}</button>
         <button type="button" class="rp2-link" data-v2rename="${r.id}">Rename…</button>
       </div></details>`
     : ''
@@ -2405,6 +3226,17 @@ function rp2BindVers(root){
     const next=prompt('Name this save (company + what it is works best):', cur || ((CURROLE?.company||'')+' '+(r.kind==='cover'?'cover':'resume')))
     if(next==null) return
     rp2SaveVerName(id, next.trim()); rp2LoadVers(CURROLE.id)
+  })
+  root.querySelectorAll('[data-v2sent]').forEach(b=>b.onclick=()=>{
+    const id=+b.dataset.v2sent, r=RP2ROWS.find(x=>x.id==id); if(!r) return
+    const on=!isVerSent(id)
+    if(on && !confirm('Mark this version Sent? The draft freezes (read-only) so you don’t accidentally edit what you submitted.')) return
+    setVerSent(id, on)
+    if(on && CURROLE) setSent(CURROLE.id, true)
+    if(!on && CURROLE && !(RP2ROWS||[]).some(x=>(x.kind==='resume'||x.kind==='cover') && isVerSent(x.id) && x.id!==id)) setSent(CURROLE.id, false)
+    if(RP2EDIT && RP2EDIT.id===id) applySentFreezeUI()
+    rp2LoadVers(CURROLE.id); load()
+    logEvent(on?'version_sent_freeze':'version_sent_unfreeze', CURROLE?.id, { ver:id })
   })
 }
 async function rp2LoadVers(id){
@@ -2476,10 +3308,24 @@ function rp2OpenEditor(id){
   $('rp2_editor').classList.remove('hidden')
   if($('bv_verpill')) $('bv_verpill').textContent=human
   if($('bv_saved')) $('bv_saved').classList.remove('hidden')
-  if($('bv_sent')) $('bv_sent').textContent = isSent(CURROLE?.id) ? '✓ sent' : 'not sent'
+  applySentFreezeUI()
   if($('builderView')?.classList.contains('hidden')) openBuilderView()
   else syncBuilderChrome()
   $('rp2_editor').scrollIntoView({behavior:'smooth',block:'nearest'})
+}
+function applySentFreezeUI(){
+  const frozen = !!(RP2EDIT && RP2EDIT.id && isVerSent(RP2EDIT.id))
+  const ed=$('rp2_edtext')
+  if(ed){ ed.readOnly=frozen; ed.title=frozen?'This version is Sent — frozen. Unfreeze from Documents ⋯ menu to edit.':'' }
+  $('rp2_editor')?.classList.toggle('frozen', frozen)
+  if($('rp2_edsave')) $('rp2_edsave').disabled=frozen
+  if($('rp2_generate')) $('rp2_generate').disabled=frozen
+  if($('bv_gen_empty')) $('bv_gen_empty').disabled=frozen
+  if($('rp2_review')) $('rp2_review').disabled=false
+  if($('bv_sent')){
+    $('bv_sent').textContent = frozen ? '✓ sent · frozen' : (isSent(CURROLE?.id) ? '✓ sent' : 'not sent')
+    $('bv_sent').classList.toggle('on', frozen || isSent(CURROLE?.id))
+  }
 }
 $('rp2_edclose').onclick=()=> $('rp2_editor').classList.add('hidden')
 $('rp2_edsave').onclick=async()=>{
@@ -2886,7 +3732,7 @@ async function rp2Regen(bid, btn){
   const orig=rp2Bullet(bid); if(!orig) return
   const o=btn.textContent; btn.disabled=true; btn.textContent='↻ …'
   try{
-    const { data, error } = await sb.functions.invoke('resume-rewrite',{ body:{ jd_text:jd, mode:'bullet', bullet_text:orig.text } })
+    let data=null, error=null; try{ data=await invokeRewrite({ jd_text:jd, mode:'bullet', bullet_text:orig.text }) }catch(e){ error=e }
     if(error) throw error
     if(data.error==='free_limit') $('rp2_err').textContent=FREE_LIMIT_MSG
     else if(data.error) $('rp2_err').textContent=data.error
@@ -2986,6 +3832,13 @@ function rp2GapBrief(gaps, { repair=false }={}){
     lines.push('Added materials from the user (treat as truth):')
     for(const t of extra.slice(0,20)) lines.push('   - '+t)
   }
+  try{
+    const stories=storyList().slice(0,10)
+    if(stories.length){
+      lines.push('Story bank (true stories — may weave into bullets only if already consistent with Experience):')
+      for(const t of stories) lines.push('   - '+t)
+    }
+  }catch(_e){}
   if(gaps.length){
     lines.push('Gaps to prefer addressing when already in materials:')
     for(const g of gaps.slice(0,12)) lines.push('   - '+String(g).replace(/^\s*no\s+/i,'').trim())
@@ -3072,6 +3925,18 @@ function rp2EnforceResumeDraft(raw, { gaps=[], assemble='' }={}){
             : []})
     }
   }
+  // Section locks: restore Education / optional Experience from assemble (or prior draft) after AI
+  const locks = (typeof WRITE_LOCKS!=='undefined' && WRITE_LOCKS) ? WRITE_LOCKS : loadWriteLocks()
+  const lockSrc = srcSecs.length ? srcSecs : (arguments[1]?.priorSecs||[])
+  function forceLock(name){
+    const from=lockSrc.find(x=>x.name===name) || srcSecs.find(x=>x.name===name)
+    if(!from || !from.lines.some(l=>l.trim())) return
+    let s=secs.find(x=>x.name===name)
+    if(!s){ s={name, lines:[]}; secs.push(s) }
+    s.lines=from.lines.slice()
+  }
+  if(locks.edu) forceLock('EDUCATION')
+  if(locks.exp) forceLock('EXPERIENCE')
   // Gap status: every gap must be in materials or listed
   const bodyLower=secs.filter(s=>s.name!=='GAP STATUS').map(s=>s.lines.join('\n')).join('\n').toLowerCase()
   const open=[]
@@ -3122,47 +3987,76 @@ function rp2OpenDraftInEditor(kind, text){
   $('rp2_editor').scrollIntoView({behavior:'smooth',block:'nearest'})
 }
 $('rp2_generate').onclick=async()=>{
-  $('rp2_err').textContent=''
-  const jd=$('rp2_jd').value.trim()
+  rp2ClearErr()
+  if(!CURROLE){ rp2ShowErr('Open a role from the board first.'); return }
+  // JD may live on the card even if the drawer textarea was cleared — prefer textarea, fall back to card.
+  let jd=($('rp2_jd')?.value||'').trim()
+  if(!jd) jd=String(CURROLE.jd||'').trim()
+  if(jd && $('rp2_jd') && !$('rp2_jd').value.trim()) $('rp2_jd').value=jd
   if(!jd){
-    if($('rp2_err')) $('rp2_err').textContent='Add the job description first — paste it in the role drawer.'
+    rp2ShowErr('Add the job description first — paste it in the role drawer.')
     closeBuilder(); openDrawerShell()
     $('rp2_jdwrap')?.classList.remove('hidden')
     if($('rp2_jdtoggle')) $('rp2_jdtoggle').textContent='Collapse editor'
     $('rp2_jd')?.focus()
     return
   }
-  const doRes=$('rp2_gres').checked, doCov=$('rp2_gcov').checked
-  if(!doRes&&!doCov){ $('rp2_err').textContent='Tick what to generate — resume, cover letter, or both.'; return }
-  const b=$('rp2_generate'),o=b.textContent; b.disabled=true
+  const doRes=$('rp2_gres')?.checked!==false, doCov=!!$('rp2_gcov')?.checked
+  // Default to resume if somehow neither is ticked
+  const wantRes = doRes || (!doRes && !doCov)
+  const wantCov = doCov
+  if(!wantRes && !wantCov){ rp2ShowErr('Tick what to generate — resume, cover letter, or both.'); return }
+  if(wantRes && $('rp2_gres') && !$('rp2_gres').checked) $('rp2_gres').checked=true
+  const b=$('rp2_generate'), be=$('bv_gen_empty')
+  const o=b.textContent, oe=be?.textContent
+  b.disabled=true; if(be) be.disabled=true
   let opened=null
   try{
     await rp2FlushSel()
     if(PROFILE?.resume_struct) PROFILE.resume_struct=rp2NormalizeStruct(PROFILE.resume_struct)
     const override=rp2Assemble()
+    const baseResume = (override||PROFILE?.resume_text||'').trim()
+    if(wantRes && !baseResume){
+      rp2ShowErr('Add your resume in Settings, or tick experience bullets on the left, then Generate again.')
+      return
+    }
     let jobscan=''
     try{ const { data:js } = await sb.from('mt_reports').select('rewritten').eq('role_id',CURROLE.id).eq('kind','jobscan').not('rewritten','is',null).order('created_at',{ascending:false}).limit(1)
       if(js&&js[0]&&js[0].rewritten) jobscan=js[0].rewritten.slice(0,5000) }catch(_e){}
     const gaps=await rp2LoadGaps()
     const brief=rp2GapBrief(gaps)
     const guidance=[jobscan, brief].filter(Boolean).join('\n\n').slice(0,7000)
-    for(const mode of [doRes?'resume':null, doCov?'cover':null].filter(Boolean)){
-      b.textContent = mode==='cover' ? '✨ Writing cover letter…' : '✨ Tailoring resume…'
-      const body={ jd_text:jd, mode, jobscan_text:guidance, missing_keywords:gaps, gaps }
-      if(override) body.resume_text=override
-      let { data, error } = await sb.functions.invoke('resume-rewrite',{ body })
+    for(const mode of [wantRes?'resume':null, wantCov?'cover':null].filter(Boolean)){
+      const label = mode==='cover' ? '✨ Writing cover letter…' : '✨ Tailoring resume…'
+      b.textContent = label; if(be) be.textContent = label
+      const body={ jd_text:jd, mode, jobscan_text:guidance, missing_keywords:gaps, gaps, resume_text: baseResume }
+      let data=null, error=null; try{ data=await invokeRewrite(body); bumpUsage('generate') }catch(e){ error=e }
       if(error) throw error
-      if(data.error==='free_limit'){ $('rp2_err').textContent=FREE_LIMIT_MSG; break }
-      if(data.error==='free_unavailable'||data.error==='free_not_enabled'||data.error==='no_key'){ $('rp2_err').textContent=FREE_DOWN_MSG; break }
-      if(data.error){ $('rp2_err').textContent=data.error; break }
-      if(!data.rewritten||!data.rewritten.trim()){ $('rp2_err').textContent='Model returned nothing — try again.'; break }
+      if(!data){ rp2ShowErr('Generate returned nothing — try again.'); break }
+      if(data.error){ rp2ShowErr(mapRewriteSoftError(data.error)||data.error); break }
+      if(!data.rewritten||!data.rewritten.trim()){ rp2ShowErr('Model returned nothing — try again.'); break }
       let finalText=data.rewritten.trim()
       let enforceMeta=null
       if(mode==='resume'){
-        enforceMeta=rp2EnforceResumeDraft(finalText, { gaps, assemble:override })
+        let assembleForLock=override||baseResume||''
+        if(WRITE_LOCKS.edu || WRITE_LOCKS.exp){
+          const prior=rp2SplitDraftSections(($('rp2_edtext')?.value||'').trim() || override || baseResume || '')
+          const base=rp2SplitDraftSections(override||finalText)
+          for(const n of ['EDUCATION','EXPERIENCE']){
+            const want=(n==='EDUCATION'&&WRITE_LOCKS.edu)||(n==='EXPERIENCE'&&WRITE_LOCKS.exp)
+            if(!want) continue
+            const from=prior.find(s=>s.name===n) || base.find(s=>s.name===n)
+            if(!from) continue
+            let tt=base.find(s=>s.name===n)
+            if(!tt){ tt={name:n, lines:[]}; base.push(tt) }
+            tt.lines=from.lines.slice()
+          }
+          assembleForLock=rp2RebuildDraftFromSecs(base)
+        }
+        enforceMeta=rp2EnforceResumeDraft(finalText, { gaps, assemble:assembleForLock })
         finalText=enforceMeta.text
         if(!enforceMeta.quality.ok){
-          b.textContent='✨ Fixing draft structure…'
+          b.textContent='✨ Fixing draft structure…'; if(be) be.textContent=b.textContent
           const repairBody={
             jd_text:jd, mode:'resume',
             resume_text:finalText,
@@ -3170,31 +4064,41 @@ $('rp2_generate').onclick=async()=>{
             missing_keywords:gaps, gaps
           }
           try{
-            const r2=await sb.functions.invoke('resume-rewrite',{ body:repairBody })
-            if(!r2.error && r2.data?.rewritten?.trim() && !r2.data.error){
-              enforceMeta=rp2EnforceResumeDraft(r2.data.rewritten, { gaps, assemble:override })
+            const r2 = await invokeRewrite(repairBody)
+            if(r2 && !r2.error && r2.rewritten?.trim()){
+              enforceMeta=rp2EnforceResumeDraft(r2.rewritten, { gaps, assemble:override||baseResume })
               finalText=enforceMeta.text
-              data=r2.data
+              data=r2
             }
           }catch(_e){}
         }
       }
-      logEvent(mode==='cover'?'cover_generated':'resume_tailored', CURROLE.id, {
-        method:data.method, panel:'v2', from_selection:!!override, gaps:gaps.length,
-        enforced:!!enforceMeta?.repaired, open_gaps:enforceMeta?.openGaps||0, quality_ok:enforceMeta?!!enforceMeta.quality.ok:true
-      })
-      await sb.from('mt_reports').insert({ role_id:CURROLE.id, kind:mode, rewritten:finalText, jd_text:jd.slice(0,4000) })
-      HASDOC.add(CURROLE.id)
+      // Show draft immediately — never lose a successful rewrite if save fails.
       opened={ kind:mode, text:finalText }
+      rp2OpenDraftInEditor(mode, finalText)
+      try{
+        logEvent(mode==='cover'?'cover_generated':'resume_tailored', CURROLE.id, {
+          method:data.method, panel:'v2', from_selection:!!override, gaps:gaps.length,
+          enforced:!!enforceMeta?.repaired, open_gaps:enforceMeta?.openGaps||0, quality_ok:enforceMeta?!!enforceMeta.quality.ok:true
+        })
+      }catch(_e){}
+      try{
+        const { error:insErr } = await sb.from('mt_reports').insert({ role_id:CURROLE.id, kind:mode, rewritten:finalText, jd_text:jd.slice(0,4000) })
+        if(insErr) rp2ShowErr('Draft is ready below — save to history failed: '+(insErr.message||insErr)+'. Click Save this draft.')
+        else HASDOC.add(CURROLE.id)
+      }catch(insE){
+        rp2ShowErr('Draft is ready below — could not append version history. Click Save this draft. ('+await fnMsg(insE)+')')
+      }
       if(mode==='resume'){
-        b.textContent='Scoring the new resume…'
+        b.textContent='Scoring the new resume…'; if(be) be.textContent=b.textContent
         try{
-          const { data:m2 } = await sb.functions.invoke('resume-match',{ body:{ resume_text:finalText, jd_text:jd } })
+          let m2=null; try{ m2=await invokeMatch({ resume_text:finalText, jd_text:jd }); bumpUsage('match') }catch(_e){}
           if(m2&&!m2.error&&typeof m2.match_score==='number'){ rp2ShowScore(m2,'your new tailored resume · '); await rp2PersistScore(m2.match_score, m2.missing) }
         }catch(_e){}
       }
     }
-    await rp2LoadVers(CURROLE.id); load()
+    try{ await rp2LoadVers(CURROLE.id) }catch(_e){}
+    try{ load() }catch(_e){}
     if(opened){
       const row=RP2ROWS.find(r=>r.kind===opened.kind && (r.rewritten||'').trim()===opened.text.trim())
       if(row){
@@ -3202,8 +4106,11 @@ $('rp2_generate').onclick=async()=>{
         rp2OpenEditor(row.id)
       } else rp2OpenDraftInEditor(opened.kind, opened.text)
     }
-  }catch(err){ $('rp2_err').textContent=await fnMsg(err) }
-  b.disabled=false; b.textContent=o
+  }catch(err){ rp2ShowErr(await fnMsg(err)) }
+  finally {
+    b.disabled=false; b.textContent=o
+    if(be){ be.disabled=false; be.textContent=oe }
+  }
 }
 // jobscan attach (same inserts as v1, new element ids)
 $('rp2_savejobscan').onclick=async()=>{
@@ -3257,10 +4164,23 @@ $('run').onclick = async ()=>{
     const { data, error } = await sb.functions.invoke('run-search-mt')
     if(error) throw error
     if(data.error==='daily_limit'){ $('status').textContent='Daily search limit reached (10/day) — resets tomorrow. Your board and all other tools keep working.'; b.disabled=false; b.textContent=old; return }
+    // Client hygiene pass: soft-hide via prefs; optional close of clear blocklist hits still in Sourced
+    try{
+      const bl=(FIND_PREFS.blocklist||[]).map(normCompany).filter(Boolean)
+      if(bl.length){
+        const { data:sourced } = await sb.from('mt_roles').select('id,company,stage').eq('stage','sourced')
+        for(const r of sourced||[]){
+          if(isBlockedCompany(r.company)){
+            await sb.from('mt_roles').update({ stage: CLOSED, notes: (r.notes?r.notes+' · ':'')+'auto-closed: blocklist' }).eq('id', r.id)
+          }
+        }
+      }
+    }catch(_e){}
     await load()
+    const filt = FIND_PREFS.hide_filtered ? ' Find filters may hide some.' : ''
     $('status').textContent = (data.added>0)
-      ? `Added ${data.added} new role${data.added>1?'s':''} matching your preferences (scanned ${data.found} live matches).`
-      : `Scanned the boards — ${data.found} roles matched your filters, all already on your board. Adjust keywords in Settings to widen.`
+      ? `Added ${data.added} new role${data.added>1?'s':''} matching your preferences (scanned ${data.found} live matches).${filt}`
+      : `Scanned the boards — ${data.found} roles matched your filters, all already on your board. Adjust keywords in Settings to widen.${filt}`
   }catch(err){ $('status').textContent='Search failed: '+await fnMsg(err) }
   b.disabled=false; b.textContent=old
 }
@@ -3320,13 +4240,16 @@ $('li_import')&&($('li_import').onclick=async()=>{
   let jd=($('li_jd_bulk').value||'').trim()
   if(jd && jdRejectReason(jd)){ $('li_err').textContent=jdRejectMessage(jdRejectReason(jd)); return }
   const b=$('li_import'), t=b.textContent; b.disabled=true; b.textContent='Adding…'
-  let added=0, skipped=0
+  let added=0, skipped=0, blocked=0
   try{
     for(const url of urls){
       const { data:exist } = await sb.from('mt_roles').select('id').eq('url',url).limit(1)
       if(exist&&exist.length){ skipped++; continue }
       const title='LinkedIn role — edit title'
       const company=guessCompanyFromHost(url)
+      if(isBlockedCompany(company)){ blocked++; continue }
+      const dup=await isDuplicateRole({ company, title, url })
+      if(dup.dup){ skipped++; continue }
       const row={ company, title, level:'—', url, source:'linkedin', fit_score:'—', stage:'researched', ghost_risk:'low' }
       if(jd) row.jd=formatJdReadable(jd)
       const { data, error } = await sb.from('mt_roles').insert(row).select().single()
@@ -3346,8 +4269,8 @@ $('li_import')&&($('li_import').onclick=async()=>{
     $('ligoogle').classList.add('hidden')
     await load()
     $('status').textContent = added
-      ? `Added ${added} role${added>1?'s':''} from your links${skipped?` (${skipped} already on board)`:''}. Edit titles/companies and paste JDs where needed.`
-      : (skipped?`Those links are already on your board.`:'Nothing added.')
+      ? `Added ${added} role${added>1?'s':''} from your links${skipped?` (${skipped} duplicates)`:''}${blocked?` · ${blocked} blocklisted`:''}. Edit titles/companies and paste JDs where needed.`
+      : (skipped||blocked?`Nothing new — ${skipped} duplicates${blocked?`, ${blocked} blocklisted`:''}.`:'Nothing added.')
   }catch(e){ $('li_err').textContent=e.message||String(e) }
   finally{ b.disabled=false; b.textContent=t }
 })
@@ -3364,15 +4287,19 @@ $('ar_save').onclick=async()=>{
   let jd=($('ar_jd')?.value||'').trim()
   if(!company||!title){ $('ar_err').textContent='Company and job title are required.'; return }
   if(!url && !jd){ $('ar_err').textContent='Add a posting link and/or paste the job description.'; return }
+  if(isBlockedCompany(company)){ $('ar_err').textContent='That company is on your blocklist (Settings → Find hygiene). Remove it there to add this role.'; return }
   if(jd){
     const why=jdRejectReason(jd)
     if(why==='careers_page'){ $('ar_err').textContent=jdRejectMessage(why); return }
     jd=formatJdReadable(jd)
   }
+  const dup=await isDuplicateRole({ company, title, url })
+  if(dup.dup){ $('ar_err').textContent='Already on your board ('+dup.reason+'). Open the existing card instead.'; return }
   const level=/vp|vice president|chief/i.test(title)?'VP':/senior director|sr\.? director/i.test(title)?'Senior Director':/principal/i.test(title)?'Principal':/director/i.test(title)?'Director':'—'
   const b=$('ar_save'), t=b.textContent; b.disabled=true; b.textContent='Adding…'
   try{
-    const row={ company, title, level, url:url||null, source:'manual', fit_score:'—', stage:'researched', ghost_risk:'low' }
+    const ghost = estimateGhostRisk({ company, title, url, jd })
+    const row={ company, title, level, url:url||null, source:'manual', fit_score:'—', stage:'researched', ghost_risk:ghost }
     if(jd) row.jd=jd
     const { data, error } = await sb.from('mt_roles').insert(row).select().single()
     if(error) throw error
@@ -3398,7 +4325,7 @@ $('matchbtn').onclick = async ()=>{
   $('resumeerr').textContent=''
   const b=$('matchbtn'), o=b.textContent; b.disabled=true; b.textContent='Scoring…'
   try{
-    const { data, error } = await sb.functions.invoke('resume-match',{ body:{ resume_text:PROFILE?.resume_text||'', jd_text:$('jd').value } })
+    let data=null, error=null; try{ data=await invokeMatch({ resume_text:PROFILE?.resume_text||'', jd_text:$('jd').value }); bumpUsage('match') }catch(e){ error=e }
     if(error||data?.error){ $('resumeerr').textContent=(data?.error||error.message); return }
     $('scoreval').textContent = data.match_score+'%'
     if(data.method==='keywords'){
@@ -3424,7 +4351,7 @@ async function generate(mode){
   $('resumeerr').textContent=''
   const b = mode==='cover'?$('coverbtn'):$('rewritebtn'); const o=b.textContent; b.disabled=true; b.textContent='✨ Working…'
   try{
-    const { data, error } = await sb.functions.invoke('resume-rewrite',{ body:{ jd_text:$('jd').value, mode } })
+    let data=null, error=null; try{ data=await invokeRewrite({ jd_text:$('jd').value, mode }); bumpUsage('generate') }catch(e){ error=e }
     if(error) throw error
     if(data.error==='free_limit'){ $('resumeerr').textContent=FREE_LIMIT_MSG }
     else if(data.error==='free_unavailable'||data.error==='free_not_enabled'||data.error==='no_key'){ $('resumeerr').textContent=FREE_DOWN_MSG }
@@ -3471,10 +4398,13 @@ function paintSettingsSecrets(){
   const ks=$('s_keystatus'), hs=$('s_humanstatus')
   if(ks){
     const claude=!!(PROFILE?.ai_key), kimi=!!(PROFILE?.kimi_key)
+    const oai=loadOpenaiPrefs()
     ks.innerHTML = 'Stored keys: '
       + (claude ? `<b style="color:var(--ok,#1a7f37)">Claude ✓</b> <span class="muted">(${esc(rp2SecretHint(PROFILE.ai_key))})</span>` : '<span class="muted">Claude — not set</span>')
       + ' · '
       + (kimi ? `<b style="color:var(--ok,#1a7f37)">Kimi ✓</b> <span class="muted">(${esc(rp2SecretHint(PROFILE.kimi_key))})</span>` : '<span class="muted">Kimi — not set</span>')
+      + ' · '
+      + (oai.key ? `<b style="color:var(--ok,#1a7f37)">OpenAI-compat ✓</b> <span class="muted">(${esc(rp2SecretHint(oai.key))} · ${esc(oai.base||'no base')})</span>` : '<span class="muted">OpenAI-compat — not set</span>')
   }
   if(hs){
     const em=!!(PROFILE?.humanizer_email), pw=!!(PROFILE?.humanizer_pw)
@@ -3485,15 +4415,26 @@ function paintSettingsSecrets(){
   }
 }
 $('settingsbtn').onclick=()=>{
+  FIND_PREFS = loadFindPrefs()
   $('s_titles').value=(PROFILE?.target_titles||[]).join(', ')
   $('s_keywords').value=(PROFILE?.keywords||[]).join(', ')
   $('s_seniority').value=(PROFILE?.seniority||[]).join(', ')
   $('s_locations').value=(PROFILE?.locations||[]).join(', ')
   $('s_resume').value=PROFILE?.resume_text||''
+  if($('s_stories')) $('s_stories').value=loadStories()
+  if($('s_blocklist')) $('s_blocklist').value=(FIND_PREFS.blocklist||[]).join(', ')
+  if($('s_max_age')) $('s_max_age').value=FIND_PREFS.max_age_days||0
+  if($('s_remote_pref')) $('s_remote_pref').value=FIND_PREFS.remote_pref||'any'
+  if($('s_hide_blocked')) $('s_hide_blocked').checked=FIND_PREFS.hide_filtered!==false
+  if($('s_dealbreakers')) $('s_dealbreakers').value=(FIND_PREFS.dealbreakers||[]).join(', ')
   // Never put secrets back into password inputs — browsers / screenshots. Status line shows what's stored.
   $('s_key').value=''; $('s_kimi').value=''; $('s_hemail').value=PROFILE?.humanizer_email||''; $('s_hpw').value=''
+  const oai=loadOpenaiPrefs()
+  if($('s_oai_base')) $('s_oai_base').value=oai.base||''
+  if($('s_oai_key')) $('s_oai_key').value=''
+  if($('s_oai_model')) $('s_oai_model').value=oai.model||'gpt-4o-mini'
   $('seterr').textContent=''; paintSettingsSecrets()
-  freeStatus()
+  freeStatus(); paintUsageMeters()
   $('settings').classList.remove('hidden')
 }
 $('settingsclose').onclick=()=> $('settings').classList.add('hidden')
@@ -3514,9 +4455,59 @@ $('exp_csv').onclick = async ()=>{
   const csv=[cols.join(',')].concat((data||[]).map(r=>cols.map(c=>'"'+String(r[c]??'').replace(/"/g,'""')+'"').join(','))).join('\n')
   download('CareerOps_board.csv', csv, 'text/csv')
 }
+$('exp_boardpack')?.addEventListener('click', async ()=>{
+  const [{data:prof},{data:roles},{data:reports}] = await Promise.all([
+    sb.from('mt_profiles').select('*').eq('owner',ME.id),
+    sb.from('mt_roles').select('*'),
+    sb.from('mt_reports').select('*')
+  ])
+  const p = prof&&prof[0] ? {...prof[0]} : null
+  if(p){ delete p.ai_key; delete p.kimi_key; delete p.humanizer_pw }
+  const pack = {
+    format: 'careerops-board-pack/v1',
+    exported_at: new Date().toISOString(),
+    doctrine: { no_auto_apply: true, no_invented_facts: true },
+    profile: p ? {
+      full_name: p.full_name, email: p.email, location: p.location,
+      target_titles: p.target_titles, keywords: p.keywords, seniority: p.seniority, locations: p.locations,
+      resume_text: p.resume_text
+    } : null,
+    stories: loadStories(),
+    find_prefs: loadFindPrefs(),
+    roles: (roles||[]).map(r=>({
+      id:r.id, company:r.company, title:r.title, stage:r.stage, url:r.url, jd:r.jd,
+      match_score:r.match_score, fit_score:r.fit_score, ghost_risk:r.ghost_risk,
+      created_at:r.created_at, level:r.level
+    })),
+    materials: (reports||[]).filter(x=>x.kind==='resume'||x.kind==='cover'||x.kind==='jobscan').map(x=>({
+      id:x.id, role_id:x.role_id, kind:x.kind, match_score:x.match_score,
+      rewritten:x.rewritten, created_at:x.created_at
+    })),
+    reports: (reports||[]).filter(x=>x.kind==='match'||x.kind==='evaluate').map(x=>({
+      id:x.id, role_id:x.role_id, kind:x.kind, match_score:x.match_score,
+      missing_keywords:x.missing_keywords, rewritten:x.rewritten, created_at:x.created_at
+    })),
+    outcomes: (()=>{ try{ return JSON.parse(localStorage.getItem('co_outcomes_'+(ME?.id||''))||'{}') }catch(_e){ return {} } })(),
+  }
+  download('CareerOps_board_pack.json', JSON.stringify(pack,null,2), 'application/json')
+  logEvent('export_board_pack', null, { roles:(roles||[]).length, materials:pack.materials.length, reports:pack.reports.length })
+})
 $('s_save').onclick = async ()=>{
   $('seterr').textContent=''
   const b=$('s_save'), o=b.textContent; b.disabled=true; b.textContent='Saving…'
+  saveFindPrefs({
+    blocklist: list($('s_blocklist')?.value||''),
+    max_age_days: parseInt($('s_max_age')?.value||'0',10)||0,
+    remote_pref: $('s_remote_pref')?.value||'any',
+    hide_filtered: !!($('s_hide_blocked')?.checked),
+    dealbreakers: list($('s_dealbreakers')?.value||''),
+  })
+  saveStories($('s_stories')?.value||'')
+  saveOpenaiPrefs({
+    base: $('s_oai_base')?.value?.trim()||'',
+    key: $('s_oai_key')?.value?.trim()||'',
+    model: $('s_oai_model')?.value?.trim()||'gpt-4o-mini',
+  })
   const upd={ target_titles:list($('s_titles').value), keywords:list($('s_keywords').value),
     seniority:list($('s_seniority').value.toLowerCase()), locations:list($('s_locations').value), resume_text:$('s_resume').value }
   const k=$('s_key').value.trim(); if(k==='remove') upd.ai_key=null; else if(k) upd.ai_key=k
@@ -3536,15 +4527,16 @@ $('s_save').onclick = async ()=>{
   if(kk && kk!=='remove' && !PROFILE?.kimi_key) missing.push('Kimi key')
   if(he && !PROFILE?.humanizer_email) missing.push('humanizer email')
   if(hp && !PROFILE?.humanizer_pw) missing.push('humanizer password')
-  paintSettingsSecrets(); freeStatus(); gateChat()
+  paintSettingsSecrets(); freeStatus(); paintUsageMeters(); gateChat()
   b.disabled=false; b.textContent=o
-  $('s_key').value=''; $('s_kimi').value=''; $('s_hpw').value=''
+  $('s_key').value=''; $('s_kimi').value=''; $('s_hpw').value=''; if($('s_oai_key')) $('s_oai_key').value=''
   if(missing.length){
     $('seterr').textContent='Save returned OK but these did NOT stick in the database: '+missing.join(', ')+'. Likely a permissions/column issue — tell Cursor.'
     return
   }
   $('seterr').style.color='#1a7f37'
-  $('seterr').textContent='Saved. Keys stay hidden in the boxes — status above confirms what’s stored.'
+  $('seterr').textContent='Saved. Keys stay hidden in the boxes — status above confirms what’s stored. Find filters applied.'
+  load()
   setTimeout(()=>{ $('seterr').style.color=''; $('seterr').textContent=''; $('settings').classList.add('hidden') }, 1200)
 }
 
@@ -3683,12 +4675,308 @@ document.querySelectorAll('.b-nav a[data-jump]').forEach(a=>{
     rp2JumpSection(a.dataset.jump||'summary')
   })
 })
-// Mark latest as sent (manual)
+// Mark current editor version Sent (freeze) — or toggle role-level if no version id yet
 $('bv_sent')?.addEventListener('click', ()=>{
   if(!CURROLE) return
-  const on=!isSent(CURROLE.id); setSent(CURROLE.id, on)
-  $('bv_sent').textContent = on ? '✓ sent' : 'not sent'
+  if(RP2EDIT && RP2EDIT.id){
+    const on=!isVerSent(RP2EDIT.id)
+    if(on && !confirm('Mark this version Sent? Freezes the draft (read-only).')) return
+    setVerSent(RP2EDIT.id, on)
+    setSent(CURROLE.id, on || (RP2ROWS||[]).some(x=>(x.kind==='resume'||x.kind==='cover') && isVerSent(x.id)))
+    applySentFreezeUI()
+    rp2LoadVers(CURROLE.id)
+  } else {
+    const on=!isSent(CURROLE.id); setSent(CURROLE.id, on)
+    if($('bv_sent')) $('bv_sent').textContent = on ? '✓ sent' : 'not sent'
+  }
   load()
+})
+function hydrateWriteLocksUI(){
+  WRITE_LOCKS=loadWriteLocks()
+  if($('bv_lock_edu')) $('bv_lock_edu').checked=WRITE_LOCKS.edu
+  if($('bv_lock_exp')) $('bv_lock_exp').checked=WRITE_LOCKS.exp
+}
+$('bv_lock_edu')?.addEventListener('change', ()=>{
+  saveWriteLocks({ edu:!!$('bv_lock_edu').checked, exp:!!$('bv_lock_exp')?.checked })
+})
+$('bv_lock_exp')?.addEventListener('change', ()=>{
+  saveWriteLocks({ edu:!!$('bv_lock_edu')?.checked, exp:!!$('bv_lock_exp').checked })
+})
+hydrateWriteLocksUI()
+
+$('triage_sort')?.addEventListener('change', ()=>{
+  saveTriagePrefs({ sort:$('triage_sort').value, filter:$('triage_filter')?.value||'all' })
+  load()
+})
+$('triage_filter')?.addEventListener('change', ()=>{
+  saveTriagePrefs({ sort:$('triage_sort')?.value||'match_desc', filter:$('triage_filter').value })
+  load()
+})
+
+// T15 Review draft — critique only, never silent edits
+$('rp2_review')?.addEventListener('click', async ()=>{
+  const box=$('rp2_review_box'); if(!box) return
+  const draft=($('rp2_edtext')?.value||'').trim()
+  if(!draft){ box.classList.remove('hidden'); box.innerHTML='<h4>Review draft</h4><p class="muted" style="margin:0">Open or generate a draft first.</p>'; return }
+  const jd=($('rp2_jd')?.value||CURROLE?.jd||'').trim()
+  const b=$('rp2_review'), o=b.textContent; b.disabled=true; b.textContent='Reviewing…'
+  box.classList.remove('hidden')
+  box.innerHTML='<h4>Review draft</h4><p class="muted" style="margin:0">Second-pass critique — will not edit your text.</p>'
+  try{
+    const prompt=[
+      'You are reviewing a job-application draft. DO NOT rewrite the resume. DO NOT output a revised draft.',
+      'List concrete issues only: invented facts risk, weak quantification, missing JD keywords that ARE already in the user materials below, education/experience inconsistencies, and ATS risks.',
+      'Use a short bullet list. If something looks fine, say so briefly. Never invent experience for the candidate.',
+      'JOB DESCRIPTION:\n'+(jd||'(none)').slice(0,5000),
+      'USER MATERIALS / STORIES:\n'+(storyList().join('\n')||'(none)').slice(0,3000),
+      'DRAFT:\n'+draft.slice(0,9000),
+    ].join('\n\n')
+    let data=null, error=null; try{ data=await invokeChat([{ role:'user', content:prompt }]) }catch(e){ error=e }
+    if(error) throw error
+    if(data?.error==='free_limit'){ box.innerHTML='<h4>Review draft</h4><p>'+FREE_LIMIT_MSG+'</p>'; return }
+    if(data?.error){ box.innerHTML='<h4>Review draft</h4><p class="err">'+(data.error||'failed')+'</p>'; return }
+    const text=(data?.reply||data?.message||data?.content||'').trim() || 'No critique returned — try again with a BYO key if free tier is busy.'
+    box.innerHTML='<h4>Review draft <span class="muted">(no silent edits)</span></h4><div style="white-space:pre-wrap">'+esc(text)+'</div><p class="muted" style="margin:8px 0 0">Apply any fixes yourself in the editor, then Save.</p>'
+    logEvent('draft_review', CURROLE?.id, { len:draft.length })
+  }catch(err){ box.innerHTML='<h4>Review draft</h4><p class="err">'+esc(await fnMsg(err))+'</p>' }
+  finally{ b.disabled=false; b.textContent=o }
+})
+
+async function materialsOnlyDraft(kind){
+  const jd=($('rp2_jd')?.value||CURROLE?.jd||'').trim()
+  const resume=(PROFILE?.resume_text||'').slice(0,6000)
+  const mats=getMaterials(CURROLE?.id).map(x=>x.text).filter(Boolean).slice(0,12).join('\n- ')
+  const stories=storyList().slice(0,8).join('\n- ')
+  const prompts={
+    why:'Draft a short "Why this role / company?" answer (120–180 words) using ONLY the materials. No invented claims.',
+    salary:'Draft a careful compensation-expectations reply (2–4 sentences). If materials lack numbers, say you prefer to discuss after learning the band — do not invent a number.',
+    notice:'Draft a notice-period / start-date answer from materials. If unknown, say you can confirm after an offer — do not invent.',
+    email:'Draft a short recruiter email expressing interest + 2 true proof points from materials. No auto-send — copy only.',
+    followup:'Draft a polite follow-up note (email body) after applying/interview. Materials-only. No pressure language.',
+    thankyou:'Draft a short thank-you note after an interview. Reference 1–2 true points from materials/JD only.',
+    research:'Write (1) a 4–6 sentence company/role research blurb from the JD, then (2) a short outreach message. Label sections clearly. Materials-only for personal claims.',
+    interview:'List 6 interview angles: likely questions + how to answer using ONLY materials/stories. Bullet list. No invented metrics.',
+  }
+  const sys=prompts[kind]||prompts.why
+  const prompt=[sys,
+    'Company: '+(CURROLE?.company||''),
+    'Role: '+(CURROLE?.title||''),
+    'JD:\n'+(jd||'(none)').slice(0,4500),
+    'Resume:\n'+(resume||'(none)'),
+    'Added materials:\n- '+(mats||'(none)'),
+    'Story bank:\n- '+(stories||'(none)'),
+  ].join('\n\n')
+  let data=null, error=null; try{ data=await invokeChat([{ role:'user', content:prompt }]) }catch(e){ error=e }
+  if(error) throw error
+  if(data?.error) throw new Error(data.error=== 'free_limit'?FREE_LIMIT_MSG:data.error)
+  return (data?.reply||data?.message||data?.content||'').trim()
+}
+function paintCopyBox(el, title, text){
+  if(!el) return
+  el.classList.remove('hidden')
+  el.innerHTML='<h4>'+esc(title)+'</h4><div style="white-space:pre-wrap;margin:0 0 8px">'+esc(text||'')+'</div>'
+    +'<button type="button" class="btn sm" data-copy="1">Copy</button>'
+    +'<p class="muted" style="margin:8px 0 0;font-size:12px">Copy only — CareerOps never submits forms or sends email.</p>'
+  el.querySelector('[data-copy]')?.addEventListener('click', async ()=>{
+    try{ await navigator.clipboard.writeText(text||''); el.querySelector('[data-copy]').textContent='Copied ✓' }
+    catch(_e){ prompt('Copy this text:', text||'') }
+  })
+}
+document.querySelectorAll('[data-ans]').forEach(btn=>{
+  btn.addEventListener('click', async ()=>{
+    if(!CURROLE) return
+    const kind=btn.dataset.ans
+    const box=$('dw_ans'); box.classList.remove('hidden'); box.innerHTML='<p class="muted" style="margin:0">Drafting…</p>'
+    const o=btn.textContent; btn.disabled=true
+    try{
+      const text=await materialsOnlyDraft(kind)
+      paintCopyBox(box, 'Draft — '+kind, text)
+      logEvent('form_answer_draft', CURROLE.id, { kind })
+    }catch(err){ box.innerHTML='<p class="err">'+esc(await fnMsg(err))+'</p>' }
+    finally{ btn.disabled=false; btn.textContent=o }
+  })
+})
+$('dw_interview_btn')?.addEventListener('click', async ()=>{
+  if(!CURROLE) return
+  const box=$('dw_interview_box'); const b=$('dw_interview_btn')
+  const o=b.textContent; b.disabled=true; b.textContent='Building…'
+  box.classList.remove('hidden'); box.innerHTML='<p class="muted" style="margin:0">Building interview angles…</p>'
+  try{
+    const text=await materialsOnlyDraft('interview')
+    paintCopyBox(box, 'Interview prep', text)
+    logEvent('interview_prep', CURROLE.id, {})
+  }catch(err){ box.innerHTML='<p class="err">'+esc(await fnMsg(err))+'</p>' }
+  finally{ b.disabled=false; b.textContent=o }
+})
+$('dw_research_btn')?.addEventListener('click', async ()=>{
+  if(!CURROLE) return
+  const box=$('dw_research_box'); const b=$('dw_research_btn')
+  const o=b.textContent; b.disabled=true; b.textContent='Drafting…'
+  box.classList.remove('hidden'); box.innerHTML='<p class="muted" style="margin:0">Drafting research + outreach…</p>'
+  try{
+    const text=await materialsOnlyDraft('research')
+    paintCopyBox(box, 'Research & outreach', text)
+    logEvent('research_outreach', CURROLE.id, {})
+  }catch(err){ box.innerHTML='<p class="err">'+esc(await fnMsg(err))+'</p>' }
+  finally{ b.disabled=false; b.textContent=o }
+})
+function paintOutcomeUI(roleId){
+  const o=loadOutcomes()[roleId]
+  if($('dw_outcome_kind')) $('dw_outcome_kind').value=o?.kind||''
+  if($('dw_outcome_date')) $('dw_outcome_date').value=o?.date||''
+  if($('dw_outcome_note')) $('dw_outcome_note').value=o?.note||''
+  const view=$('dw_outcome_view')
+  if(!view) return
+  if(!o?.kind){ view.classList.add('hidden'); view.innerHTML=''; return }
+  view.classList.remove('hidden')
+  view.innerHTML='<b>'+esc(o.kind)+'</b>'+(o.date?' · '+esc(o.date):'')+(o.note?'<div style="margin-top:6px;white-space:pre-wrap">'+esc(o.note)+'</div>':'')
+}
+$('dw_outcome_save')?.addEventListener('click', ()=>{
+  if(!CURROLE) return
+  const kind=$('dw_outcome_kind')?.value||''
+  const date=$('dw_outcome_date')?.value||''
+  const note=($('dw_outcome_note')?.value||'').trim()
+  saveOutcome(CURROLE.id, kind?{ kind, date, note, at:new Date().toISOString() }:null)
+  paintOutcomeUI(CURROLE.id)
+  logEvent('outcome_saved', CURROLE.id, { kind:kind||null })
+})
+async function draftFollowupNote(roleId){
+  const role=ROLESMAP[roleId]; if(!role) return
+  CURROLE=role
+  // lightweight: open drawer path if possible
+  try{ if(typeof openRole2==='function') await openRole2(roleId) }catch(_e){}
+  const box=$('dw_ans'); if(box){ box.classList.remove('hidden'); box.innerHTML='<p class="muted" style="margin:0">Drafting follow-up…</p>' }
+  try{
+    const kind = role.stage==='interview' ? 'thankyou' : 'followup'
+    const text=await materialsOnlyDraft(kind)
+    paintCopyBox(box||$('status'), kind==='thankyou'?'Thank-you draft':'Follow-up draft', text)
+    logEvent('followup_draft', roleId, { kind })
+  }catch(err){
+    if(box) box.innerHTML='<p class="err">'+esc(await fnMsg(err))+'</p>'
+    else alert(await fnMsg(err))
+  }
+}
+
+
+// ---- Decide: evaluate pack + suggested call ----
+$('dw_evaluate')?.addEventListener('click', async ()=>{
+  if(!CURROLE) return
+  const b=$('dw_evaluate'), o=b.textContent; b.disabled=true; b.textContent='Building…'
+  try{
+    let matchData=null
+    const jd=($('rp2_jd')?.value||CURROLE.jd||'').trim()
+    const resume=(PROFILE?.resume_text||'').trim()
+    paintDealBreakers(jd)
+    const tri=await cheapPreTriage(CURROLE, { resume, jd })
+    paintPreTriage(tri)
+    if(!tri.skipLlm && jd && resume){
+      try{
+        const data = await invokeMatch({ resume_text:resume, jd_text:jd })
+        bumpUsage('match')
+        if(data && !data.error && typeof data.match_score==='number'){
+          matchData=data
+          rp2ShowScore(data, 'evaluate · ')
+          await sb.from('mt_roles').update({ match_score: data.match_score+'%' }).eq('id',CURROLE.id)
+          if(ROLESMAP[CURROLE.id]) ROLESMAP[CURROLE.id].match_score=data.match_score+'%'
+          await sb.from('mt_reports').insert({ role_id:CURROLE.id, kind:'match', match_score:data.match_score, missing_keywords:data.missing||[] })
+        }
+      }catch(_e){}
+    } else if(tri.keyword && !matchData){
+      matchData={ match_score:tri.keyword.score, method:'pretriage-keywords', present:tri.keyword.present, missing:tri.keyword.missing, summary:'Cheap pre-triage only — LLM skipped.' }
+      rp2ShowScore(matchData, 'pre-triage · ')
+    }
+    const pack=buildEvaluatePack(CURROLE, matchData)
+    if(tri.skipLlm && pack.suggest!=='skip') pack.suggest='skip'
+    renderEvaluatePack(pack)
+    await persistEvaluateReport(pack)
+    logEvent('evaluate_pack', CURROLE.id, { suggest: pack.suggest, score: pack.score, ghost: pack.ghost, pretriage: !!tri.skipLlm })
+  }finally{ b.disabled=false; b.textContent=o }
+})
+$('dw_eval_suggest')?.addEventListener('click', ()=>{
+  if(!CURROLE) return
+  const pack=LAST_EVAL || buildEvaluatePack(CURROLE, null)
+  if(!LAST_EVAL) renderEvaluatePack(pack)
+  setVerdict(CURROLE.id, pack.suggest)
+  syncVerdictUI(pack.suggest)
+  load()
+})
+// Re-check deal-breakers when JD text changes
+$('rp2_jd')?.addEventListener('input', ()=>{
+  if(!CURROLE) return
+  paintDealBreakers($('rp2_jd').value)
+})
+
+// ---- Sourced triage: batch match + dedupe ----
+$('triage_batch')?.addEventListener('click', async ()=>{
+  const st=$('triage_status'); if(st){ st.dataset.busy='1'; st.textContent='Batch matching…' }
+  const b=$('triage_batch'), o=b.textContent; b.disabled=true
+  const resume=(PROFILE?.resume_text||'').trim()
+  if(!resume){ if(st) st.textContent='Add your resume in Settings first.'; b.disabled=false; b.textContent=o; if(st) delete st.dataset.busy; return }
+  const sourced=Object.values(ROLESMAP).filter(r=>r.stage==='sourced' && !shouldHideRole(r))
+  const withJd=sourced.filter(r=>(r.jd||'').trim().length>200)
+  let done=0, ok=0, fail=0
+  const queue=withJd.slice(0,25) // cap per click
+  async function one(r){
+    try{
+      const tri=await cheapPreTriage(r, { resume, jd:r.jd })
+      let data=null
+      if(tri.skipLlm){
+        data={ match_score:tri.keyword?.score??0, method:'pretriage', present:tri.keyword?.present||[], missing:tri.keyword?.missing||[], summary:'Pre-triage skipped LLM' }
+      } else {
+        data = await invokeMatch({ resume_text:resume, jd_text:r.jd })
+        bumpUsage('match')
+      }
+      if(data && !data.error && typeof data.match_score==='number'){
+        await sb.from('mt_roles').update({ match_score: data.match_score+'%', fit_score: data.match_score>=72?'A':data.match_score>=55?'B':'C' }).eq('id', r.id)
+        await sb.from('mt_reports').insert({ role_id:r.id, kind:'match', match_score:data.match_score, missing_keywords:data.missing||[] })
+        const pack=buildEvaluatePack(r, data)
+        if(tri.skipLlm) pack.suggest='skip'
+        await sb.from('mt_reports').insert({ role_id:r.id, kind:'evaluate', match_score:pack.score, missing_keywords:pack.missing||[], rewritten:JSON.stringify(pack) })
+        if(pack.suggest==='apply'||pack.suggest==='stretch'||pack.suggest==='skip') setVerdict(r.id, pack.suggest)
+        ok++
+      } else fail++
+    }catch(_e){ fail++ }
+    done++
+    if(st) st.textContent=`Batch ${done}/${queue.length} · ok ${ok} · fail ${fail}`
+  }
+  // concurrency 2
+  let i=0
+  async function worker(){ while(i<queue.length){ const r=queue[i++]; await one(r) } }
+  await Promise.all([worker(), worker()])
+  logEvent('triage_batch', null, { queued: queue.length, ok, fail, sourced: sourced.length })
+  await load()
+  if(st){ st.textContent = queue.length
+    ? `Ranked ${ok}/${queue.length} Sourced roles with JDs${withJd.length>queue.length?' (capped at 25)':''}. Suggested calls tagged — review in drawer.`
+    : (sourced.length ? 'Sourced roles need a pasted JD before batch match.' : 'No Sourced roles.')
+    delete st.dataset.busy
+  }
+  b.disabled=false; b.textContent=o
+})
+$('triage_dedupe')?.addEventListener('click', async ()=>{
+  const st=$('triage_status'); if(st){ st.dataset.busy='1'; st.textContent='Deduping…' }
+  const b=$('triage_dedupe'), o=b.textContent; b.disabled=true
+  const roles=Object.values(ROLESMAP).slice().sort((a,b)=>new Date(a.created_at||0)-new Date(b.created_at||0))
+  const seenUrl=new Set(), seenFp=new Set()
+  let closed=0
+  for(const r of roles){
+    if(r.stage===CLOSED) continue
+    const url=(r.url||'').trim()
+    const fp=roleFingerprint(r.company, r.title)
+    let dup=false
+    if(url && seenUrl.has(url)) dup=true
+    if(fp && seenFp.has(fp)) dup=true
+    if(dup){
+      await sb.from('mt_roles').update({ stage: CLOSED }).eq('id', r.id)
+      closed++
+    } else {
+      if(url) seenUrl.add(url)
+      if(fp) seenFp.add(fp)
+    }
+  }
+  await load()
+  if(st){ st.textContent = closed ? `Closed ${closed} duplicate card${closed>1?'s':''} (kept the oldest).` : 'No duplicates found.'; delete st.dataset.busy }
+  b.disabled=false; b.textContent=o
+  logEvent('board_dedupe', null, { closed })
 })
 
 </script>
