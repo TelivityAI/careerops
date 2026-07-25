@@ -5,7 +5,7 @@ npx supabase functions deploy run-search-mt --project-ref YOUR_PROJECT_REF
 # Access token example shape (never commit a real one): sbp_xxxxxxxx
 ```
 
-Configure boards via profile `ats_boards`, request `body.boards`, or the bundled [`boards.default.json`](./boards.default.json) (90+ verified public ATS boards).
+Configure boards via profile `ats_boards`, request `body.boards`, or the bundled [`boards.default.json`](./boards.default.json) (**87 unique** companies / ~98 board entries across Greenhouse / Ashby / Lever / Workday / SmartRecruiters).
 
 Pass Find hygiene on invoke:
 

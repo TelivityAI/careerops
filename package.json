@@ -4,8 +4,9 @@
   "version": "1.1.0",
   "description": "CareerOps public repo — dashboard SPA + agent skill",
   "scripts": {
-    "test": "node scripts/privacy-scan.mjs && node scripts/smoke-web.mjs && npm test --prefix packages/careerops",
+    "test": "node scripts/privacy-scan.mjs && node scripts/smoke-web.mjs && node scripts/test-find-match.mjs && npm test --prefix packages/careerops",
     "test:web": "node scripts/smoke-web.mjs",
+    "test:find": "node scripts/test-find-match.mjs",
     "test:cli": "npm test --prefix packages/careerops",
     "privacy-scan": "node scripts/privacy-scan.mjs",
     "deploy": "bash scripts/deploy.sh",

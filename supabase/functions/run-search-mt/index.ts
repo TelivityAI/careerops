@@ -1,16 +1,17 @@
 // Multi-source ATS Find — Greenhouse / Ashby / Lever / SmartRecruiters / Workday public JSON.
-// Default board pack: boards.default.json (90+ verified company boards).
+// Default board pack: boards.default.json (87 unique companies / ~98 board entries).
 // Override via body.boards or mt_profiles.ats_boards. Cap: 10 searches/day.
 // Ideas inspired by multi-source aggregators (JobFunnel / portal sweeps) — original CareerOps code.
 import { createClient } from 'jsr:@supabase/supabase-js@2'
 import DEFAULT_BOARDS from './boards.default.json' with { type: 'json' }
+import { buildScorer, matchStamp } from './match.mjs'
 
 const SEARCH_CAP = 10
 const CONCURRENCY = 16
 /** Hard cap — never dump hundreds of weak matches onto the board in one run. */
 const ADD_CAP = 40
 
-type Hit = { co: string; title: string; loc: string; url: string; source: string; score: number }
+type Hit = { co: string; title: string; loc: string; url: string; source: string; score: number; stamp?: string }
 type WorkdayBoard = { t: string; host: string; site: string }
 type Boards = {
   greenhouse?: string[]
@@ -19,14 +20,11 @@ type Boards = {
   smartrecruiters?: string[]
   workday?: WorkdayBoard[]
 }
+type ScoreOf = (title: string, loc: string, company?: string) => number
 
 const fp = (s: string) => s.toLowerCase().replace(/\([^)]*\)/g, '').replace(/[^a-z0-9 ]/g, '').replace(/\s+/g, ' ').trim()
-const escapeRe = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 const prettyCo = (slug: string) => slug.replace(/[-_]/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())
 const normCo = (s: string) => String(s || '').toLowerCase().replace(/[^a-z0-9]+/g, '')
-
-/** Roles that almost never belong on a commercial / partnerships / ops search unless the user asked for them. */
-const BAN_RE = /(software engineer|staff engineer|senior engineer|\b swe\b|frontend|backend|full[\s-]?stack|devops|sre\b|data scien|machine learning|ml engineer|recruit(er|ing)|talent acquisition|people ops|hr business|payroll|accountant|controller\b|counsel\b|\blegal\b|paralegal|nurse|clinical|physician|housekeep|front desk|line cook|\bserver\b|bartender|maintenance tech|security guard|warehouse associate|driver\b|cashier)/i
 
 function normalizeBoards(raw: unknown): Boards {
   const base = DEFAULT_BOARDS as Boards
@@ -38,71 +36,6 @@ function normalizeBoards(raw: unknown): Boards {
     lever: Array.isArray(o.lever) ? o.lever.map(String) : base.lever,
     smartrecruiters: Array.isArray(o.smartrecruiters) ? o.smartrecruiters.map(String) : (base.smartrecruiters || []),
     workday: Array.isArray(o.workday) ? (o.workday as WorkdayBoard[]) : (base.workday || []),
-  }
-}
-
-function listTerms(v: unknown): string[] {
-  return (Array.isArray(v) ? v : []).map((x) => String(x || '').trim()).filter((s) => s.length >= 2)
-}
-
-function hitCount(title: string, terms: string[]): number {
-  const t = title.toLowerCase()
-  let n = 0
-  for (const term of terms) {
-    if (t.includes(term.toLowerCase())) n++
-  }
-  return n
-}
-
-/**
- * Strict Find filter:
- * - If target_titles set → at least one title term must appear in the job title
- * - If keywords set → at least one keyword must appear
- * - If seniority set → at least one seniority term must appear
- * - Always drop banned off-lane titles unless the user explicitly searched for them
- * Returns a score for ranking (higher = better fit to prefs).
- */
-function buildScorer(prof: Record<string, unknown>, prefs: { remote_pref?: string }) {
-  const titles = listTerms(prof.target_titles)
-  const keywords = listTerms(prof.keywords)
-  const seniority = listTerms(prof.seniority)
-  const locations = listTerms(prof.locations)
-  const userAskedBan = [...titles, ...keywords].some((t) => BAN_RE.test(t))
-
-  const locRe = locations.length ? new RegExp(locations.map(escapeRe).join('|'), 'i') : null
-  const wantRemote = locations.some((l) => /remote/i.test(l)) || prefs.remote_pref === 'remote_only' || prefs.remote_pref === 'prefer_remote'
-  const remoteOnly = prefs.remote_pref === 'remote_only'
-
-  // No prefs at all → require a senior commercial-ish title (don't dump the whole internet)
-  const fallbackTitleRe = /(director|vp\b|vice president|head of|principal|partner|commercial|partnership|business develop|go[\s-]?to[\s-]?market|alliances|channel)/i
-
-  return (title: string, loc: string): number => {
-    if (!title || !title.trim()) return 0
-    if (!userAskedBan && BAN_RE.test(title)) return 0
-
-    const titleHits = titles.length ? hitCount(title, titles) : 0
-    const kwHits = keywords.length ? hitCount(title, keywords) : 0
-    const senHits = seniority.length ? hitCount(title, seniority) : 0
-
-    if (titles.length && titleHits === 0) return 0
-    if (keywords.length && kwHits === 0) return 0
-    if (seniority.length && senHits === 0) return 0
-
-    if (!titles.length && !keywords.length && !seniority.length) {
-      if (!fallbackTitleRe.test(title)) return 0
-    }
-
-    const locStr = loc || ''
-    const looksRemote = /remote|anywhere|distributed|work from home|wfh/i.test(locStr) || /remote/i.test(title)
-    const looksOnsite = /\bon[\s-]?site\b|\bin[\s-]?office\b/i.test(locStr) && !looksRemote
-    if (remoteOnly && looksOnsite) return 0
-    if (locRe && locStr.trim()) {
-      const okLoc = locRe.test(locStr) || (wantRemote && looksRemote)
-      if (!okLoc && !looksRemote) return 0
-    }
-
-    // Rank: title matches matter most, then keywords, then seniority, remote bonus
-    return titleHits * 5 + kwHits * 3 + senHits * 2 + (looksRemote && wantRemote ? 1 : 0) + 1
   }
 }
 
@@ -128,7 +61,7 @@ async function mapPool<T>(items: T[], limit: number, fn: (item: T) => Promise<vo
   await Promise.all(workers)
 }
 
-async function gh(slug: string, scoreOf: (t: string, l: string) => number, out: Hit[]) {
+async function gh(slug: string, scoreOf: ScoreOf, out: Hit[]) {
   try {
     const r = await fetch(`https://boards-api.greenhouse.io/v1/boards/${slug}/jobs`)
     if (!r.ok) { diag['gh:' + slug] = -r.status; return }
@@ -137,7 +70,7 @@ async function gh(slug: string, scoreOf: (t: string, l: string) => number, out: 
     for (const x of (j.jobs || [])) {
       const title = x.title || ''
       const loc = x.location?.name || ''
-      const score = scoreOf(title, loc)
+      const score = scoreOf(title, loc, slug)
       if (score > 0) {
         out.push({ co: slug, title, loc, url: x.absolute_url, source: 'greenhouse', score })
         n++
@@ -147,7 +80,7 @@ async function gh(slug: string, scoreOf: (t: string, l: string) => number, out: 
   } catch (_) { diag['gh:' + slug] = -1 }
 }
 
-async function ashby(org: string, scoreOf: (t: string, l: string) => number, out: Hit[]) {
+async function ashby(org: string, scoreOf: ScoreOf, out: Hit[]) {
   try {
     const r = await fetch(`https://api.ashbyhq.com/posting-api/job-board/${org}?includeCompensation=true`)
     if (!r.ok) { diag['ashby:' + org] = -r.status; return }
@@ -156,7 +89,7 @@ async function ashby(org: string, scoreOf: (t: string, l: string) => number, out
     for (const x of (d.jobs || [])) {
       const title = x.title || ''
       const loc = x.location || ''
-      const score = scoreOf(title, loc)
+      const score = scoreOf(title, loc, org)
       if (score > 0) {
         out.push({ co: org, title, loc, url: x.jobUrl || x.applyUrl, source: 'ashby', score })
         n++
@@ -166,7 +99,7 @@ async function ashby(org: string, scoreOf: (t: string, l: string) => number, out
   } catch (_) { diag['ashby:' + org] = -1 }
 }
 
-async function lever(co: string, scoreOf: (t: string, l: string) => number, out: Hit[]) {
+async function lever(co: string, scoreOf: ScoreOf, out: Hit[]) {
   try {
     const r = await fetch(`https://api.lever.co/v0/postings/${co}?mode=json`)
     if (!r.ok) { diag['lever:' + co] = -r.status; return }
@@ -174,7 +107,7 @@ async function lever(co: string, scoreOf: (t: string, l: string) => number, out:
     let n = 0
     for (const x of (j || [])) {
       const loc = x.categories?.location || ''
-      const score = scoreOf(x.text, loc)
+      const score = scoreOf(x.text, loc, co)
       if (score > 0) {
         out.push({ co, title: x.text, loc, url: x.hostedUrl || x.applyUrl, source: 'lever', score })
         n++
@@ -184,7 +117,7 @@ async function lever(co: string, scoreOf: (t: string, l: string) => number, out:
   } catch (_) { diag['lever:' + co] = -1 }
 }
 
-async function smartrecruiters(co: string, scoreOf: (t: string, l: string) => number, out: Hit[]) {
+async function smartrecruiters(co: string, scoreOf: ScoreOf, out: Hit[]) {
   try {
     const r = await fetch(`https://api.smartrecruiters.com/v1/companies/${co}/postings`)
     if (!r.ok) { diag['sr:' + co] = -r.status; return }
@@ -194,7 +127,7 @@ async function smartrecruiters(co: string, scoreOf: (t: string, l: string) => nu
       const title = x.name || x.title || ''
       const loc = x.location?.city || x.location?.country || ''
       const url = x.ref || x.applyUrl || (x.id ? `https://jobs.smartrecruiters.com/${co}/${x.id}` : '')
-      const score = scoreOf(title, loc)
+      const score = scoreOf(title, loc, co)
       if (url && score > 0) {
         out.push({ co, title, loc, url, source: 'smartrecruiters', score })
         n++
@@ -204,7 +137,7 @@ async function smartrecruiters(co: string, scoreOf: (t: string, l: string) => nu
   } catch (_) { diag['sr:' + co] = -1 }
 }
 
-async function workday(w: WorkdayBoard, scoreOf: (t: string, l: string) => number, out: Hit[], queries: string[]) {
+async function workday(w: WorkdayBoard, scoreOf: ScoreOf, out: Hit[], queries: string[]) {
   let n = 0
   for (const q of queries.slice(0, 4)) {
     try {
@@ -216,7 +149,7 @@ async function workday(w: WorkdayBoard, scoreOf: (t: string, l: string) => numbe
       if (!r.ok) continue
       const j = await r.json()
       for (const p of (j.jobPostings || [])) {
-        const score = scoreOf(p.title, p.locationsText || '')
+        const score = scoreOf(p.title, p.locationsText || '', w.t)
         if (score > 0) {
           out.push({
             co: w.t,
@@ -317,15 +250,17 @@ Deno.serve(async (req) => {
       : /principal/i.test(o.title) ? 'Principal'
       : /director/i.test(o.title) ? 'Director'
       : '—'
+    // Stamp lives in fit_score suffix (sterile, no extra columns required)
+    const stamp = matchStamp(o.title, prof || {})
     const { error } = await sb.from('mt_roles').insert({
       company: coName,
       title: o.title,
       level,
       url: o.url,
       source: 'run-search:' + o.source,
-      fit_score: String(o.score),
+      fit_score: stamp ? `${o.score}|${stamp}` : String(o.score),
       stage: 'sourced',
-      ghost_risk: 'low',
+      ghost_risk: 'unknown',
     })
     if (error) continue
     knownFp.add(fp(coName + ' ' + o.title))

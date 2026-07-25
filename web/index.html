@@ -106,7 +106,13 @@
   .cardlet .role{color:var(--text-2);font-size:13px;margin-top:4px;line-height:1.35;
     overflow:hidden;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;
     overflow-wrap:anywhere;word-break:break-word}
-  .cardlet .meta{display:flex;align-items:center;gap:8px;margin-top:14px;flex-wrap:wrap;row-gap:8px;min-width:0}
+  .cardlet .meta{display:flex;align-items:center;gap:6px;margin-top:14px;flex-wrap:wrap;row-gap:6px;min-width:0}
+  .cardlet .meta .match-pill{font-size:11px;padding:2px 7px;border-radius:999px;background:#e8f5e9;color:#1b5e20;font-weight:600}
+  .cardlet .meta .match-pill.none{background:#f0f2f5;color:#666;font-weight:500}
+  .cardlet .meta .lane-pill{font-size:11px;padding:2px 7px;border-radius:999px;background:#fff3e0;color:#e65100}
+  .hidden-chip{cursor:pointer;text-decoration:underline;color:#1a56db}
+  details.more-tools{margin-top:12px;padding-top:10px;border-top:1px solid #eee}
+  details.more-tools > summary{list-style:revert;font-weight:600;margin-bottom:8px}
   .cardlet .stale{margin-left:auto;font-size:11px;color:var(--text-3);flex:none}
   .cardlet a.jd{display:block;width:100%;box-sizing:border-box;margin-top:12px;text-align:center;
     color:#fff;background:linear-gradient(180deg,#0ccabf,#06bdb4);font-size:12.5px;font-weight:600;
@@ -582,6 +588,7 @@
   <div id="triage" class="triage-bar hidden">
     <button type="button" class="btn sm primary" id="triage_batch">Rank Sourced (batch match)</button>
     <button type="button" class="btn sm" id="triage_dedupe">Dedupe board</button>
+    <button type="button" class="btn sm" id="triage_close_offlane" title="Move off-lane Sourced cards to Closed">Close off-lane Sourced</button>
     <label>Sort <select id="triage_sort" title="Sort Sourced column">
       <option value="match_desc">Match ↓</option>
       <option value="match_asc">Match ↑</option>
@@ -590,13 +597,13 @@
     </select></label>
     <label>Filter <select id="triage_filter" title="Filter Sourced by verdict">
       <option value="all">All</option>
-      <option value="apply">Apply</option>
+      <option value="apply">Worth applying</option>
       <option value="stretch">Stretch</option>
       <option value="skip">Skip</option>
       <option value="unscored">Unscored</option>
       <option value="no_verdict">No verdict</option>
     </select></label>
-    <span class="muted" id="triage_status">Match Sourced roles that already have a JD — tags scores, never applies.</span>
+    <span class="muted" id="triage_status">Sourced = new Find adds (often unscored). Rank Sourced scores JDs you pasted — never applies.</span>
   </div>
   <div id="stage" class="stage">
     <div id="board" class="board"></div>
@@ -648,7 +655,7 @@
             <div class="frac" id="dw_frac" style="font-size:15px;margin-top:10px">—<small> in your materials</small></div>
             <div class="basis" id="dw_basis">Coverage appears after a match check.</div>
             <p class="muted" id="rp2_summary" style="margin:10px 0 0;font-size:13px;line-height:1.55"></p>
-            <button type="button" class="btn primary block" id="dw_tailor_mid" style="margin-top:14px">Build resume for this job →</button>
+            <!-- single Build CTA lives in drawer footer (#dw_tailor) -->
             <!-- legacy hooks kept off-screen for older callers -->
             <p class="muted" id="rp2_scorenote" style="display:none"></p>
             <span class="score" id="rp2_score" style="display:none"></span>
@@ -667,26 +674,27 @@
           <div id="rp2_gaps" class="hidden"></div>
           <div id="rp2_gaps_gen" class="hidden"></div>
         </div>
-        <div class="section">
-          <div class="lbl">Evaluate</div>
-          <p class="muted" style="margin:0 0 8px;font-size:12.5px;line-height:1.5">Structured decision pack from your match + JD signals. Suggests a call — you still tag Apply / Stretch / Skip yourself.</p>
-          <div class="row" style="gap:8px;align-items:center">
-            <button type="button" class="primary" id="dw_evaluate">Build evaluate pack</button>
-            <button type="button" id="dw_eval_suggest" class="btn sm" title="Fill Your call from the pack suggestion">Use suggested call</button>
-          </div>
-          <div id="dw_pretriage" class="pretriage hidden" aria-live="polite"></div>
-          <div id="dw_dealwarn" class="hidden" style="margin-top:10px;padding:10px 12px;border-radius:10px;background:#fff0f0;border:1px solid #f0c0c0;color:#8a1f11;font-size:12.5px;line-height:1.45"></div>
-          <div id="dw_eval" class="eval-box hidden" aria-live="polite"></div>
-        </div>
+        <div id="dw_pretriage" class="pretriage hidden" aria-live="polite"></div>
+        <div id="dw_dealwarn" class="hidden" style="margin-top:10px;padding:10px 12px;border-radius:10px;background:#fff0f0;border:1px solid #f0c0c0;color:#8a1f11;font-size:12.5px;line-height:1.45"></div>
         <div class="section" style="margin-bottom:6px">
           <div class="lbl">Your call on this job</div>
-          <p class="muted" style="margin:0 0 10px;font-size:12.5px;line-height:1.5">Tags the card only — does <b>not</b> apply for you, does <b>not</b> move columns. Drag the card to change stage.</p>
+          <p class="muted" style="margin:0 0 10px;font-size:12.5px;line-height:1.5">Tags the card only — does <b>not</b> submit an application (use <b>Open JD ↗</b>). Does <b>not</b> move columns — drag to Applied after you submit yourself.</p>
           <div class="verdict-pick" id="dw_verdict">
-            <button type="button" class="vbtn apply" data-v="apply" title="Good fit — worth building a pack">Apply</button>
+            <button type="button" class="vbtn apply" data-v="apply" title="Good fit — tag only; does not submit an application">Worth applying</button>
             <button type="button" class="vbtn stretch" data-v="stretch" title="Reach role — still worth a tailored pack">Stretch</button>
             <button type="button" class="vbtn skip" data-v="skip" title="Low interest — stays on the board">Skip</button>
           </div>
         </div>
+        <details class="section more-tools">
+          <summary class="lbl" style="cursor:pointer">More tools — evaluate, drafts, prep</summary>
+          <p class="muted" style="margin:8px 0;font-size:12.5px;line-height:1.5">Primary path: <b>Check my match</b> → footer <b>Build resume</b> → <b>Open JD ↗</b> to apply yourself.</p>
+          <div class="lbl">Evaluate</div>
+          <p class="muted" style="margin:0 0 8px;font-size:12.5px;line-height:1.5">Decision pack from your match + JD. You still tag Worth applying / Stretch / Skip.</p>
+          <div class="row" style="gap:8px;align-items:center">
+            <button type="button" class="btn sm" id="dw_evaluate">Should I apply? Get a breakdown</button>
+            <button type="button" id="dw_eval_suggest" class="btn sm" title="Fill Your call from the pack suggestion">Use suggested call</button>
+          </div>
+          <div id="dw_eval" class="eval-box hidden" aria-live="polite"></div>
         <div class="section">
           <div class="lbl">Form / email answer drafts</div>
           <p class="muted" style="margin:0 0 8px;font-size:12.5px;line-height:1.5">Drafts from your materials only — copy/paste yourself. Never submits anywhere.</p>
@@ -730,12 +738,13 @@
           <button type="button" class="btn sm" id="dw_outcome_save" style="margin-top:8px">Save outcome</button>
           <div id="dw_outcome_view" class="outcome-box hidden" style="margin-top:8px"></div>
         </div>
+        </details>
       </div>
       <div class="drawer-f">
         <div class="why hidden" id="dw_skipwhy"><b>You marked this Skip.</b> It stays on the board — nothing is deleted. You can still build a resume.</div>
         <p class="cta-hint" id="dw_ctahint"><b>Resume builder</b> opens here → generate a pack for this job.</p>
         <button class="btn primary block" id="dw_tailor" style="font-size:15px;padding:14px 16px">Build resume for this job →</button>
-        <div class="esc" id="dw_esc">Esc closes — your pasted JD is kept. Top nav “Resume tool” is the old standalone editor — use this button instead.</div>
+        <div class="esc" id="dw_esc">Esc closes — JD kept. Open JD ↗ is how you apply. “Worth applying” only tags the card.</div>
       </div>
     </aside>
   </div>
@@ -1001,7 +1010,8 @@
       </select>
     </div>
   </div>
-  <label style="display:flex;gap:8px;align-items:center;font-weight:400;margin-top:10px"><input type="checkbox" id="s_hide_blocked" style="width:auto" checked> Soft-hide blocked / over-age / non-remote roles on the board</label>
+  <label style="display:flex;gap:8px;align-items:center;font-weight:400;margin-top:10px"><input type="checkbox" id="s_hide_blocked" style="width:auto" checked> Soft-hide blocked / over-age / non-remote / off-lane Sourced roles (board shows a Hidden count)</label>
+  <p class="muted" id="s_seniority_hint" style="font-size:12px;margin:6px 0 0"></p>
 
   <h3 style="margin-top:20px;border-top:1px solid var(--line);padding-top:16px">Decide — deal-breakers</h3>
   <p class="muted" style="font-size:12.5px;margin:0 0 8px">If a JD contains these phrases, the drawer warns before you tag Apply. Never auto-rejects or auto-applies.</p>
@@ -1620,16 +1630,47 @@ function isOnsiteHeavy(r){
   const t=locBlob(r)
   return /\bon[- ]?site\b|\bin[- ]?office\b|must (?:be|work) in|relocat/.test(t) && !/\bremote\b/.test(t)
 }
+
+/** Find lane helpers (mirrors supabase/functions/run-search-mt/match.mjs — keep in sync). */
+const FIND_BAN_RE=/(software engineer|staff engineer|senior engineer|\b swe\b|frontend|backend|full[\s-]?stack|devops|sre\b|data scien|machine learning|ml engineer|applied ai architect|ai architect|account executive|\bae\b[, ]|enterprise security|security sales|administrative business partner|channel partner|alliance rvp|finance business partner|hr business|hr operations|recruit(er|ing)|talent acquisition|people ops|payroll|accountant|controller\b|counsel\b|\blegal\b|paralegal)/i
+const FIND_DOMAIN_RE=/\b(travel|airline|aviation|hospitality|hotel|lodging|ota|gds|ndc|tmc|tourism|cruise|rail|metasearch|destination|dmo)\b|\bair\b/i
+let FIND_SHOW_HIDDEN=false
+function findListTerms(v){return (Array.isArray(v)?v:[]).map(x=>String(x||'').trim()).filter(s=>s.length>=2)}
+function findHitCount(title,terms){const t=title.toLowerCase();let n=0;for(const term of terms){if(t.includes(term.toLowerCase()))n++}return n}
+function findWantDomain(titles,keywords){return [...titles,...keywords].some(t=>FIND_DOMAIN_RE.test(t))}
+function findSigTokens(terms){const out=[];for(const term of terms){for(const w of String(term).toLowerCase().split(/[^a-z0-9]+/)){if(w.length>=4&&!/^(with|from|that|this|have|your|into|over|senior)$/.test(w))out.push(w)}}return [...new Set(out)]}
+function roleOffLaneReason(r){
+  const title=String(r?.title||''), company=String(r?.company||''), blob=title+' '+company
+  if(!title.trim()) return 'empty_title'
+  if(FIND_BAN_RE.test(title)) return 'banned_title'
+  const titles=findListTerms(PROFILE?.target_titles), keywords=findListTerms(PROFILE?.keywords), seniority=findListTerms(PROFILE?.seniority)
+  if(!titles.length&&!keywords.length&&!seniority.length) return null
+  const hay=title.toLowerCase()
+  if(titles.length&&findHitCount(title,titles)===0){const toks=findSigTokens(titles);if(!toks.some(w=>hay.includes(w))) return 'title_miss'}
+  if(keywords.length&&findHitCount(title,keywords)===0){const toks=findSigTokens(keywords);if(!toks.some(w=>hay.includes(w))){if(!(findWantDomain(titles,keywords)&&FIND_DOMAIN_RE.test(blob))) return 'keyword_miss'}}
+  if(seniority.length&&findHitCount(title,seniority)===0) return 'seniority_miss'
+  if(findWantDomain(titles,keywords)&&!FIND_DOMAIN_RE.test(blob)){const strong=titles.some(t=>t.length>=10&&hay.includes(t.toLowerCase()));if(!strong) return 'domain_miss'}
+  return null
+}
+function fitStamp(r){
+  const raw=String(r?.fit_score||'')
+  const m=raw.match(/^\d+\|(.+)$/)
+  return m?m[1]:''
+}
 function roleFilterReason(r){
   if(isBlockedCompany(r.company)) return 'blocked'
   const age=roleAgeDays(r)
   if(FIND_PREFS.max_age_days>0 && age!=null && age>FIND_PREFS.max_age_days) return 'over_age'
   if(FIND_PREFS.remote_pref==='remote_only' && isOnsiteHeavy(r) && !isRemoteRole(r)) return 'not_remote'
+  if(String(r?.stage||'')==='sourced'){
+    const lane=roleOffLaneReason(r)
+    if(lane) return 'off_lane'
+  }
   return null
 }
 function shouldHideRole(r){
-  // Find hygiene only soft-hides Sourced noise — never hide pipeline roles
-  // (researched / applied / interview / etc.) or the board looks "empty".
+  // Find hygiene only soft-hides Sourced noise — never hide pipeline roles.
+  if(FIND_SHOW_HIDDEN) return false
   if(!FIND_PREFS.hide_filtered) return false
   if(String(r?.stage||'') !== 'sourced') return false
   return !!roleFilterReason(r)
@@ -1885,13 +1926,21 @@ async function load(){
   }
   const active=(roles||[]).filter(r=>r.stage!==CLOSED&&r.stage!=='rejected' && !shouldHideRole(r)).length
   const sourcedN=(byStage.sourced||[]).length
-  $('status').textContent = active+' active roles'+(hiddenN?` · ${hiddenN} hidden by Find filters`:'')+' · click a card to decide · Tailor opens the builder · drag between columns'
+  const sourcedUnscored=(byStage.sourced||[]).filter(r=>{ const n=parseInt(String(r.match_score||''),10); return isNaN(n) }).length
+  const hiddenBit = hiddenN
+    ? (FIND_SHOW_HIDDEN
+      ? ` · showing ${hiddenN} normally hidden`
+      : ` · <span class="hidden-chip" id="status_hidden" title="Click to reveal soft-hidden Sourced">${hiddenN} hidden — show</span>`)
+    : (FIND_SHOW_HIDDEN ? ' · <span class="hidden-chip" id="status_hidden">hide filtered again</span>' : '')
+  $('status').innerHTML = active+' active on board'+hiddenBit+' · click a card to check fit · drag between columns'
+  const sh=$('status_hidden')
+  if(sh) sh.onclick=()=>{ FIND_SHOW_HIDDEN=!FIND_SHOW_HIDDEN; load() }
   if($('triage')){
-    $('triage').classList.toggle('hidden', sourcedN===0)
+    $('triage').classList.toggle('hidden', sourcedN===0 && hiddenN===0)
     if($('triage_status') && !$('triage_status').dataset.busy)
       $('triage_status').textContent = sourcedN
-        ? `${sourcedN} in Sourced — batch match scores JDs you already have (never applies).`
-        : 'No Sourced roles right now.'
+        ? `${sourcedN} in Sourced (${sourcedUnscored} unscored) — Rank Sourced scores pasted JDs (never applies).`
+        : (hiddenN ? `${hiddenN} Sourced hidden by Find filters — click “hidden — show” above.` : 'No Sourced roles right now.')
   }
   TRIAGE_PREFS = loadTriagePrefs()
   if($('triage_sort')) $('triage_sort').value = TRIAGE_PREFS.sort
@@ -1934,15 +1983,18 @@ async function load(){
       const doc = HASDOC.has(r.id) ? (isSent(r.id) ? `<span class="doc" title="Sent version on file">✓ sent</span>` : '<span class="doc">PDF</span>') : ''
       const vHtml = v ? `<span class="verdict ${esc(v)}">${esc(v[0].toUpperCase()+v.slice(1))}</span>` : ''
       const sn=scoreNum(r)
-      const mHtml = sn>=0 ? `<span class="match-pill" title="Match score">${sn}%</span>` : ''
-      const g = estimateGhostRisk(r)
-      const gHtml = `<span class="ghost-pill ${esc(g)}" title="Ghost risk">${esc(g)}</span>`
+      const mHtml = sn>=0
+        ? `<span class="match-pill" title="CareerOps match score">${sn}% match</span>`
+        : (s==='sourced' ? `<span class="match-pill none" title="Not scored yet">Not scored</span>` : '')
       const why=roleFilterReason(r)
-      const flag = (!FIND_PREFS.hide_filtered && why) ? `<span class="doc" title="${esc(why)}">filtered</span>` : ''
+      const flag = why && (!FIND_PREFS.hide_filtered || FIND_SHOW_HIDDEN) ? `<span class="lane-pill" title="${esc(why)}">${why==='off_lane'?'off-lane':esc(why)}</span>` : ''
+      const stamp=fitStamp(r)
+      const stampHtml = stamp ? `<span class="doc" title="Find match: ${esc(stamp)}">why</span>` : ''
+      const ageHtml = stale==null ? '' : `<span class="age-pill" title="Days on board">${stale}d</span>`
       return `<div class="cardlet${activeCard===r.id?' active':''}" draggable="true" data-id="${r.id}">
       <div class="co">${esc(r.company||'—')}</div>
       <div class="role">${esc(r.title||'')}</div>
-      <div class="meta">${mHtml}${vHtml}${gHtml}${doc}${flag}${staleHtml}</div>
+      <div class="meta">${mHtml}${vHtml}${doc}${stampHtml}${flag}${ageHtml}</div>
       ${r.url?`<a class="jd" href="${esc(r.url)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">Open JD ↗</a>`:''}
     </div>`}).join('') : '<div class="muted" style="font-size:11px;padding:6px">—</div>'
     return `<div class="col" data-stage="${s}"><h3>${LABEL[s]}<span>${it.length}</span></h3>${
@@ -4280,13 +4332,19 @@ $('run').onclick = async ()=>{
       }
     }catch(_e){}
     await load()
-    const filt = FIND_PREFS.hide_filtered ? ' Find filters may hide some.' : ''
+    const hiddenNow = Object.values(ROLESMAP||{}).filter(r => String(r.stage||'')==='sourced' && roleFilterReason(r)).length
     const scanned = data.boardsScanned!=null ? ` across ${data.boardsScanned} boards` : ''
     const dups = data.skippedDup ? ` · skipped ${data.skippedDup} duplicates` : ''
+    const blocked = data.skippedBlock ? ` · ${data.skippedBlock} blocklisted` : ''
     const capped = data.skippedCap ? ` · capped at ${data.addCap||40} best matches` : ''
+    const hiddenMsg = (FIND_PREFS.hide_filtered && hiddenNow)
+      ? ` · ${hiddenNow} hidden off-lane/age/remote (click “hidden — show”)`
+      : ''
     $('status').textContent = (data.added>0)
-      ? `Added ${data.added} new role${data.added>1?'s':''} (${data.found} matched your titles/keywords${scanned})${dups}${capped}.${filt}`
-      : `Scanned${scanned || ' the boards'} — ${data.found} roles matched your filters, all already on your board${dups}. Tighten titles/keywords in Settings if results are noisy.${filt}`
+      ? `Added ${data.added} · ${data.found} matched titles/keywords${scanned}${dups}${blocked}${capped}${hiddenMsg}.`
+      : `Scanned${scanned || ' the boards'} — ${data.found} matched, 0 new${dups}${blocked}${hiddenMsg}. Tighten titles/keywords in Settings if results are noisy.`
+    // Re-paint status HTML so hidden chip is clickable after toast
+    setTimeout(()=>load(), 2500)
   }catch(err){ $('status').textContent='Search failed: '+await fnMsg(err) }
   b.disabled=false; b.textContent=old
 }
@@ -4541,6 +4599,15 @@ $('settingsbtn').onclick=()=>{
   if($('s_oai_model')) $('s_oai_model').value=oai.model||'gpt-4o-mini'
   $('seterr').textContent=''; paintSettingsSecrets()
   freeStatus(); paintUsageMeters()
+  const senHint=$('s_seniority_hint')
+  if(senHint){
+    const titles=list($('s_titles').value||'')
+    const sen=list($('s_seniority').value||'')
+    const directorHeavy=titles.some(t=>/director|vp\b|vice president|head of/i.test(t))
+    senHint.textContent = (directorHeavy && !sen.length)
+      ? 'Titles look Director/VP-weighted but Seniority is blank — Find treats blank as any level. Add “director, vp” here if you want that gate.'
+      : (FIND_PREFS.max_age_days===0 ? 'Max age 0 = no age limit. Soft-hide only affects Sourced.' : '')
+  }
   $('settings').classList.remove('hidden')
 }
 $('settingsclose').onclick=()=> $('settings').classList.add('hidden')
@@ -4657,23 +4724,22 @@ function syncVerdictUI(v){
   const skip = v==='skip'
   $('dw_skipwhy')?.classList.toggle('hidden', !skip)
   const label = skip ? 'Build resume anyway →' : 'Build resume for this job →'
-  ;['dw_tailor','dw_tailor_mid'].forEach(id=>{
-    const tailor=$(id); if(!tailor) return
+  const tailor=$('dw_tailor'); if(tailor){
     tailor.style.display=''
     tailor.hidden=false
     tailor.textContent = label
     tailor.classList.toggle('primary', !skip)
-    tailor.classList.toggle('ghost', skip && id==='dw_tailor')
-  })
+    tailor.classList.toggle('ghost', !!skip)
+  }
   if($('dw_ctahint')){
     const matched = $('rp2_scorebox') && !$('rp2_scorebox').classList.contains('hidden')
     if(skip) $('dw_ctahint').innerHTML='<b>Skip</b> only tags the card — builder still works below.'
     else if(matched) $('dw_ctahint').innerHTML='<b>Resume builder</b> → teal button opens it for this job.'
-    else $('dw_ctahint').innerHTML='Check match (optional) · tag Apply/Stretch/Skip · then <b>Build resume</b>.'
+    else $('dw_ctahint').innerHTML='Check my match (optional) · tag Worth applying / Stretch / Skip · then <b>Build resume</b>.'
   }
   if($('dw_esc')) $('dw_esc').textContent = skip
     ? 'Skip keeps it on the board — nothing is deleted. Drag the card to move stages.'
-    : 'Esc closes — JD kept. Apply/Stretch/Skip are tags only — drag cards to move stages.'
+    : 'Esc closes — JD kept. Open JD ↗ is how you apply. Tags never submit an application.'
 }
 function syncBuilderChrome(){
   if(!CURROLE) return
@@ -4770,7 +4836,6 @@ function goBuildResume(){
   }
 }
 $('dw_tailor')?.addEventListener('click', goBuildResume)
-$('dw_tailor_mid')?.addEventListener('click', goBuildResume)
 $('bv_back')?.addEventListener('click', ()=>{ closeBuilder(); if(CURROLE) openRole2(CURROLE.id) })
 $('bv_mobile_back')?.addEventListener('click', ()=>{ closeBuilder(); if(CURROLE) openRole2(CURROLE.id) })
 $('bv_gen_empty')?.addEventListener('click', ()=> $('rp2_generate')?.click())
@@ -5086,6 +5151,29 @@ $('triage_dedupe')?.addEventListener('click', async ()=>{
   if(st){ st.textContent = closed ? `Closed ${closed} duplicate card${closed>1?'s':''} (kept the oldest).` : 'No duplicates found.'; delete st.dataset.busy }
   b.disabled=false; b.textContent=o
   logEvent('board_dedupe', null, { closed })
+})
+$('triage_close_offlane')?.addEventListener('click', async ()=>{
+  const st=$('triage_status'); if(st){ st.dataset.busy='1'; st.textContent='Closing off-lane Sourced…' }
+  const b=$('triage_close_offlane'), o=b?.textContent; if(b) b.disabled=true
+  let closed=0, closedAe=0
+  const roles=Object.values(ROLESMAP||{})
+  for(const r of roles){
+    if(String(r.stage||'')==='sourced' && roleOffLaneReason(r)){
+      await sb.from('mt_roles').update({ stage: CLOSED }).eq('id', r.id)
+      closed++
+    }
+  }
+  // Closed AE / banned scrapes already in Closed stay put; count for honesty
+  closedAe = roles.filter(r => String(r.stage||'')===CLOSED && FIND_BAN_RE.test(String(r.title||''))).length
+  await load()
+  if(st){
+    st.textContent = closed
+      ? `Closed ${closed} off-lane Sourced card${closed>1?'s':''}.${closedAe?` Closed column still holds ${closedAe} banned-title scrapes — safe to ignore.`:''}`
+      : (closedAe ? `No Sourced off-lane left. Closed still has ${closedAe} banned-title scrapes.` : 'No off-lane Sourced cards to close.')
+    delete st.dataset.busy
+  }
+  if(b){ b.disabled=false; b.textContent=o }
+  logEvent('close_offlane', null, { closed, closedAe })
 })
 
 </script>
