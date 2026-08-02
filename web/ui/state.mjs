@@ -1349,7 +1349,13 @@ async function load(){
       ? ` · showing ${hiddenN} filtered Sourced`
       : ` · <span class="hidden-chip" id="status_hidden" title="Soft-hidden Sourced: off-lane titles, wrong country, blocklist, over-age, or wrong remote pref. Click to reveal.">${hiddenN} filtered Sourced — show</span>`)
     : (FIND_SHOW_HIDDEN ? ' · <span class="hidden-chip" id="status_hidden">hide filtered again</span>' : '')
-  $('status').innerHTML = active+' active on board'+hiddenBit+' · click a card to check fit · drag between columns'
+  if (active === 0) {
+  $('status').innerHTML =
+    'No roles yet · Run a job search, review LinkedIn, then add a role to <b>Researched</b> · You apply yourself · Paste real job descriptions instead of careers-page scrapes.'
+  } else {
+  $('status').innerHTML =
+    active + ' active on board' + hiddenBit + ' · click a card to check fit · drag between columns'
+  }  
   const sh=$('status_hidden')
   if(sh) sh.onclick=()=>{ FIND_SHOW_HIDDEN=!FIND_SHOW_HIDDEN; load() }
   if($('triage')){
@@ -1422,7 +1428,7 @@ async function load(){
       <div class="meta">${mHtml}${vHtml}${doc}${stampHtml}${flag}${locHtml}${compHtml}${ageHtml}</div>
       ${r.url?`<a class="jd" href="${esc(r.url)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">Open JD ↗</a>`:''}
       ${hideBtn}
-    </div>`}).join('') : '<div class="muted" style="font-size:11px;padding:6px">—</div>'
+    </div>`}).join('') : '<div class="muted" style="font-size:11px;padding:8px 6px;line-height:1.4"> No roles yet. Add one to start tracking.</div>'
     return `<div class="col" data-stage="${s}"><h3>${LABEL[s]}<span>${it.length}</span></h3>${
       s==='researched'
         ? `<button type="button" class="col-add" data-add-role="1" title="You found this job — add link + JD">＋ Add role</button>`
