@@ -1,155 +1,120 @@
-# Supabase Schema Reference
+# SPA schema cheat-sheet
 
-This document lists all tables and storage buckets used by the CareerOps SPA.
-It is derived directly from client-side code (`web/index.html` and related UI files).
+Tables and storage the CareerOps web SPA touches via Supabase client calls in `web/ui/*.mjs`.
 
-**Purpose:** Help self-hosters understand which tables and buckets are required for the application to function.
+This is a **client-derived** map for self-hosters — not a full DDL. Apply [`supabase/schema.sql`](../supabase/schema.sql) (or the migrations under `supabase/migrations/`) for the real schema + RLS.
+
+Sources checked: `web/ui/state.mjs`, `web/ui/settings.mjs`, cross-checked with `supabase/schema.sql`.
 
 ---
 
-## Tables
+## Minimal board install
+
+These are enough for auth + kanban CRUD (no search / match / rewrite / memory):
+
+| Table | Required? |
+|-------|-----------|
+| `mt_profiles` | Yes |
+| `mt_roles` | Yes |
+| `mt_reports` | Yes (versions / match artifacts) |
+| `mt_events` | Optional (UI logs quietly if insert fails) |
+
+Auth (`auth.users`) is required. Everything below is needed for full Career OS features.
+
+---
+
+## Tables the SPA calls (`sb.from(...)`)
 
 ### `mt_profiles`
 
-- **Purpose:** Store user profile information (name, email, settings, preferences).
-- **Columns used (best-effort):**
-  - `id` (uuid) — user ID
-  - `name` (text) — display name
-  - `email` (text) — user email
-  - `avatar_url` (text) — profile picture URL (linked to `avatars` bucket)
-  - `created_at` (timestamp) — account creation time
-  - `updated_at` (timestamp) — last update time
-  - `settings` (jsonb) — user preferences (titles, keywords, locations, seniority, etc.)
-  - `resume` (text) — plain text resume
-  - `phone` (text) — phone number
-  - `linkedin` (text) — LinkedIn URL
-  - `location` (text) — user location
-  - `key` (text) — Anthropic API key (encrypted)
-  - `kimi` (text) — Kimi API key (encrypted)
-  - `oai_base` (text) — OpenAI-compatible base URL
-  - `oai_key` (text) — OpenAI-compatible API key (encrypted)
-  - `oai_model` (text) — OpenAI-compatible model name
-  - `hemail` (text) — Humanizer email
-  - `hpw` (text) — Humanizer password (encrypted)
-  - `blocklist` (text) — company blocklist
-  - `max_age` (integer) — max posting age in days
-  - `remote_pref` (text) — remote preference
-  - `cadence` (text) — bullet memory cadence setting
-  - `cadence_anchor` (text) — anchor days for cadence
-  - `cadence_tz` (text) — timezone for cadence
-  - `dealbreakers` (text) — deal-breaker phrases
-  - `stories` (text) — story bank (Situation → Action → Result)
-  - `band_min` (integer) — target base minimum
-  - `band_max` (integer) — target base maximum
-  - `band_cur` (text) — currency for target band
+- **Purpose:** One profile row per auth user (resume, prefs, BYO key flags, cadence, story bank).
+- **Key:** `owner` (uuid → `auth.users`).
+- **Columns clearly read/written in the client:**
+  - `owner`, `email`, `full_name`, `phone`, `linkedin`, `location`
+  - `resume_text`, `resume_struct`, `resume_struct_rev`, `structured_modified_at`, `resume_reconcile_needed`
+  - `target_titles`, `keywords`, `seniority`, `locations`, `ats_boards`, `onboarded`
+  - `ai_key`, `kimi_key`, `openai_base_url`, `openai_key`, `openai_model`
+  - `humanizer_email`, `humanizer_pw`
+  - `ai_key_on_file`, `kimi_key_on_file`, `humanizer_email_on_file`, `humanizer_pw_on_file`
+  - `bullet_memory_cadence`, `cadence_timezone`, `cadence_anchor`
+  - `last_entry_at`, `last_prompted_at`, `snoozed_until`
+  - `story_bank`, `target_band_min`, `target_band_max`, `target_band_currency`
+  - `created_at`, `updated_at` (mostly server-maintained)
+- **Notes:** Self-host may store provider secrets as plaintext profile columns. Hosted/vault path uses edge functions + `mt_provider_secrets` (see below) and only surfaces `*_on_file` flags to the SPA.
 
 ### `mt_roles`
 
-- **Purpose:** Track job search roles/positions (board cards).
-- **Columns used (best-effort):**
-  - `id` (uuid) — role ID
-  - `company` (text) — company name
-  - `title` (text) — job title
-  - `jd` (text) — full job description
-  - `url` (text) — link to the job posting
-  - `status` (text) — current status (sourced, applied, interviewing, offered, rejected, closed)
-  - `col` (text) — board column (Sourced, Applied, Interviewing, Offer, Closed)
-  - `verdict` (text) — user verdict (apply, stretch, skip)
-  - `deleted` (boolean) — soft-delete flag
-  - `score` (integer) — match score
-  - `summary` (text) — match summary
-  - `gaps` (jsonb) — gap analysis
-  - `ats_url` (text) — ATS link
-  - `created_at` (timestamp) — when the role was added
-  - `updated_at` (timestamp) — last update
-  - `user_id` (uuid) — reference to `mt_profiles.id`
+- **Purpose:** Job-search kanban cards.
+- **Columns clearly read/written:**
+  - `id`, `owner`, `company`, `title`, `level`, `url`, `source`
+  - `fit_score`, `match_score`, `stage`, `ghost_risk`, `jd`, `notes`, `location`
+  - `sent_at`, `comp_range`, `comp_raw`
+  - `created_at`, `updated_at`
+- **Notes:** Board stages are string values such as `sourced`, `researched`, `applied`, … plus a closed stage constant in the SPA — not a separate `status` / `col` column.
 
 ### `mt_reports`
 
-- **Purpose:** Store match reports and analysis results.
-- **Columns used (best-effort):**
-  - `id` (uuid) — report ID
-  - `role_id` (uuid) — reference to `mt_roles.id`
-  - `text` (text) — report content
-  - `score` (integer) — match score
-  - `keywords` (jsonb) — matched/missing keywords
-  - `created_at` (timestamp) — generation time
-  - `user_id` (uuid) — reference to `mt_profiles.id`
+- **Purpose:** Append-only artifacts (match, resume/cover drafts, jobscan, evaluate, interview, advisor, selection, …).
+- **Columns clearly read/written:**
+  - `id`, `role_id`, `owner`, `kind`, `match_score`, `missing_keywords`
+  - `rewritten`, `jd_text`, `display_name`, `sent_at`, `created_at`
+- **Notes:** For some `kind='jobscan'` rows, `jd_text` holds a **storage path** in the `reports` bucket (PDF), not JD text.
+
+### `mt_accomplishments`
+
+- **Purpose:** Bullet memory (provenance-first accomplishments).
+- **Columns clearly read/written:** SPA uses `select('*')` / `upsert` of full rows for the owner — treat columns in `supabase/schema.sql` as authoritative (`body_original`, `body_current`, `revisions`, `status`, promotion/polish fields, tags, etc.).
+- **Unknown from partial selects:** none for happy-path UI (loads `*`).
+
+### `mt_portfolio_items`
+
+- **Purpose:** Portfolio library (code / design / product).
+- **Columns clearly read/written:** same pattern as accomplishments — `select('*')` / `upsert` per owner; see `schema.sql`.
+
+### `mt_outcomes`
+
+- **Purpose:** User-recorded offer / reject / withdraw / ghost outcomes.
+- **Columns clearly read/written:** `select('*')` / `upsert` / `delete` by `owner` + `role_id` — see `schema.sql` (`kind`, amounts, currency, dates, notes, …).
+
+### `mt_interview_events`
+
+- **Purpose:** Scheduled interview rounds (prep drafts live in `mt_reports` with `kind='interview'`).
+- **Columns clearly read/written:** `select('*')` / `insert` / `upsert` / `delete` — see `schema.sql` (`round`, `scheduled_at`, `type`, `notes`, `interviewer_name`, …).
+
+### `mt_contacts`
+
+- **Purpose:** Recruiter / network CRM (draft + log only; never auto-send).
+- **Columns clearly read/written:** `select('*')` / `insert` / `upsert` — see `schema.sql` (`name`, `channel`, `company`, `role_ids`, `last_touch_at`, `notes`, …).
 
 ### `mt_events`
 
-- **Purpose:** Track user events for analytics and audit trails.
-- **Columns used (best-effort):**
-  - `id` (uuid) — event ID
-  - `type` (text) — event type (view, click, generate, etc.)
-  - `data` (jsonb) — event payload
-  - `user_id` (uuid) — reference to `mt_profiles.id`
-  - `created_at` (timestamp) — event time
-
-### `mt_skills` (unknown — inferred from code context)
-
-- **Purpose:** Likely stores skill/tag data for portfolio items.
-- **Status:** Not explicitly confirmed in client code. Marked as unknown.
-- **Columns:** Unknown — needs verification from backend schema.
+- **Purpose:** Lightweight action log (ids / action names only — not resume or JD text).
+- **Columns in `schema.sql`:** `id`, `owner`, `kind`, `role_id`, `meta`, `created_at`.
+- **Client insert shape today:** `{ action, role_id: null, meta }` (role board id goes in `meta.role_pk`). **Unknown / drift:** client field name `action` vs schema column `kind` — confirm against your deployed DB; inserts may no-op if columns differ. SPA treats failures as non-fatal.
 
 ---
 
-## Storage Buckets
+## Storage buckets
 
-### `resumes`
+| Bucket | SPA usage |
+|--------|-----------|
+| `reports` | Upload / signed URL / remove Jobscan (and similar) PDFs; path often stored on `mt_reports.jd_text` |
 
-- **Purpose:** Store uploaded resume files (PDF/DOCX/plain text).
-- **Used for:** Uploading and retrieving resume files for match reports and tailoring.
-- **Access:** `sb.storage.from('resumes')`
-
-### `avatars`
-
-- **Purpose:** Store user profile pictures.
-- **Used for:** Displaying profile images.
-- **Access:** `sb.storage.from('avatars')`
-
-### `reports`
-
-- **Purpose:** Store PDF reports (e.g., Jobscan uploads).
-- **Used for:** Attaching external reports to roles.
-- **Access:** `sb.storage.from('reports')`
-
-### `jd_cache` (unknown — inferred from code context)
-
-- **Purpose:** Likely caches job descriptions to avoid re-fetching.
-- **Status:** Not explicitly confirmed in client code. Marked as unknown.
-- **Access:** Not clearly identified in the provided code.
+No other `sb.storage.from(...)` bucket names appear in `web/ui/*.mjs`.
 
 ---
 
-## Notes
+## Present in `schema.sql` but not direct SPA `from()` targets
 
-- **Prefix `mt_`** likely stands for "main tables" for the CareerOps application.
-- **Unknown columns** are marked with `?` until confirmed in the codebase or backend schema.
-- **Storage buckets** are accessed via `sb.storage.from('bucket_name')`.
-- **Encrypted fields** (`key`, `kimi`, `oai_key`, `hpw`) are stored securely and never exposed in plaintext.
-- **`deleted` flag** on `mt_roles` is used for soft-delete (cards are hidden but not permanently removed).
-
----
-
-## Known Gaps / Uncertainties
-
-| Table/Field | Issue | Status |
-|-------------|-------|--------|
-| `mt_skills` | Inferred from code context but not explicitly confirmed in this analysis | Unknown |
-| `jd_cache` bucket | Inferred but not confirmed in client code | Unknown |
-| Column details for `mt_events` and `mt_reports` | Inferred from pattern, not explicitly visible in the provided code | Best-effort |
-| `mt_roles.gaps` | Jsonb structure is not fully defined in client code | Best-effort |
+| Object | Notes |
+|--------|-------|
+| `mt_usage` | Daily search / AI counters — edge/backend; not queried from the SPA client list above |
+| `mt_provider_secrets` | Encrypted BYO secrets when `CREDENTIALS_KEK` is set; SPA talks to `upsert_provider_secret` / `clear_provider_secret` edge functions, not this table directly |
+| `ai_config` / `ai_config_v` | Service-role free-tier config — not client-readable |
 
 ---
 
-## Related Files
+## Related
 
-- **Client code:** `web/index.html` and `web/ui/*.mjs`
-- **Backend schema:** `supabase/README.md` and `supabase/schema.sql` (if available)
-- **Self-host guide:** Root `README.md` and `web/README.md`
-
----
-
-**This document is a best-effort cheat-sheet derived from client-side code.**
-**For full schema details, refer to the backend migration files.**
+- Full DDL + RLS: [`supabase/schema.sql`](../supabase/schema.sql) · [`supabase/README.md`](../supabase/README.md)
+- Web configure / deploy: [`web/README.md`](README.md)
