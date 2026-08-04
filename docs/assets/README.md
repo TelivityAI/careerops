@@ -12,6 +12,7 @@ GIFs and screenshots for the GitHub README hero and product walkthroughs.
 | `tailor-resume.gif` | GIF | Pick evidence → generate draft |
 | `interview-prep.gif` | GIF | Interview rounds + story-bank angles |
 | `application-board.gif` | GIF | Kanban stage progression |
+| `login.png` | Still | Login screen |
 | `offer-compare.gif` | GIF | Side-by-side user-entered offers |
 | `dashboard.png` | Still | Application board |
 | `resume-builder.png` | Still | Job-specific builder |
