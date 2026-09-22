@@ -616,13 +616,15 @@ function showAppSection(section){
   }
   return next
 }
+function navigateToSection(sec){
+  if(sec === 'memory') openMemoryModal()
+  else if(sec === 'portfolio') openPortfolioModal()
+  else if(sec === 'advise') openAdvisorModal()
+  else showAppSection('board')
+}
 document.querySelectorAll('#hdr_tabs .hdr-tab, #mob_tabs .hdr-tab').forEach(tab=>{
   tab.addEventListener('click', ()=>{
-    const sec = tab.dataset.section || 'board'
-    if(sec === 'memory') openMemoryModal()
-    else if(sec === 'portfolio') openPortfolioModal()
-    else if(sec === 'advise') openAdvisorModal()
-    else showAppSection('board')
+    navigateToSection(tab.dataset.section || 'board')
   })
 })
 
@@ -4268,6 +4270,15 @@ $('settingsbtn').onclick=()=>{
       ? 'Titles look Director/VP-weighted but Seniority is blank — Find treats blank as any level. Add “director, vp” here if you want that gate.'
       : (FIND_PREFS.max_age_days===0 ? 'Max age 0 = no age limit. Soft-hide only affects Sourced.' : '')
   }
+  if($('settings') && !$('settings').querySelector('[data-kbd-hint]')){
+    const hint=document.createElement('p')
+    hint.className='muted'
+    hint.dataset.kbdHint='1'
+    hint.style.cssText='font-size:12.5px;margin:0 0 12px'
+    hint.innerHTML='<b>Keyboard shortcuts:</b> Press <kbd>g</kbd> then <kbd>b</kbd> (Board), <kbd>m</kbd> (Memory), <kbd>p</kbd> (Portfolio), or <kbd>a</kbd> (Advise).'
+    const heading=$('settings_heading')
+    if(heading) heading.insertAdjacentElement('afterend', hint)
+  }
   trapModal('settings', $('settingsbtn'), $('s_titles'))
 }
 
@@ -4614,15 +4625,56 @@ $('scrim')?.addEventListener('click', ()=>{
   if(!$('rp2_jdwrap')?.classList.contains('hidden')) return
   rp2FlushSel(); closeDrawer()
 })
-document.addEventListener('keydown', e=>{
-  if(e.key!=='Escape') return
-  if(!$('builderView')?.classList.contains('hidden')){ closeBuilder(); return }
-  if(!$('drawer')?.classList.contains('hidden')){
-    if(!$('rp2_jdwrap')?.classList.contains('hidden')) return // keep paste session
-    rp2FlushSel(); closeDrawer(); return
+let gKeyPressed = false
+let gKeyTimeout
+function isEditableTarget(el){
+  if(!el || el === document.body) return false
+  const tag = (el.tagName||'').toUpperCase()
+  if(tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return true
+  if(el.isContentEditable) return true
+  return !!el.closest?.('input, textarea, select, [contenteditable=""], [contenteditable="true"]')
+}
+function overlayBlocksShortcuts(){
+  if($('builderView') && !$('builderView').classList.contains('hidden')) return true
+  if($('drawer') && !$('drawer').classList.contains('hidden')) return true
+  return MODAL_IDS.some(id => { const el=$(id); return el && !el.classList.contains('hidden') })
+}
+document.addEventListener('keydown', e => {
+  if(e.key === 'Escape'){
+    gKeyPressed = false
+    clearTimeout(gKeyTimeout)
+    if(!$('builderView')?.classList.contains('hidden')){ closeBuilder(); return }
+    if(!$('drawer')?.classList.contains('hidden')){
+      if(!$('rp2_jdwrap')?.classList.contains('hidden')) return // keep paste session
+      rp2FlushSel(); closeDrawer(); return
+    }
+    for(const id of MODAL_IDS){
+      if(!$(id)?.classList.contains('hidden')){ closeModal(id); return }
+    }
+    return
   }
-  for(const id of MODAL_IDS){
-    if(!$(id)?.classList.contains('hidden')){ closeModal(id); return }
+  // Section chords: never while typing, or while builder/drawer/modal is open.
+  if(isEditableTarget(document.activeElement) || overlayBlocksShortcuts()) return
+  if(e.key === 'g' && !e.ctrlKey && !e.metaKey && !e.altKey && !e.shiftKey){
+    gKeyPressed = true
+    clearTimeout(gKeyTimeout)
+    gKeyTimeout = setTimeout(() => { gKeyPressed = false }, 1000)
+    return
+  }
+  if(gKeyPressed && !e.ctrlKey && !e.metaKey && !e.altKey){
+    let sectionName = null
+    switch(e.key){
+      case 'b': sectionName = 'board'; break
+      case 'm': sectionName = 'memory'; break
+      case 'p': sectionName = 'portfolio'; break
+      case 'a': sectionName = 'advise'; break
+    }
+    if(sectionName){
+      e.preventDefault()
+      navigateToSection(sectionName)
+    }
+    gKeyPressed = false
+    clearTimeout(gKeyTimeout)
   }
 })
 $('dw_verdict')?.addEventListener('click', e=>{

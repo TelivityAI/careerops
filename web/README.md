@@ -33,6 +33,16 @@ From repo root:
 
 Or from this folder: `npx vercel deploy --prod`
 
+## Keyboard shortcuts
+
+- `g` then `b` — Board
+- `g` then `m` — Memory
+- `g` then `a` — Advise
+- `g` then `p` — Portfolio
+- `Esc` — close builder / drawer / modal (in that priority order)
+
+Shortcuts are ignored while typing in inputs, textareas, selects, or contenteditable fields, and while the builder, drawer, or a modal is open.
+
 ## Schema
 
 Point the app at a Supabase project that has the CareerOps tables (`mt_roles`, `mt_profiles`, `mt_reports`, `mt_accomplishments`, `mt_portfolio_items`, `mt_outcomes`, `mt_interview_events`, `mt_contacts`, …) and auth. Apply `supabase/schema.sql` or Phase 1–3 migrations under `supabase/migrations/`. Use your own project — do not reuse someone else’s demo credentials.
