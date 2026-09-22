@@ -41,7 +41,7 @@ Or from this folder: `npx vercel deploy --prod`
 - `g` then `p` — Portfolio
 - `Esc` — close builder / drawer / modal (in that priority order)
 
-Shortcuts are ignored while typing in any input, textarea, or contenteditable field.
+Shortcuts are ignored while typing in inputs, textareas, selects, or contenteditable fields, and while the builder, drawer, or a modal is open.
 
 ## Schema
 

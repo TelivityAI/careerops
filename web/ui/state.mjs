@@ -4270,16 +4270,14 @@ $('settingsbtn').onclick=()=>{
       ? 'Titles look Director/VP-weighted but Seniority is blank — Find treats blank as any level. Add “director, vp” here if you want that gate.'
       : (FIND_PREFS.max_age_days===0 ? 'Max age 0 = no age limit. Soft-hide only affects Sourced.' : '')
   }
- if ($("settings") && !$("settings").querySelector("[data-kbd-hint]")) {
-    const hint = document.createElement("p");
-    hint.className = "muted";
-    hint.dataset.kbdHint = "1";
-    hint.style.cssText = "font-size:12.5px;margin:0 0 12px";
-    hint.innerHTML = "<b>Keyboard shortcuts:</b> Press <kbd>g</kbd> then <kbd>b</kbd> (Board), <kbd>m</kbd> (Memory), <kbd>p</kbd> (Portfolio), or <kbd>a</kbd> (Advise).";
-        const heading = $("settings_heading");
-    if (heading) {
-      heading.insertAdjacentElement("afterend", hint);
-    }
+  if($('settings') && !$('settings').querySelector('[data-kbd-hint]')){
+    const hint=document.createElement('p')
+    hint.className='muted'
+    hint.dataset.kbdHint='1'
+    hint.style.cssText='font-size:12.5px;margin:0 0 12px'
+    hint.innerHTML='<b>Keyboard shortcuts:</b> Press <kbd>g</kbd> then <kbd>b</kbd> (Board), <kbd>m</kbd> (Memory), <kbd>p</kbd> (Portfolio), or <kbd>a</kbd> (Advise).'
+    const heading=$('settings_heading')
+    if(heading) heading.insertAdjacentElement('afterend', hint)
   }
   trapModal('settings', $('settingsbtn'), $('s_titles'))
 }
@@ -4629,19 +4627,25 @@ $('scrim')?.addEventListener('click', ()=>{
 })
 let gKeyPressed = false
 let gKeyTimeout
+function isEditableTarget(el){
+  if(!el || el === document.body) return false
+  const tag = (el.tagName||'').toUpperCase()
+  if(tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return true
+  if(el.isContentEditable) return true
+  return !!el.closest?.('input, textarea, select, [contenteditable=""], [contenteditable="true"]')
+}
+function overlayBlocksShortcuts(){
+  if($('builderView') && !$('builderView').classList.contains('hidden')) return true
+  if($('drawer') && !$('drawer').classList.contains('hidden')) return true
+  return MODAL_IDS.some(id => { const el=$(id); return el && !el.classList.contains('hidden') })
+}
 document.addEventListener('keydown', e => {
-  const active = document.activeElement
-  const isTyping = active && (
-    active.tagName === 'INPUT' ||
-    active.tagName === 'TEXTAREA' ||
-    active.isContentEditable
-  )
   if(e.key === 'Escape'){
     gKeyPressed = false
     clearTimeout(gKeyTimeout)
     if(!$('builderView')?.classList.contains('hidden')){ closeBuilder(); return }
     if(!$('drawer')?.classList.contains('hidden')){
-      if(!$('rp2_jdwrap')?.classList.contains('hidden')) return
+      if(!$('rp2_jdwrap')?.classList.contains('hidden')) return // keep paste session
       rp2FlushSel(); closeDrawer(); return
     }
     for(const id of MODAL_IDS){
@@ -4649,14 +4653,15 @@ document.addEventListener('keydown', e => {
     }
     return
   }
-  if(isTyping) return
-  if(e.key === 'g' && !e.ctrlKey && !e.metaKey && !e.altKey){
+  // Section chords: never while typing, or while builder/drawer/modal is open.
+  if(isEditableTarget(document.activeElement) || overlayBlocksShortcuts()) return
+  if(e.key === 'g' && !e.ctrlKey && !e.metaKey && !e.altKey && !e.shiftKey){
     gKeyPressed = true
     clearTimeout(gKeyTimeout)
     gKeyTimeout = setTimeout(() => { gKeyPressed = false }, 1000)
     return
   }
-  if(gKeyPressed){
+  if(gKeyPressed && !e.ctrlKey && !e.metaKey && !e.altKey){
     let sectionName = null
     switch(e.key){
       case 'b': sectionName = 'board'; break
